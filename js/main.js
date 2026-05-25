@@ -113,8 +113,84 @@ function renderHeader() {
     +     '<button class="' + (LANG === 'en' ? 'on' : '') + '" data-lang="en">EN</button>'
     +   '</div>'
     +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
+    +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
+    +     '<span></span><span></span><span></span>'
+    +   '</button>'
     + '</div>'
     + '</header>';
+
+  renderMobileNav();
+  setupBurger();
+}
+
+/* ══════════════════════════════════════════
+   МОБИЛЬНОЕ МЕНЮ
+══════════════════════════════════════════ */
+function renderMobileNav() {
+  var old = document.getElementById('mobile-nav');
+  if (old) old.remove();
+
+  var active  = currentPage();
+  var navHTML = NAV_KEYS.map(function (i) {
+    return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">'
+      + '<span class="mobile-nav-dot"></span>' + t(i.key) + '</a>';
+  }).join('');
+
+  var div = document.createElement('div');
+  div.className = 'mobile-nav';
+  div.id = 'mobile-nav';
+  div.innerHTML = navHTML
+    + '<div class="mobile-nav-footer">'
+    +   '<button class="btn btn-primary" id="mobile-connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
+    +   '<div class="lang">'
+    +     '<button class="' + (LANG === 'ru' ? 'on' : '') + '" data-lang="ru">RU</button>'
+    +     '<button class="' + (LANG === 'en' ? 'on' : '') + '" data-lang="en">EN</button>'
+    +   '</div>'
+    + '</div>';
+
+  document.body.appendChild(div);
+
+  /* Клик по ссылке - закрыть меню */
+  div.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', closeMobileNav);
+  });
+
+  /* Кнопка кошелька в меню */
+  var mw = document.getElementById('mobile-connect-wallet');
+  if (mw) mw.addEventListener('click', function () {
+    closeMobileNav();
+    var overlay = document.getElementById('wallet-modal');
+    if (overlay) overlay.classList.add('open');
+  });
+}
+
+function openMobileNav() {
+  var nav    = document.getElementById('mobile-nav');
+  var burger = document.getElementById('nav-burger');
+  if (nav)    nav.classList.add('open');
+  if (burger) { burger.classList.add('open'); burger.setAttribute('aria-expanded', 'true'); }
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMobileNav() {
+  var nav    = document.getElementById('mobile-nav');
+  var burger = document.getElementById('nav-burger');
+  if (nav)    nav.classList.remove('open');
+  if (burger) { burger.classList.remove('open'); burger.setAttribute('aria-expanded', 'false'); }
+  document.body.style.overflow = '';
+}
+
+function setupBurger() {
+  var burger = document.getElementById('nav-burger');
+  if (!burger) return;
+  burger.addEventListener('click', function () {
+    var nav = document.getElementById('mobile-nav');
+    if (nav && nav.classList.contains('open')) {
+      closeMobileNav();
+    } else {
+      openMobileNav();
+    }
+  });
 }
 
 /* ══════════════════════════════════════════
@@ -177,6 +253,7 @@ function setupLangToggle() {
       localStorage.setItem('boxdao_lang', LANG);
 
       /* Перерендерить всё */
+      closeMobileNav();
       renderHeader();
       if (typeof window.initBrandCube === 'function') window.initBrandCube();
       renderFooter();

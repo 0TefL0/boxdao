@@ -1,9 +1,8 @@
 /* =========================================================================
    layout.css - шапка, навигация, hero, секции, футер
-   Header и footer одинаковы на всех страницах (вставляются через main.js).
    ========================================================================= */
 
-/* ---------------------------- ШАПКА ---------------------------- */
+/* ── ШАПКА ── */
 .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -13,8 +12,21 @@
   align-items: center;
   justify-content: space-between;
   padding-inline: var(--gutter);
-  border-bottom: 1px solid var(--border);
-  background: rgba(10, 10, 12, 0.7);
+  border-bottom: 1px solid transparent;
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition:
+    background      0.45s cubic-bezier(0.23, 1, 0.32, 1),
+    border-color    0.45s cubic-bezier(0.23, 1, 0.32, 1),
+    backdrop-filter 0.45s ease,
+    -webkit-backdrop-filter 0.45s ease;
+}
+
+/* Класс добавляется JS при скролле */
+.site-header.scrolled {
+  background: rgba(10, 10, 12, 0.72);
+  border-bottom-color: var(--border);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
 }
@@ -26,19 +38,24 @@
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 18px;
-  letter-spacing: 0.01em;
+  letter-spacing: -0.01em;
   color: #fff;
+  transition: opacity var(--t-fast);
 }
+.brand:hover { opacity: 0.85; }
+
 .brand-mark {
-  width: 26px; height: 26px;
-  display: grid; place-items: center;
-  border: 1.5px solid var(--accent);
-  border-radius: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--accent);
+  font-size: 22px;
+  filter: drop-shadow(0 0 6px rgba(7,117,13,0.65));
 }
+
 .brand b { color: var(--accent); font-weight: 700; }
 
-/* Навигация по центру */
+/* Навигация - центр */
 .nav {
   position: absolute;
   left: 50%;
@@ -54,7 +71,7 @@
 .nav a:hover,
 .nav a.active { color: var(--text); }
 
-/* Правый блок шапки */
+/* Правый блок */
 .header-right { display: flex; align-items: center; gap: 10px; }
 
 .lang {
@@ -76,7 +93,7 @@
 }
 .lang button.on { background: var(--accent-glow); color: var(--accent); }
 
-/* ---------------------------- HERO ---------------------------- */
+/* ── HERO ── */
 .hero {
   min-height: 100vh;
   display: flex;
@@ -89,20 +106,9 @@
   overflow: hidden;
 }
 
-/* Тонкая сетка под кубом для глубины */
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
-  background-size: 56px 56px;
-  -webkit-mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, #000 15%, transparent 100%);
-  mask-image: radial-gradient(ellipse 65% 65% at 50% 45%, #000 15%, transparent 100%);
-  pointer-events: none;
-}
+/* grid removed */
 
+/* (badge styles kept but element is removed from HTML) */
 .hero-badge {
   display: inline-flex;
   align-items: center;
@@ -150,7 +156,7 @@
   margin-top: 12px;
 }
 
-/* Подсказка прокрутки */
+/* Scroll hint */
 .scroll-hint {
   position: absolute;
   bottom: 1.8rem; left: 50%;
@@ -171,18 +177,12 @@
   animation: bounce 1.6s ease-in-out infinite;
 }
 
-/* ------------------------- СЕКЦИИ КОНТЕНТА ------------------------- */
-.section {
-  padding-block: clamp(64px, 10vw, 120px);
-}
+/* ── СЕКЦИИ ── */
+.section { padding-block: clamp(64px, 10vw, 120px); }
 .section-head { max-width: 640px; margin-bottom: 48px; }
-.section-head h2 {
-  font-size: clamp(30px, 4vw, 46px);
-  margin-top: 12px;
-}
-.section-head p { margin-top: 16px; font-size: 17px; }
+.section-head h2 { font-size: clamp(30px, 4vw, 46px); margin-top: 12px; }
+.section-head p  { margin-top: 16px; font-size: 17px; }
 
-/* Простой плейсхолдер-блок для будущего контента (можешь удалить) */
 .placeholder {
   border: 1px dashed var(--border-hi);
   border-radius: var(--radius);
@@ -193,11 +193,12 @@
   text-align: center;
 }
 
-/* ---------------------------- ФУТЕР ---------------------------- */
+/* ── ФУТЕР ── */
 .site-footer {
   border-top: 1px solid var(--border);
-  background: rgba(10, 10, 12, 0.6);
+  background: rgba(10, 10, 12, 0.60);
   backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 .footer-inner {
   display: flex;
@@ -209,14 +210,18 @@
 }
 .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
 .footer-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 14px;
   color: var(--text-dim);
   transition: color var(--t-fast);
 }
 .footer-links a:hover { color: var(--accent); }
+.footer-links a i { font-size: 15px; }
 .footer-copy { font-family: var(--font-mono); font-size: 12px; color: var(--muted); }
 
-/* ---------------------------- АНИМАЦИИ ---------------------------- */
+/* ── АНИМАЦИИ ── */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(20px); }
   to   { opacity: 1; transform: translateY(0); }
@@ -230,8 +235,118 @@
   50%      { transform: rotate(45deg) translateY(6px); }
 }
 
-/* ---------------------------- АДАПТИВ ---------------------------- */
+/* ── БУРГЕР ── */
+.burger {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  width: 36px;
+  height: 36px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  padding: 8px;
+  flex-shrink: 0;
+  transition: border-color var(--t-fast);
+  -webkit-tap-highlight-color: transparent;
+}
+.burger:hover { border-color: var(--border-hi); }
+.burger span {
+  display: block;
+  width: 100%;
+  height: 1.5px;
+  background: var(--text);
+  border-radius: 2px;
+  transition: transform 0.28s cubic-bezier(0.23,1,0.32,1), opacity 0.2s ease;
+}
+.burger.open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.burger.open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+/* ── МОБИЛЬНОЕ МЕНЮ ── */
+.mobile-nav {
+  position: fixed;
+  top: var(--header-h);
+  left: 0; right: 0; bottom: 0;
+  z-index: 98;
+  background: rgba(10,10,12,0.97);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem var(--gutter) 2rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-12px);
+  transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.23,1,0.32,1);
+  overflow-y: auto;
+}
+.mobile-nav.open {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateY(0);
+}
+
+.mobile-nav a {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-dim);
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color var(--t-fast), padding-left 0.2s ease;
+}
+.mobile-nav a:last-of-type { border-bottom: none; }
+.mobile-nav a:hover,
+.mobile-nav a.active { color: var(--accent); padding-left: 8px; }
+
+.mobile-nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+}
+.mobile-nav a.active .mobile-nav-dot,
+.mobile-nav a:hover .mobile-nav-dot { opacity: 1; }
+
+.mobile-nav-footer {
+  margin-top: auto;
+  padding-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.mobile-nav-footer .btn { justify-content: center; width: 100%; }
+.mobile-nav-footer .lang {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  width: fit-content;
+}
+
+/* ── АДАПТИВ ── */
 @media (max-width: 860px) {
-  .nav { display: none; }            /* мобильное меню добавишь позже */
   :root { --gutter: 1.25rem; }
+  .nav { display: none; }
+  .burger { display: flex; }
+  .btn-wallet { display: none; }
+  .lang { display: none; }
+}
+
+@media (max-width: 480px) {
+  :root { --header-h: 56px; }
+  #cube-canvas { max-width: 260px !important; max-height: 260px !important; }
+  .section-head p { font-size: 15px; }
+  .card { padding: 20px; }
 }
