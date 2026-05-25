@@ -1,5 +1,5 @@
 /* =========================================================================
-   main.js — общая логика BoxDAO
+   main.js - общая логика BoxDAO
    • Inline SVG (Phosphor-style)
    • i18n RU / EN (localStorage)
    • Header, Footer, Modal рендеринг
@@ -187,7 +187,7 @@ function setupLangToggle() {
 }
 
 /* ══════════════════════════════════════════
-   SCROLL — прозрачный → тёмный header
+   SCROLL - прозрачный → тёмный header
 ══════════════════════════════════════════ */
 (function () {
   function updateScroll() {
@@ -202,7 +202,7 @@ function setupLangToggle() {
    RIPPLE НА КНОПКАХ
 ══════════════════════════════════════════ */
 function setupButtonRipple() {
-  /* Используем единый делегированный слушатель — добавляем только один раз */
+  /* Используем единый делегированный слушатель - добавляем только один раз */
   if (document._rippleReady) return;
   document._rippleReady = true;
 

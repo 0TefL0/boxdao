@@ -1,5 +1,5 @@
 /* =========================================================================
-   brand-cube.js — мини 3D куб в логотипе (canvas, изометрия + вращение)
+   brand-cube.js - мини 3D куб в логотипе (canvas, изометрия + вращение)
    Вызывается из main.js после renderHeader() через window.initBrandCube().
    ========================================================================= */
 (function () {
@@ -47,7 +47,7 @@
     var CX    = DISP / 2;
     var CY    = DISP / 2 + 1;
     var SCALE = DISP * 0.31;
-    var ISO   = Math.PI / 6;          /* 30° — угол изометрии */
+    var ISO   = Math.PI / 6;          /* 30° - угол изометрии */
     var CA    = Math.cos(ISO);
     var SA    = Math.sin(ISO);
 
