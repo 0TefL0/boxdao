@@ -80,7 +80,7 @@
   }
 
   /* --- 8 кубов (2×2×2) --- */
-  const ACCENT_IDX = 7;
+  const ACCENT_IDX = 5; /* gx=1, gy=0, gz=1 — правый верхний куб */
   const cubes = [];
   for (let gz = 0; gz <= 1; gz++)
     for (let gy = 0; gy <= 1; gy++)
