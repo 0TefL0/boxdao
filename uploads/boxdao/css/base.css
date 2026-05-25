@@ -1,0 +1,82 @@
+/* =========================================================================
+   base.css — сброс стилей, базовая типографика и фон сайта
+   ========================================================================= */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  background-color: var(--bg);
+
+  /* --- ФОН: background.jpg (тёмный мраморный паттерн) ---
+     Закреплён, перекрывает весь экран, по центру. */
+  background-image: url("../assets/img/background.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Тёмный оверлей поверх фона — чтобы текст читался,
+   а фон оставался атмосферным фоном, а не «забивал» контент.
+   Лёгкий радиальный высвет в центре добавляет глубины. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(227,179,65,0.05), transparent 60%),
+    linear-gradient(180deg, rgba(10,10,12,0.82), rgba(10,10,12,0.92));
+}
+
+/* --- Типографика --- */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+p { line-height: 1.65; color: var(--text-dim); }
+
+a { color: inherit; text-decoration: none; }
+
+img { display: block; max-width: 100%; }
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text);
+}
+
+/* Утилита-обёртка для ширины контента */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Технические «лейблы» моноширинным шрифтом */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}

@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BoxDAO — О проекте</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    /* ─── About page layout ─── */
+    :root { --sidebar: 220px; }
+
+    .page-layout {
+      display: flex;
+      margin-top: var(--header-h);
+      min-height: calc(100vh - var(--header-h));
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sidebar);
+      flex-shrink: 0;
+      position: fixed;
+      top: var(--header-h); left: 0; bottom: 0;
+      border-right: 1px solid var(--border);
+      background: rgba(10,10,12,0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      padding: 2rem 0;
+      z-index: 50;
+    }
+
+    .sb-label {
+      font-family: var(--font-mono);
+      font-size: 9px; font-weight: 700;
+      color: var(--muted);
+      letter-spacing: .2em; text-transform: uppercase;
+      padding: 0 1.4rem; margin-bottom: .6rem;
+    }
+
+    .sb-nav { display: flex; flex-direction: column; gap: 2px; }
+
+    .sb-nav a {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 1.4rem;
+      font-size: 13px; font-weight: 500;
+      color: var(--muted); text-decoration: none;
+      border-left: 2px solid transparent;
+      transition: all .18s ease;
+    }
+    .sb-nav a:hover { color: var(--text); background: rgba(255,255,255,.03); }
+    .sb-nav a.active {
+      color: var(--text);
+      border-left-color: var(--accent);
+      background: rgba(7,117,13,.07);
+    }
+    .sb-dot {
+      width: 5px; height: 5px; border-radius: 50%;
+      background: rgba(255,255,255,.15); flex-shrink: 0;
+      transition: background .18s;
+    }
+    .sb-nav a.active .sb-dot { background: var(--accent); }
+
+    /* MAIN */
+    .about-main {
+      margin-left: 0;
+      flex: 1;
+      padding: 3.5rem 3.5rem 6rem;
+      max-width: 860px;
+      margin-inline: auto;
+    }
+
+    /* SECTION */
+    .ab-sec { padding-top: 4rem; }
+    .ab-sec:first-child { padding-top: 0; }
+
+    .sec-label {
+      font-family: var(--font-mono); font-size: 10px; font-weight: 700;
+      color: var(--accent); letter-spacing: .2em; text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .sec-title {
+      font-family: var(--font-display);
+      font-size: clamp(22px,3vw,38px);
+      font-weight: 700; letter-spacing: -0.02em;
+      color: #fff; line-height: 1.1;
+    }
+    .sec-title .acc { color: var(--accent); }
+    .sec-body { font-size: 15px; line-height: 1.8; color: var(--text-dim); margin-top: 14px; }
+
+    .ab-divider { height: 1px; background: var(--border); margin: 3.5rem 0; }
+
+    /* PILLS */
+    .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .pill {
+      display: flex; align-items: center; gap: 6px;
+      background: rgba(7,117,13,.08);
+      border: 1px solid rgba(7,117,13,.22);
+      border-radius: 100px; padding: 5px 13px;
+      font-size: 12px; color: var(--text);
+    }
+    .pill .d { width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+    .pill.dim { background: rgba(255,255,255,.04); border-color: var(--border); }
+    .pill.dim .d { background: var(--muted); }
+
+    /* STEPS */
+    .steps { display: flex; flex-direction: column; margin-top: 24px; position: relative; }
+    .steps::before {
+      content: "";
+      position: absolute; left: 26px; top: 32px; bottom: 32px;
+      width: 1px; background: var(--border);
+    }
+    .step { display: flex; align-items: flex-start; gap: 18px; padding: 14px 0; }
+    .step-icon {
+      width: 52px; height: 52px; flex-shrink: 0;
+      border-radius: 12px;
+      background: rgba(7,117,13,.10);
+      border: 1px solid rgba(7,117,13,.22);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; position: relative; z-index: 1;
+    }
+    .step-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .step-desc  { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
+
+    /* STAKING CARDS */
+    .stk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
+    .stk-card { border-radius: var(--radius); padding: 20px; border: 1px solid; }
+    .stk-fixed { background: rgba(7,117,13,.07); border-color: rgba(7,117,13,.28); }
+    .stk-flex  { background: var(--surface); border-color: var(--border-hi); }
+    .stk-badge {
+      display: inline-flex; border-radius: 100px;
+      padding: 3px 10px; font-size: 10px; font-weight: 700;
+      font-family: var(--font-mono); letter-spacing: .08em;
+      text-transform: uppercase; margin-bottom: 10px;
+    }
+    .b-fixed { background: rgba(7,117,13,.18); color: var(--accent); }
+    .b-flex  { background: rgba(255,255,255,.07); color: var(--text-dim); }
+    .stk-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+    .stk-rate { font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; }
+    .stk-rate.dim { color: var(--text-dim); }
+    .stk-sub { font-size: 11px; color: var(--muted); margin-top: 3px; margin-bottom: 12px; }
+    .stk-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .stk-list li { font-size: 12px; color: var(--text-dim); display: flex; align-items: flex-start; gap: 7px; padding-left: 2px; }
+    .stk-list li::before { display: none; }
+
+    /* LEVELS */
+    .lvl-head, .lvl-row {
+      display: grid;
+      grid-template-columns: 28px 140px 120px 1fr 70px 90px;
+      gap: 10px;
+    }
+    .lvl-head {
+      padding: 6px 14px;
+      font-size: 9px; color: var(--muted);
+      letter-spacing: .06em; text-transform: uppercase;
+      font-family: var(--font-mono); margin-top: 24px;
+    }
+    .lvl-row {
+      align-items: center;
+      padding: 11px 14px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--surface);
+      margin-top: 6px;
+      transition: background var(--t-fast);
+    }
+    .lvl-row:hover { background: var(--surface-hi); }
+    .lvl-row.boss  { border-color: rgba(7,117,13,.35); background: rgba(7,117,13,.06); }
+    .lv-n    { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+    .lv-name { font-size: 13px; font-weight: 700; color: var(--text); }
+    .lv-days { font-size: 11px; color: var(--muted); }
+    .lv-bar-w { height: 3px; background: rgba(255,255,255,.06); border-radius: 2px; overflow: hidden; }
+    .lv-bar   { height: 100%; border-radius: 2px; background: var(--accent); }
+    .lv-pct   { font-family: var(--font-mono); font-size: 11px; color: var(--accent); text-align: right; font-weight: 700; }
+    .lv-usdt  { font-size: 11px; color: var(--muted); text-align: right; }
+
+    /* NUMBERS */
+    .num-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-top: 24px; }
+    .num-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: var(--radius); padding: 16px 14px;
+      transition: var(--t);
+    }
+    .num-card:hover { background: var(--surface-hi); border-color: var(--border-hi); }
+    .num-val { font-family: var(--font-mono); font-size: 22px; font-weight: 700; color: #fff; line-height: 1; }
+    .num-val .a { color: var(--accent); }
+    .num-lbl { font-size: 12px; color: var(--text-dim); margin-top: 6px; line-height: 1.4; }
+    .num-sub { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    /* DAO */
+    .dao-bar { display: flex; border-radius: var(--radius-sm); overflow: hidden; height: 42px; margin-top: 24px; }
+    .dao-o {
+      display: flex; align-items: center; justify-content: center; flex: 10;
+      background: rgba(7,117,13,.22); color: var(--accent);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    }
+    .dao-i {
+      display: flex; align-items: center; justify-content: center; flex: 10;
+      background: rgba(255,255,255,.07); color: var(--text-dim);
+      font-family: var(--font-mono); font-size: 11px; font-weight: 700;
+    }
+    .dao-legend { display: flex; gap: 18px; margin-top: 10px; }
+    .dao-leg { display: flex; align-items: center; gap: 7px; font-size: 12px; color: var(--muted); }
+    .dao-dot { width: 8px; height: 8px; border-radius: 3px; }
+
+    .dao-rules { list-style: none; display: flex; flex-direction: column; gap: 8px; margin-top: 18px; }
+    .dao-rules li {
+      font-size: 13px; color: var(--text-dim);
+      padding: 10px 14px;
+      background: var(--surface);
+      border-left: 2px solid var(--accent);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .vote-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-top: 24px; margin-bottom: 10px; }
+    .vote-grid { display: flex; flex-direction: column; gap: 8px; }
+    .vote-item {
+      padding: 11px 14px; border: 1px solid var(--border);
+      border-radius: var(--radius-sm); background: var(--surface);
+      transition: var(--t-fast);
+    }
+    .vote-item:hover { background: var(--surface-hi); border-color: var(--border-hi); }
+    .vote-item strong { color: #fff; font-size: 13px; display: block; margin-bottom: 2px; }
+    .vote-item span   { font-size: 12px; color: var(--muted); }
+
+    /* ─── АНИМАЦИИ ─── */
+
+    /* Scroll fade-up */
+    [data-fade] {
+      opacity: 0;
+      transform: translateY(28px);
+      transition:
+        opacity  0.72s cubic-bezier(0.23, 1, 0.32, 1),
+        transform 0.72s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+    [data-fade].in { opacity: 1; transform: none; }
+    [data-fade][data-d="1"] { transition-delay: 0.09s; }
+    [data-fade][data-d="2"] { transition-delay: 0.18s; }
+    [data-fade][data-d="3"] { transition-delay: 0.27s; }
+    [data-fade][data-d="4"] { transition-delay: 0.36s; }
+    [data-fade][data-d="5"] { transition-delay: 0.45s; }
+
+    /* Eyebrow label */
+    .sec-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Крупнее заголовки */
+    .sec-title { font-size: clamp(28px, 4vw, 46px); }
+
+    /* Пульс иконок шагов */
+    @keyframes iconGlow {
+      0%,100% { box-shadow: 0 0 0 0 rgba(7,117,13,0.00); }
+      50%      { box-shadow: 0 0 0 8px rgba(7,117,13,0.10), 0 0 20px rgba(7,117,13,0.06); }
+    }
+    .step-icon { animation: iconGlow 4s ease-in-out infinite; }
+
+    /* Hover подсветка строк шагов */
+    .step {
+      border-radius: var(--radius-sm);
+      padding: 14px 10px;
+      transition: background 0.22s ease;
+      margin: 0 -10px;
+    }
+    .step:hover { background: rgba(7,117,13,0.04); }
+
+    /* Прогресс-бары: старт с 0, анимация до target */
+    .lv-bar { width: 0 !important; transition: width 1.3s cubic-bezier(0.23,1,0.32,1); }
+    .lv-bar.in { width: var(--bar-target) !important; }
+
+    /* Свечение акцентных чисел */
+    .num-val .a {
+      color: var(--accent);
+      text-shadow: 0 0 20px rgba(7,117,13,0.55);
+    }
+
+    /* Hover карточек чисел */
+    .num-card {
+      transition:
+        transform     0.28s cubic-bezier(0.23,1,0.32,1),
+        box-shadow    0.28s cubic-bezier(0.23,1,0.32,1),
+        background    0.28s ease,
+        border-color  0.28s ease;
+    }
+    .num-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 36px rgba(7,117,13,0.12);
+      border-color: rgba(7,117,13,0.28);
+    }
+
+    /* Vote item сдвиг вправо при hover */
+    .vote-item {
+      transition:
+        transform     0.22s cubic-bezier(0.23,1,0.32,1),
+        background    0.22s ease,
+        border-color  0.22s ease;
+    }
+    .vote-item:hover { transform: translateX(4px); border-color: rgba(7,117,13,0.28); }
+
+    /* DAO bar пульс */
+    @keyframes daoGlow {
+      0%,100% { opacity: 1; }
+      50%      { opacity: 0.70; }
+    }
+    .dao-o { animation: daoGlow 3s ease-in-out infinite; }
+
+    /* DAO rules hover */
+    .dao-rules li { transition: background 0.2s ease; }
+    .dao-rules li:hover { background: var(--surface-hi); }
+
+    /* Stk-card hover glow */
+    .stk-card {
+      transition: transform 0.28s cubic-bezier(0.23,1,0.32,1), box-shadow 0.28s ease, border-color 0.28s ease;
+    }
+    .stk-fixed:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(7,117,13,0.14); }
+    .stk-flex:hover  { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.25); }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 860px) {
+      .sidebar { display: none; }
+      .about-main { margin-left: 0; padding: 2rem 1.25rem 4rem; }
+      .stk-grid { grid-template-columns: 1fr; }
+      .num-grid { grid-template-columns: 1fr 1fr; }
+      .lvl-head, .lvl-row { grid-template-columns: 28px 1fr 70px 80px; }
+      .lv-days, .lv-bar-w { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header"></div>
+
+  <div class="page-layout">
+
+    <main class="about-main">
+
+      <!-- ИДЕЯ -->
+      <section class="ab-sec" id="idea">
+        <div class="sec-label">Идея проекта</div>
+        <div class="sec-title">Совладение вендингом <span class="acc">через NFT</span></div>
+        <p class="sec-body">BoxDAO — платформа цифрового совладения вендинговыми автоматами. Каждый автомат продаёт Lucky Box — сюрприз-боксы с игрушками. Купи NFT-ячейку, положи в стейкинг — получай выплаты в USDT с каждой продажи бокса.</p>
+        <p class="sec-body">Первый автомат уже работает и окупился. Второй запускается по модели BoxDAO — 10 ячеек продаются инвесторам через NFT, 10 остаются владельцу.</p>
+        <div class="pills">
+          <div class="pill"><span class="d"></span>1 автомат = коллекция из 20 NFT</div>
+          <div class="pill"><span class="d"></span>Стейкинг на Ethereum</div>
+          <div class="pill"><span class="d"></span>Выплаты в USDT ежедневно</div>
+          <div class="pill dim"><span class="d"></span>1 NFT = 1 голос в DAO</div>
+          <div class="pill dim"><span class="d"></span>Вход = подключение кошелька</div>
+          <div class="pill dim"><span class="d"></span>Роялти 2% с перепродажи OpenSea</div>
+        </div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- МЕХАНИКА -->
+      <section class="ab-sec" id="mechanic">
+        <div class="sec-label">Механика</div>
+        <div class="sec-title">Как это работает</div>
+        <div class="steps">
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M197.17,133.17l-99.5,99.5a12,12,0,0,1-17,0L28.83,180.83a12,12,0,0,1,0-17l99.5-99.5A12,12,0,0,1,137,60.5H212a12,12,0,0,1,12,12v74.84A12,12,0,0,1,197.17,133.17Z"/><circle cx="180" cy="84" r="16" fill="var(--accent)" stroke="none"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Купил NFT</div>
+              <div class="step-desc">Покупаешь NFT-ячейку автомата на сайте или на OpenSea. Каждый NFT — доля в одном вендинговом автомате.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="48" y="96" width="160" height="112" rx="8"/><path d="M96,96V68a32,32,0,0,1,64,0V96"/><circle cx="128" cy="152" r="12" fill="var(--accent)" stroke="none"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Положил в стейкинг</div>
+              <div class="step-desc">Подключаешь кошелёк и выбираешь режим — Fixed (максимальный доход, блокировка 20 мес) или Flexible (вывести когда угодно).</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polygon points="128,24 224,72 224,184 128,232 32,184 32,72"/><line x1="128" y1="24" x2="128" y2="128"/><line x1="32" y1="72" x2="128" y2="128"/><line x1="224" y1="72" x2="128" y2="128"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Автомат продаёт боксы</div>
+              <div class="step-desc">Lucky Box продаётся в ТЦ Триумф Молл Саратов (400 000+ посетителей/мес). Парсер снимает данные ежедневно.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><line x1="128" y1="72" x2="128" y2="184"/><path d="M104,92c0-11,11-20,24-20s24,9,24,20-11,16-24,16-24,9-24,20,11,20,24,20,24-9,24-20"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Получаешь USDT</div>
+              <div class="step-desc">Скрипт считает твою долю, конвертирует по курсу $/₽ и начисляет баланс. Выводи в любую сеть — ETH, Polygon, BNB, TON.</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- СТЕЙКИНГ -->
+      <section class="ab-sec" id="staking">
+        <div class="sec-label">Режимы стейкинга</div>
+        <div class="sec-title">Два способа зарабатывать</div>
+        <div class="stk-grid">
+          <div class="stk-card stk-fixed">
+            <div class="stk-badge b-fixed">
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 256 256" fill="currentColor" style="display:inline-block;vertical-align:-0.1em"><polygon points="216,112 128,24 88,112 40,112 128,232 152,144"/></svg>
+              Fixed · Старт
+            </div>
+            <div class="stk-name">Фиксированный</div>
+            <div class="stk-rate">2.16%</div>
+            <div class="stk-sub">от цены бокса · с первого дня</div>
+            <ul class="stk-list">
+              <li>Только первые 3 недели</li>
+              <li>Блокировка на 20 месяцев</li>
+              <li>Максимум сразу — без ожидания</li>
+              <li>~1 050₽ / мес при 75 продажах</li>
+              <li>Окупаемость ~19 месяцев ✅</li>
+            </ul>
+          </div>
+          <div class="stk-card stk-flex">
+            <div class="stk-badge b-flex">
+              <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.1em"><rect x="48" y="104" width="160" height="104" rx="8"/><path d="M96,104V76a32,32,0,0,1,64,0"/></svg>
+              Flexible · Всегда
+            </div>
+            <div class="stk-name">Гибкий</div>
+            <div class="stk-rate dim">1.54%</div>
+            <div class="stk-sub">максимум · уровень Элита</div>
+            <ul class="stk-list dim">
+              <li>Доступен всегда</li>
+              <li>Вывести в любой момент</li>
+              <li>6 уровней — растёт со временем</li>
+              <li>~750₽ / мес на Элите</li>
+              <li>Окупаемость ~27 месяцев</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- УРОВНИ -->
+      <section class="ab-sec" id="levels">
+        <div class="sec-label">Уровни Flexible</div>
+        <div class="sec-title">Чем дольше держишь — тем <span class="acc">выше доход</span></div>
+        <p class="sec-body">Начинаешь с нуля, поднимаешься по уровням. Fixed инвестор — сразу на максимуме.</p>
+        <div class="lvl-head">
+          <span>#</span><span>Уровень</span><span>Дней</span><span>Прогресс</span><span>%</span><span>В месяц</span>
+        </div>
+        <div class="lvl-row"><span class="lv-n">0</span><span class="lv-name">Старт</span><span class="lv-days">0–10 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:0%"></div></div><span class="lv-pct">0%</span><span class="lv-usdt">0 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">1</span><span class="lv-name">Базовый</span><span class="lv-days">11–30 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:30%"></div></div><span class="lv-pct">0.46%</span><span class="lv-usdt">~225 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">2</span><span class="lv-name">Продвинутый</span><span class="lv-days">31–80 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:50%"></div></div><span class="lv-pct">0.93%</span><span class="lv-usdt">~450 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">3</span><span class="lv-name">Эксперт</span><span class="lv-days">81–180 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:65%"></div></div><span class="lv-pct">1.23%</span><span class="lv-usdt">~600 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">4</span><span class="lv-name">Мастер</span><span class="lv-days">181–280 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:82%"></div></div><span class="lv-pct">1.39%</span><span class="lv-usdt">~675 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">5</span><span class="lv-name">Элита</span><span class="lv-days">281+ дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">1.54%</span><span class="lv-usdt">~750 ₽</span></div>
+        <div class="lvl-row boss"><span class="lv-n">★</span><span class="lv-name">FIXED БОСС</span><span class="lv-days">С 1-го дня</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">2.16%</span><span class="lv-usdt" style="color:var(--accent)">~1 050 ₽</span></div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- ЦИФРЫ -->
+      <section class="ab-sec" id="numbers">
+        <div class="sec-label">Цифры</div>
+        <div class="sec-title">Честная статистика</div>
+        <p class="sec-body">Все расчёты по базовой цене бокса 649 ₽ — худший расклад.</p>
+        <div class="num-grid">
+          <div class="num-card"><div class="num-val">20 000 ₽</div><div class="num-lbl">Цена 1 NFT-ячейки</div><div class="num-sub">1 ячейка = 1 автомат</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">~19</span> мес</div><div class="num-lbl">Окупаемость Fixed</div><div class="num-sub">При 75 продаж / мес</div></div>
+          <div class="num-card"><div class="num-val">21 000 ₽</div><div class="num-lbl">Доход Fixed за 20 мес</div><div class="num-sub">Худший сценарий</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">649</span> ₽</div><div class="num-lbl">Цена Lucky Box</div><div class="num-sub">База для расчётов</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">75</span> шт</div><div class="num-lbl">Продаж в месяц</div><div class="num-sub">Лето ~55, зима ~85</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">34.5</span>%</div><div class="num-lbl">Чистая прибыль с бокса</div><div class="num-sub">~224 ₽ с продажи</div></div>
+          <div class="num-card"><div class="num-val">400k+</div><div class="num-lbl">Посетителей ТЦ / мес</div><div class="num-sub">Триумф Молл, Саратов</div></div>
+          <div class="num-card"><div class="num-val">16 800 ₽</div><div class="num-lbl">Прибыль в месяц</div><div class="num-sub">С одного автомата</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">2</span>%</div><div class="num-lbl">Роялти с перепродажи</div><div class="num-sub">ERC-2981 · OpenSea</div></div>
+        </div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- DAO -->
+      <section class="ab-sec" id="dao">
+        <div class="sec-label">DAO — управление</div>
+        <div class="sec-title">NFT = ячейка + <span class="acc">право голоса</span></div>
+        <p class="sec-body">BoxDAO — настоящая децентрализованная организация. Каждый NFT даёт право голоса. Ни владелец, ни инвесторы не могут продавить решение в одиночку.</p>
+        <div class="dao-bar">
+          <div class="dao-o">Владелец · 10 · 50%</div>
+          <div class="dao-i">Инвесторы · 10 · 50%</div>
+        </div>
+        <div class="dao-legend">
+          <div class="dao-leg"><div class="dao-dot" style="background:var(--accent)"></div>Владелец — 10 NFT (50%)</div>
+          <div class="dao-leg"><div class="dao-dot" style="background:var(--border-hi)"></div>Инвесторы — 10 NFT (50%)</div>
+        </div>
+        <ul class="dao-rules">
+          <li>1 NFT = 1 голос — у кого 2 NFT, у того 2 голоса</li>
+          <li>Порог принятия решения: 51% = минимум 11 голосов</li>
+          <li>Владелец один не может принять решение</li>
+          <li>Инвесторы без владельца тоже не могут</li>
+        </ul>
+        <div class="vote-title">Что выносят на голосование</div>
+        <div class="vote-grid">
+          <div class="vote-item"><strong>Ставки уровней Flexible</strong><span>Изменение процентов на каждом уровне</span></div>
+          <div class="vote-item"><strong>Добавление нового уровня</strong><span>Расширение системы прогрессии</span></div>
+          <div class="vote-item"><strong>Период стейкинга</strong><span>Изменение блокировки Fixed или сроков Flexible</span></div>
+          <div class="vote-item"><strong>Условия новых коллекций</strong><span>Параметры следующих автоматов</span></div>
+          <div class="vote-item"><strong>Любые параметры контракта</strong><span>Полное управление проектом</span></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/water.js"></script>
+  <script src="js/brand-cube.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    (function () {
+      /* ── 1. Scroll fade-in ── */
+      var fadeObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('in');
+            fadeObs.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.06, rootMargin: '0px 0px -28px 0px' });
+
+      function staggerGroup(containerSel, childSel) {
+        document.querySelectorAll(containerSel).forEach(function (wrap) {
+          (childSel ? wrap.querySelectorAll(childSel) : [wrap]).forEach(function (el, i) {
+            el.setAttribute('data-fade', '');
+            if (i > 0) el.setAttribute('data-d', Math.min(i, 5).toString());
+            fadeObs.observe(el);
+          });
+        });
+      }
+
+      staggerGroup('.ab-sec');
+      staggerGroup('.pills',    '.pill');
+      staggerGroup('.steps',    '.step');
+      staggerGroup('.stk-grid', '.stk-card');
+      staggerGroup('.num-grid', '.num-card');
+      staggerGroup('.vote-grid','.vote-item');
+      staggerGroup('.dao-rules','li');
+      document.querySelectorAll('.dao-bar, .dao-legend, .vote-title, .lvl-head').forEach(function (el) {
+        el.setAttribute('data-fade', '');
+        fadeObs.observe(el);
+      });
+
+      /* ── 2. Прогресс-бары ── */
+      document.querySelectorAll('.lv-bar').forEach(function (bar) {
+        var w = bar.style.width || '0%';
+        bar.style.setProperty('--bar-target', w);
+        bar.style.removeProperty('width');
+      });
+
+      var barsObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            document.querySelectorAll('.lv-bar').forEach(function (bar, i) {
+              setTimeout(function () { bar.classList.add('in'); }, i * 110);
+            });
+            barsObs.disconnect();
+          }
+        });
+      }, { threshold: 0.2 });
+
+      var lvSec = document.getElementById('levels');
+      if (lvSec) barsObs.observe(lvSec);
+    })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,74 @@
+/* =========================================================================
+   base.css — сброс стилей, базовая типографика
+   Фон заменён на анимацию water.js (canvas, z-index:-2).
+   ========================================================================= */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  font-family: var(--font-body);
+  color: var(--text);
+  /* Фон — сплошной цвет, видный пока water.js не загрузится */
+  background-color: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Тёмный оверлей над water-canvas (z:-2), под контентом.
+   Снижена непрозрачность vs оригинала — чтобы вода просвечивала. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(7, 117, 13, 0.09), transparent 60%),
+    linear-gradient(180deg, rgba(10, 10, 12, 0.62), rgba(10, 10, 12, 0.76));
+}
+
+/* ── Типографика ── */
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: #fff;
+}
+
+p { line-height: 1.65; color: var(--text-dim); }
+
+a { color: inherit; text-decoration: none; }
+
+img { display: block; max-width: 100%; }
+
+::selection {
+  background: var(--accent-glow);
+  color: var(--text);
+}
+
+/* Контейнер */
+.container {
+  width: 100%;
+  max-width: var(--maxw);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Eyebrow / технический лейбл */
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}

@@ -1,0 +1,179 @@
+/* =========================================================================
+   components.css — переиспользуемые UI-компоненты BoxDAO
+   Кнопки: shimmer-sweep (::before), ripple (JS-span), glow-pulse, hover-lift.
+   ========================================================================= */
+
+/* ═══════════════════════════════════════
+   КНОПКИ
+═══════════════════════════════════════ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+
+  /* Нужны для shimmer и ripple */
+  position: relative;
+  overflow: hidden;
+
+  transition:
+    transform  0.22s cubic-bezier(0.23, 1, 0.32, 1),
+    box-shadow 0.22s cubic-bezier(0.23, 1, 0.32, 1),
+    background 0.22s ease,
+    border-color 0.22s ease,
+    color 0.22s ease;
+
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+/* ── Shimmer: полоса блика скользит при наведении ── */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -120%;
+  width: 65%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.11) 50%,
+    transparent 100%
+  );
+  transform: skewX(-20deg);
+  transition: left 0.65s ease;
+  pointer-events: none;
+}
+.btn:hover::before { left: 155%; }
+
+/* ── Ripple: JS добавляет .btn-ripple-fx на клик ── */
+.btn-ripple-fx {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.22);
+  transform: scale(0);
+  animation: ripplePop 0.65s ease-out forwards;
+  pointer-events: none;
+}
+@keyframes ripplePop {
+  to { transform: scale(1); opacity: 0; }
+}
+
+/* ── Основная (янтарь) ── */
+.btn-primary {
+  background: var(--accent);
+  color: rgba(255,255,255,0.92);
+  animation: btnGlow 3.5s ease-in-out infinite;
+}
+.btn-primary:hover {
+  animation: none;
+  background: var(--accent-soft);
+  box-shadow: 0 6px 28px rgba(7, 117, 13, 0.40), 0 2px 8px rgba(0,0,0,0.30);
+  transform: translateY(-2px);
+}
+.btn-primary:active {
+  animation: none;
+  transform: translateY(0) scale(0.97);
+  box-shadow: 0 2px 12px rgba(7, 117, 13, 0.28);
+}
+@keyframes btnGlow {
+  0%, 100% { box-shadow: 0 0 0 0    rgba(7, 117, 13, 0.00); }
+  50%       { box-shadow: 0 0 22px 3px rgba(7, 117, 13, 0.28); }
+}
+
+/* ── Контурная ── */
+.btn-outline {
+  background: transparent;
+  border-color: var(--border-hi);
+  color: var(--text);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px rgba(7, 117, 13, 0.18);
+  transform: translateY(-1px);
+}
+.btn-outline:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* ── Кошелёк (шапка) ── */
+.btn-wallet {
+  background: transparent;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  font-size: 13px;
+  padding: 7px 14px;
+}
+.btn-wallet:hover {
+  background: var(--accent-glow);
+  box-shadow: 0 0 14px rgba(7, 117, 13, 0.25);
+  transform: translateY(-1px);
+}
+.btn-wallet:active {
+  transform: scale(0.97);
+}
+
+/* ═══════════════════════════════════════
+   КАРТОЧКИ
+═══════════════════════════════════════ */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  transition: var(--t);
+}
+.card:hover {
+  background: var(--surface-hi);
+  border-color: var(--border-hi);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow);
+}
+.card h3 { font-size: 20px; margin-bottom: 10px; }
+.card p  { font-size: 15px; }
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+/* ═══════════════════════════════════════
+   МОДАЛКА (заглушка кошелька)
+═══════════════════════════════════════ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: fadeUp 0.2s ease;
+}
+.modal-overlay.open { display: flex; }
+
+.modal {
+  width: min(420px, 90vw);
+  background: var(--bg-soft);
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+.modal .eyebrow { display: block; margin-bottom: 14px; }
+.modal h3 { font-size: 22px; margin-bottom: 10px; }
+.modal p  { font-size: 15px; margin-bottom: 24px; }
+.modal .btn { width: 100%; justify-content: center; }

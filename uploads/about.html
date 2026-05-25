@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BoxDAO — О проекте</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{--bg:#090b12;--accent:#7B5CF5;--green:#B8FF3C;--text:#E8EAF6;--muted:#6B7280;--border:rgba(123,92,245,0.15);--sidebar:220px;--header:64px;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--text);font-family:"Syne",sans-serif;overflow-x:hidden;}
+header{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:var(--header);border-bottom:0.5px solid var(--border);backdrop-filter:blur(20px);background:rgba(9,11,18,0.92);}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--text);}
+.logo-text{font-size:17px;font-weight:700;letter-spacing:.05em;}
+.hdr-nav{display:flex;align-items:center;gap:2rem;position:absolute;left:50%;transform:translateX(-50%);}
+.hdr-nav a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;letter-spacing:.04em;transition:color .2s;}
+.hdr-nav a:hover,.hdr-nav a.active{color:var(--text);}
+.hdr-right{display:flex;align-items:center;gap:10px;}
+.lang{display:flex;background:rgba(255,255,255,.04);border:.5px solid var(--border);border-radius:6px;overflow:hidden;font-size:11px;font-weight:700;}
+.lang span{padding:5px 10px;cursor:pointer;color:var(--muted);}
+.lang span.on{background:rgba(123,92,245,.2);color:var(--accent);}
+.btn-w{display:flex;align-items:center;gap:7px;background:transparent;border:.5px solid var(--accent);border-radius:8px;padding:6px 14px;font-family:"Syne",sans-serif;font-size:12px;font-weight:600;color:var(--accent);cursor:pointer;transition:all .2s;}
+.btn-w:hover{background:rgba(123,92,245,.1);}
+.btn-p{width:32px;height:32px;border-radius:7px;background:rgba(255,255,255,.05);border:.5px solid var(--border);display:flex;align-items:center;justify-content:center;cursor:pointer;}
+.layout{display:flex;margin-top:var(--header);min-height:calc(100vh - var(--header));}
+.sidebar{width:var(--sidebar);flex-shrink:0;position:fixed;top:var(--header);left:0;bottom:0;border-right:0.5px solid var(--border);background:rgba(9,11,18,0.7);backdrop-filter:blur(16px);padding:2rem 0;display:flex;flex-direction:column;gap:2rem;}
+.sb-label{font-family:"Space Mono",monospace;font-size:9px;font-weight:700;color:var(--muted);letter-spacing:.2em;text-transform:uppercase;padding:0 1.4rem;margin-bottom:.6rem;}
+.sb-nav{display:flex;flex-direction:column;gap:2px;}
+.sb-nav a{display:flex;align-items:center;gap:10px;padding:8px 1.4rem;font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .18s;}
+.sb-nav a:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.sb-nav a.active{color:var(--text);border-left-color:var(--accent);background:rgba(123,92,245,.07);}
+.sb-dot{width:5px;height:5px;border-radius:50%;background:rgba(123,92,245,.3);flex-shrink:0;transition:background .18s;}
+.sb-nav a.active .sb-dot{background:var(--accent);}
+.main{margin-left:var(--sidebar);flex:1;padding:3.5rem 3.5rem 6rem;max-width:800px;}
+.sec{padding-top:4rem;}.sec:first-child{padding-top:0;}
+.sec-label{font-family:"Space Mono",monospace;font-size:10px;font-weight:700;color:var(--green);letter-spacing:.2em;text-transform:uppercase;margin-bottom:10px;}
+.sec-title{font-size:clamp(24px,3.2vw,40px);font-weight:800;letter-spacing:-.02em;color:#fff;line-height:1.05;}
+.sec-title .acc{color:var(--accent);}.sec-title .grn{color:var(--green);}
+.sec-body{font-size:15px;line-height:1.8;color:var(--muted);margin-top:14px;}
+.divider{height:.5px;background:var(--border);margin:3.5rem 0;}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;}
+.pill{display:flex;align-items:center;gap:6px;background:rgba(123,92,245,.08);border:.5px solid rgba(123,92,245,.2);border-radius:100px;padding:5px 13px;font-size:12px;color:var(--text);}
+.pill .d{width:5px;height:5px;border-radius:50%;background:var(--accent);}
+.pill.g{background:rgba(184,255,60,.06);border-color:rgba(184,255,60,.2);}.pill.g .d{background:var(--green);}
+.steps{display:flex;flex-direction:column;gap:0;margin-top:24px;position:relative;}
+.steps::before{content:"";position:absolute;left:26px;top:32px;bottom:32px;width:1px;background:var(--border);}
+.step{display:flex;align-items:flex-start;gap:18px;padding:14px 0;}
+.step-icon{width:52px;height:52px;flex-shrink:0;border-radius:12px;background:rgba(123,92,245,.1);border:.5px solid rgba(123,92,245,.22);display:flex;align-items:center;justify-content:center;font-size:22px;position:relative;z-index:1;}
+.step-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.stk-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:24px;}
+.stk-card{border-radius:14px;padding:20px;border:.5px solid;}
+.stk-fixed{background:rgba(123,92,245,.07);border-color:rgba(123,92,245,.28);}
+.stk-flex{background:rgba(184,255,60,.04);border-color:rgba(184,255,60,.18);}
+.stk-badge{display:inline-flex;border-radius:100px;padding:3px 10px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;}
+.b-fixed{background:rgba(123,92,245,.18);color:var(--accent);}.b-flex{background:rgba(184,255,60,.12);color:var(--green);}
+.stk-name{font-size:16px;font-weight:800;color:#fff;margin-bottom:4px;}
+.stk-rate{font-family:"Space Mono",monospace;font-size:30px;font-weight:700;color:var(--accent);line-height:1;}
+.stk-rate.g{color:var(--green);}.stk-sub{font-size:11px;color:var(--muted);margin-top:3px;margin-bottom:12px;}
+.stk-list{list-style:none;display:flex;flex-direction:column;gap:6px;}
+.stk-list li{font-size:12px;color:var(--muted);display:flex;align-items:flex-start;gap:7px;}
+.stk-list li::before{content:"—";color:var(--accent);flex-shrink:0;}.stk-list.g li::before{color:var(--green);}
+.lvl-head{display:grid;grid-template-columns:28px 140px 120px 1fr 80px 100px;gap:10px;padding:6px 14px;font-size:9px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-family:"Space Mono",monospace;margin-top:24px;}
+.lvl-row{display:grid;grid-template-columns:28px 140px 120px 1fr 80px 100px;align-items:center;gap:10px;padding:11px 14px;border-radius:10px;border:.5px solid var(--border);background:rgba(255,255,255,.02);margin-top:6px;transition:background .2s;}
+.lvl-row:hover{background:rgba(123,92,245,.06);}.lvl-row.boss{border-color:rgba(184,255,60,.28);background:rgba(184,255,60,.04);}
+.lv-n{font-family:"Space Mono",monospace;font-size:10px;color:var(--muted);}
+.lv-name{font-size:13px;font-weight:700;color:var(--text);}
+.lv-days{font-size:11px;color:var(--muted);}
+.lv-bar-w{height:3px;background:rgba(255,255,255,.06);border-radius:2px;overflow:hidden;}
+.lv-bar{height:100%;border-radius:2px;background:var(--accent);}.lv-bar.g{background:var(--green);}
+.lv-pct{font-family:"Space Mono",monospace;font-size:11px;color:var(--accent);text-align:right;font-weight:700;}.lv-pct.g{color:var(--green);}
+.lv-usdt{font-size:11px;color:var(--muted);text-align:right;}
+.num-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:24px;}
+.num-card{background:rgba(255,255,255,.03);border:.5px solid var(--border);border-radius:12px;padding:16px 14px;}
+.num-val{font-family:"Space Mono",monospace;font-size:22px;font-weight:700;color:#fff;line-height:1;}
+.num-val .a{color:var(--accent);}.num-val .g{color:var(--green);}
+.num-lbl{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4;}
+.num-sub{font-size:10px;color:rgba(107,114,128,.5);margin-top:2px;}
+.dao-bar{display:flex;border-radius:10px;overflow:hidden;height:42px;margin-top:24px;}
+.dao-o{display:flex;align-items:center;justify-content:center;flex:10;background:rgba(123,92,245,.28);color:var(--accent);font-family:"Space Mono",monospace;font-size:11px;font-weight:700;}
+.dao-i{display:flex;align-items:center;justify-content:center;flex:10;background:rgba(184,255,60,.18);color:var(--green);font-family:"Space Mono",monospace;font-size:11px;font-weight:700;}
+.dao-legend{display:flex;gap:18px;margin-top:10px;}
+.dao-leg{display:flex;align-items:center;gap:7px;font-size:12px;color:var(--muted);}
+.dao-dot{width:8px;height:8px;border-radius:3px;}
+.dao-rules{list-style:none;display:flex;flex-direction:column;gap:8px;margin-top:18px;}
+.dao-rules li{font-size:13px;color:var(--muted);padding:10px 14px;background:rgba(255,255,255,.02);border-left:2px solid var(--accent);border-radius:0 8px 8px 0;}
+.vote-grid{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+.vote-title{font-size:13px;font-weight:700;color:var(--text);margin-top:24px;}
+.vote-item{padding:11px 14px;border:.5px solid var(--border);border-radius:10px;}
+.vote-item strong{color:var(--text);font-size:13px;display:block;margin-bottom:2px;}
+.vote-item span{font-size:12px;color:var(--muted);}
+footer{margin-left:var(--sidebar);padding:24px 3.5rem 48px;border-top:.5px solid var(--border);font-size:12px;color:var(--muted);}
+footer span{color:var(--accent);}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="index.html">
+    <canvas id="hdr-logo" width="44" height="44" style="width:44px;height:44px;display:block;flex-shrink:0;"></canvas>
+    <span class="logo-text">BoxDAO</span>
+  </a>
+  <nav class="hdr-nav">
+    <a href="index.html" id="nav-home">Главная</a>
+    <a href="about.html" id="nav-about">О проекте</a>
+    <a href="machines.html" id="nav-machines">Автоматы</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="lang"><span class="on">RU</span><span>EN</span></div>
+    <button class="btn-w">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M16 14h.01"/></svg>
+      Подключить кошелёк
+    </button>
+    <div class="btn-p">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2"><circle cx="12" cy="7" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+    </div>
+  </div>
+</header>
+<script>document.getElementById("nav-about").classList.add("active");</script>
+<div class="layout">
+  <aside class="sidebar">
+    <div>
+      <div class="sb-label">О проекте</div>
+      <nav class="sb-nav">
+        <a href="#idea" class="active"><span class="sb-dot"></span>Идея</a>
+        <a href="#mechanic"><span class="sb-dot"></span>Механика</a>
+        <a href="#staking"><span class="sb-dot"></span>Стейкинг</a>
+        <a href="#levels"><span class="sb-dot"></span>Уровни</a>
+        <a href="#numbers"><span class="sb-dot"></span>Цифры</a>
+        <a href="#dao"><span class="sb-dot"></span>DAO</a>
+      </nav>
+    </div>
+  </aside>
+  <main class="main">
+
+    <section class="sec" id="idea">
+      <div class="sec-label">Идея проекта</div>
+      <div class="sec-title">Совладение вендингом <span class="acc">через NFT</span></div>
+      <p class="sec-body">BoxDAO — платформа цифрового совладения вендинговыми автоматами. Каждый автомат продаёт Lucky Box — сюрприз-боксы с игрушками. Купи NFT-ячейку, положи в стейкинг — получай выплаты в USDT с каждой продажи бокса.</p>
+      <p class="sec-body">Первый автомат уже работает и окупился. Второй запускается по модели BoxDAO — 10 ячеек продаются инвесторам через NFT, 10 остаются владельцу.</p>
+      <div class="pills">
+        <div class="pill"><span class="d"></span>1 автомат = коллекция из 20 NFT</div>
+        <div class="pill"><span class="d"></span>NFT и стейкинг на Ethereum</div>
+        <div class="pill g"><span class="d"></span>Выплаты в USDT ежедневно</div>
+        <div class="pill g"><span class="d"></span>1 NFT = 1 голос в DAO</div>
+        <div class="pill"><span class="d"></span>Вход = подключение кошелька</div>
+        <div class="pill"><span class="d"></span>Роялти 2% с перепродажи OpenSea</div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="sec" id="mechanic">
+      <div class="sec-label">Механика</div>
+      <div class="sec-title">Как это работает</div>
+      <div class="steps">
+        <div class="step"><div class="step-icon">🎫</div><div><div class="step-title">Купил NFT</div><div class="step-desc">Покупаешь NFT-ячейку автомата на сайте или на OpenSea. Каждый NFT — доля в одном вендинговом автомате.</div></div></div>
+        <div class="step"><div class="step-icon">🔒</div><div><div class="step-title">Положил в стейкинг</div><div class="step-desc">Подключаешь кошелёк и выбираешь режим — Fixed (максимальный доход, блокировка 20 мес) или Flexible (вывести когда угодно).</div></div></div>
+        <div class="step"><div class="step-icon">📦</div><div><div class="step-title">Автомат продаёт боксы</div><div class="step-desc">Lucky Box продаётся в ТЦ Триумф Молл Саратов (400 000+ посетителей/мес). Парсер снимает данные ежедневно.</div></div></div>
+        <div class="step"><div class="step-icon">💵</div><div><div class="step-title">Получаешь USDT</div><div class="step-desc">Скрипт считает твою долю, конвертирует по курсу $/₽ и начисляет баланс. Выводи в любую сеть — ETH, Polygon, BNB, TON.</div></div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="sec" id="staking">
+      <div class="sec-label">Режимы стейкинга</div>
+      <div class="sec-title">Два способа зарабатывать</div>
+      <div class="stk-grid">
+        <div class="stk-card stk-fixed">
+          <div class="stk-badge b-fixed">⚡ Fixed — старт</div>
+          <div class="stk-name">Фиксированный</div>
+          <div class="stk-rate">2.16%</div>
+          <div class="stk-sub">от цены бокса · с первого дня</div>
+          <ul class="stk-list">
+            <li>Только первые 3 недели</li><li>Блокировка на 20 месяцев</li>
+            <li>Максимум сразу — без ожидания</li><li>~1 050₽ / мес при 75 продажах</li><li>Окупаемость ~19 месяцев ✅</li>
+          </ul>
+        </div>
+        <div class="stk-card stk-flex">
+          <div class="stk-badge b-flex">🔓 Flexible — всегда</div>
+          <div class="stk-name">Гибкий</div>
+          <div class="stk-rate g">1.54%</div>
+          <div class="stk-sub">максимум · уровень Элита</div>
+          <ul class="stk-list g">
+            <li>Доступен всегда</li><li>Вывести в любой момент</li>
+            <li>6 уровней — растёт со временем</li><li>~750₽ / мес на Элите</li><li>Окупаемость ~27 месяцев</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="sec" id="levels">
+      <div class="sec-label">Уровни Flexible</div>
+      <div class="sec-title">Чем дольше держишь — тем <span class="acc">выше доход</span></div>
+      <p class="sec-body">Начинаешь с нуля, поднимаешься по уровням. Fixed инвестор — сразу на максимуме, как босс.</p>
+      <div class="lvl-head"><span>#</span><span>Уровень</span><span>Дней</span><span>Прогресс</span><span>%</span><span>В месяц</span></div>
+      <div class="lvl-row"><span class="lv-n">0</span><span class="lv-name">🔒 Старт</span><span class="lv-days">0–10 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:0%"></div></div><span class="lv-pct">0%</span><span class="lv-usdt">0₽</span></div>
+      <div class="lvl-row"><span class="lv-n">1</span><span class="lv-name">Базовый</span><span class="lv-days">11–30 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:30%"></div></div><span class="lv-pct">0.46%</span><span class="lv-usdt">~225₽</span></div>
+      <div class="lvl-row"><span class="lv-n">2</span><span class="lv-name">Продвинутый</span><span class="lv-days">31–80 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:50%"></div></div><span class="lv-pct">0.93%</span><span class="lv-usdt">~450₽</span></div>
+      <div class="lvl-row"><span class="lv-n">3</span><span class="lv-name">Эксперт</span><span class="lv-days">81–180 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:65%"></div></div><span class="lv-pct">1.23%</span><span class="lv-usdt">~600₽</span></div>
+      <div class="lvl-row"><span class="lv-n">4</span><span class="lv-name">Мастер</span><span class="lv-days">181–280 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:82%"></div></div><span class="lv-pct">1.39%</span><span class="lv-usdt">~675₽</span></div>
+      <div class="lvl-row"><span class="lv-n">5</span><span class="lv-name">⚡ Элита</span><span class="lv-days">281+ дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">1.54%</span><span class="lv-usdt">~750₽</span></div>
+      <div class="lvl-row boss"><span class="lv-n">★</span><span class="lv-name" style="color:var(--green);">👑 FIXED БОСС</span><span class="lv-days">С 1-го дня</span><div class="lv-bar-w"><div class="lv-bar g" style="width:100%"></div></div><span class="lv-pct g">2.16%</span><span class="lv-usdt" style="color:var(--green);">~1 050₽</span></div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="sec" id="numbers">
+      <div class="sec-label">Цифры</div>
+      <div class="sec-title">Честная <span class="grn">статистика</span></div>
+      <p class="sec-body">Все расчёты по базовой цене бокса 649₽ — худший расклад.</p>
+      <div class="num-grid">
+        <div class="num-card"><div class="num-val"><span class="g">20 000</span>₽</div><div class="num-lbl">Цена 1 NFT-ячейки</div><div class="num-sub">1 ячейка = 1 автомат</div></div>
+        <div class="num-card"><div class="num-val"><span class="a">~19</span> мес</div><div class="num-lbl">Окупаемость Fixed</div><div class="num-sub">При 75 продаж / мес</div></div>
+        <div class="num-card"><div class="num-val"><span class="g">21 000</span>₽</div><div class="num-lbl">Доход Fixed за 20 мес</div><div class="num-sub">Худший сценарий ✅</div></div>
+        <div class="num-card"><div class="num-val"><span class="a">649</span>₽</div><div class="num-lbl">Цена Lucky Box</div><div class="num-sub">База для расчётов</div></div>
+        <div class="num-card"><div class="num-val"><span class="g">75</span> шт</div><div class="num-lbl">Продаж в месяц</div><div class="num-sub">Лето ~55, зима ~85</div></div>
+        <div class="num-card"><div class="num-val"><span class="a">34.5</span>%</div><div class="num-lbl">Чистая прибыль с бокса</div><div class="num-sub">~224₽ с продажи</div></div>
+        <div class="num-card"><div class="num-val"><span class="g">400k+</span></div><div class="num-lbl">Посетителей ТЦ / мес</div><div class="num-sub">Триумф Молл, Саратов</div></div>
+        <div class="num-card"><div class="num-val"><span class="a">16 800</span>₽</div><div class="num-lbl">Прибыль в месяц</div><div class="num-sub">С одного автомата</div></div>
+        <div class="num-card"><div class="num-val"><span class="g">2</span>%</div><div class="num-lbl">Роялти с перепродажи</div><div class="num-sub">ERC-2981 · OpenSea</div></div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <section class="sec" id="dao">
+      <div class="sec-label">DAO — управление</div>
+      <div class="sec-title">NFT = ячейка + <span class="acc">право голоса</span></div>
+      <p class="sec-body">BoxDAO — настоящая децентрализованная организация. Каждый NFT даёт право голоса. Ни владелец, ни инвесторы не могут продавить решение в одиночку.</p>
+      <div class="dao-bar"><div class="dao-o">Владелец · 10 · 50%</div><div class="dao-i">Инвесторы · 10 · 50%</div></div>
+      <div class="dao-legend">
+        <div class="dao-leg"><div class="dao-dot" style="background:var(--accent);"></div>Владелец — 10 NFT (50%)</div>
+        <div class="dao-leg"><div class="dao-dot" style="background:var(--green);"></div>Инвесторы — 10 NFT (50%)</div>
+      </div>
+      <ul class="dao-rules">
+        <li>1 NFT = 1 голос — у кого 2 NFT, у того 2 голоса</li>
+        <li>Порог принятия решения: 51% = минимум 11 голосов</li>
+        <li>Владелец один не может принять решение</li>
+        <li>Инвесторы без владельца тоже не могут</li>
+      </ul>
+      <div class="vote-title">Что выносят на голосование</div>
+      <div class="vote-grid">
+        <div class="vote-item"><strong>Ставки уровней Flexible</strong><span>Изменение процентов на каждом уровне</span></div>
+        <div class="vote-item"><strong>Добавление нового уровня</strong><span>Расширение системы прогрессии</span></div>
+        <div class="vote-item"><strong>Период стейкинга</strong><span>Изменение блокировки Fixed или сроков Flexible</span></div>
+        <div class="vote-item"><strong>Условия новых коллекций</strong><span>Параметры следующих автоматов</span></div>
+        <div class="vote-item"><strong>Любые параметры контракта</strong><span>Полное управление проектом</span></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+<footer>BoxDAO · 2026 · Ethereum Mainnet · <span>В разработке</span></footer>
+<script>
+const sections=document.querySelectorAll(".sec[id]");
+const links=document.querySelectorAll(".sb-nav a");
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){links.forEach(l=>l.classList.remove("active"));const a=document.querySelector(`.sb-nav a[href="#${e.target.id}"]`);if(a)a.classList.add("active");}});
+},{rootMargin:"-25% 0px -65% 0px"});
+sections.forEach(s=>io.observe(s));
+
+(function(){
+  const c = document.getElementById("hdr-logo");
+  if (!c) return;
+  const x = c.getContext("2d");
+  const S = 44, U = 9;
+  const CX = 20, CY = 26;
+  const A = Math.PI/6, CA = Math.cos(A), SA = Math.sin(A);
+  const PURPLE = "#7B5CF5", GREEN = "#B8FF3C";
+  function isoP(gx,gy,gz,oy){return[CX+(gx-gy)*U*CA, CY+(gx+gy)*U*SA-gz*U+(oy||0)];}
+  function face(pts,col,alpha,lw){
+    x.beginPath();x.moveTo(pts[0][0],pts[0][1]);
+    for(let i=1;i<pts.length;i++)x.lineTo(pts[i][0],pts[i][1]);
+    x.closePath();x.strokeStyle=col;x.lineWidth=lw||1;x.globalAlpha=alpha;x.stroke();x.globalAlpha=1;
+  }
+  function cube(gx,gy,gz,col,oy,lw,al){
+    oy=oy||0;
+    face([isoP(gx,gy,gz+1,oy),isoP(gx+1,gy,gz+1,oy),isoP(gx+1,gy+1,gz+1,oy),isoP(gx,gy+1,gz+1,oy)],col,al||0.9,lw);
+    face([isoP(gx,gy+1,gz+1,oy),isoP(gx,gy+1,gz,oy),isoP(gx+1,gy+1,gz,oy),isoP(gx+1,gy+1,gz+1,oy)],col,(al||0.9)*0.55,lw);
+    face([isoP(gx+1,gy,gz+1,oy),isoP(gx+1,gy,gz,oy),isoP(gx+1,gy+1,gz,oy),isoP(gx+1,gy+1,gz+1,oy)],col,(al||0.9)*0.7,lw);
+  }
+  const purples=[[0,1,0],[1,1,0],[0,0,0],[1,0,0],[0,1,1],[0,0,1],[1,1,1]];
+  let t=0;
+  function draw(){
+    x.clearRect(0,0,S,S);t+=0.03;
+    const gOy=Math.sin(t)*2.5;
+    for(const[gx,gy,gz]of purples)cube(gx,gy,gz,PURPLE,0,1,0.85);
+    cube(1,0,1,GREEN,gOy,1,0.95);
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+</script>
+</body>
+</html>
