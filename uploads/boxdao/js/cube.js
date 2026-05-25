@@ -127,15 +127,16 @@
     const t = (time || 0) / 1000;
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Автоматическое парение акцентного куба (вверх-вниз) */
-    const floatDY = Math.sin(t * 1.1) * 9;
+    /* Автоматическое скольжение акцентного куба (вбок) */
+    const floatDX = Math.sin(t * 1.1) * 14;
+    const floatDY = 0;
 
     /* Пружина акцентного куба (реакция на курсор) */
     const ac = cubes[ACCENT_IDX];
     const [acx, acy] = isoP(ac.gx + 0.5, ac.gy + 0.5, ac.gz + 0.5);
     /* Позиция куба с учётом флоата и пружины */
     const acScreenY = acy + floatDY + spring.dy;
-    const acScreenX = acx + spring.dx;
+    const acScreenX = acx + floatDX + spring.dx;
 
     const dx   = acScreenX - mouse.x;
     const dy   = acScreenY - mouse.y;
@@ -170,8 +171,8 @@
     for (const idx of drawOrder) {
       const c = cubes[idx];
       if (c.isAccent) {
-        /* Зелёный куб: флоат + пружина */
-        drawCube(c.gx, c.gy, c.gz, spring.dx, floatDY + spring.dy, true);
+        /* Зелёный куб: скольжение вбок + пружина */
+        drawCube(c.gx, c.gy, c.gz, floatDX + spring.dx, floatDY + spring.dy, true);
       } else {
         drawCube(c.gx, c.gy, c.gz, vib[idx].dx, vib[idx].dy, false);
       }
