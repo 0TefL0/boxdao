@@ -75,10 +75,10 @@ function t(key) {
    NAV CONFIG
 ══════════════════════════════════════════ */
 var NAV_KEYS = [
-  { href: 'index.html',   key: 'navHome'    },
-  { href: 'about.html',   key: 'navAbout'   },
-  { href: 'staking.html', key: 'navStaking' },
-  { href: 'dao.html',     key: 'navDao'     },
+  { href: './',          key: 'navHome'    },
+  { href: 'about',      key: 'navAbout'   },
+  { href: 'staking',    key: 'navStaking' },
+  { href: 'dao',        key: 'navDao'     },
 ];
 
 var FOOTER_ITEMS = [
@@ -88,7 +88,8 @@ var FOOTER_ITEMS = [
 
 function currentPage() {
   var p = window.location.pathname.split('/').pop();
-  return p === '' ? 'index.html' : p;
+  p = p.replace(/\.html$/, '');
+  return p === '' ? './' : p;
 }
 
 /* ══════════════════════════════════════════
@@ -104,7 +105,7 @@ function renderHeader() {
   }).join('');
 
   mount.innerHTML = '<header class="site-header">'
-    + '<a class="brand" href="index.html"><span class="brand-mark">' + PH.cube + '</span>Box<b>DAO</b></a>'
+    + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Box<b>DAO</b></a>'
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
     +   '<div class="lang">'
