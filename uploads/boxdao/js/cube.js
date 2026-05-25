@@ -127,8 +127,10 @@
     const t = (time || 0) / 1000;
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Автоматическое скольжение акцентного куба (вбок) */
-    const floatDX = Math.sin(t * 1.1) * 14;
+    /* Плавное скольжение: медленно, с замедлением на краях */
+    const raw     = Math.sin(t * 0.55);                          // медленный период ~11 сек
+    const eased   = Math.sign(raw) * Math.pow(Math.abs(raw), 0.55); // замедление в центре → чёткие края
+    const floatDX = eased * 16;
     const floatDY = 0;
 
     /* Пружина акцентного куба (реакция на курсор) */
@@ -150,9 +152,9 @@
       spring.vx += ((dx / len + bx) / blen) * force;
       spring.vy += ((dy / len + by) / blen) * force;
     }
-    spring.vx += -spring.dx * 0.07;
-    spring.vy += -spring.dy * 0.07;
-    spring.vx *= 0.80; spring.vy *= 0.80;
+    spring.vx += -spring.dx * 0.045;
+    spring.vy += -spring.dy * 0.045;
+    spring.vx *= 0.88; spring.vy *= 0.88;
     spring.dx += spring.vx; spring.dy += spring.vy;
 
     /* Вибрации остальных кубов */
