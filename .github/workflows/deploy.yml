@@ -13,8 +13,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Deploy site to gh-pages branch
         run: |
@@ -26,7 +24,7 @@ jobs:
           cp index.html about.html dao.html cabinet.html .nojekyll /tmp/site/
           cp -r css js assets /tmp/site/
 
-          # Switch to gh-pages branch
+          # Fetch gh-pages branch
           git fetch origin gh-pages
           git checkout gh-pages
 
