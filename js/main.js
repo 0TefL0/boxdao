@@ -25,6 +25,7 @@ var PH = {
   telegramLogo: phF('<path d="M228,26.07,25.85,105.8a12,12,0,0,0,1.68,22.9L76,141.25V200a12,12,0,0,0,21.6,7.2L125,170l52.22,37.28A12,12,0,0,0,196,197.49L240,37.49A12,12,0,0,0,228,26.07ZM98.41,176.55V151.52l16.55,11.82ZM182.8,186.46l-83.8-59.81L221.71,53.26Z"/>'),
   githubLogo:  phF('<path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24,40,40,0,0,0-40-40,8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48,8,8,0,0,0,1.1-7.69,43.81,43.81,0,0,1,2-37.86,43.94,43.94,0,0,1,32.91,22.2,8,8,0,0,0,6.83,3.83h26.34a8,8,0,0,0,6.83-3.83,43.94,43.94,0,0,1,32.91-22.2,43.81,43.81,0,0,1,2,37.86,8,8,0,0,0,1.1,7.69A41.74,41.74,0,0,1,200,104Z"/>'),
   check: phS('<polyline points="40,136 96,192 216,72"/>'),
+  globe: phS('<circle cx="128" cy="128" r="96"/><line x1="128" y1="32" x2="128" y2="224"/><ellipse cx="128" cy="128" rx="44" ry="96"/><line x1="32" y1="128" x2="224" y2="128"/><path d="M59,96H197"/><path d="M59,160H197"/>'),
 };
 
 /* ══════════════════════════════════════════
@@ -108,10 +109,9 @@ function renderHeader() {
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
     +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
-    +   '<div class="lang">'
-    +     '<button class="' + (LANG === 'ru' ? 'on' : '') + '" data-lang="ru">RU</button>'
-    +     '<button class="' + (LANG === 'en' ? 'on' : '') + '" data-lang="en">EN</button>'
-    +   '</div>'
+    +   '<button class="lang-globe" id="lang-toggle" title="Switch language">'
+    +     PH.globe + '<span class="lang-code">' + LANG.toUpperCase() + '</span>'
+    +   '</button>'
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'
     +   '</button>'
@@ -141,10 +141,9 @@ function renderMobileNav() {
   div.innerHTML = navHTML
     + '<div class="mobile-nav-footer">'
     +   '<button class="btn btn-primary" id="mobile-connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
-    +   '<div class="lang">'
-    +     '<button class="' + (LANG === 'ru' ? 'on' : '') + '" data-lang="ru">RU</button>'
-    +     '<button class="' + (LANG === 'en' ? 'on' : '') + '" data-lang="en">EN</button>'
-    +   '</div>'
+    +   '<button class="lang-globe lang-globe--mobile" id="mobile-lang-toggle">'
+    +     PH.globe + '<span class="lang-code">' + LANG.toUpperCase() + '</span>'
+    +   '</button>'
     + '</div>';
 
   document.body.appendChild(div);
@@ -244,23 +243,23 @@ function setupWalletModal() {
 /* ══════════════════════════════════════════
    ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА
 ══════════════════════════════════════════ */
-function setupLangToggle() {
-  document.querySelectorAll('.lang button').forEach(function (btn) {
-    btn.addEventListener('click', function () {
-      if (btn.dataset.lang === LANG) return;
-      LANG = btn.dataset.lang;
-      localStorage.setItem('boxdao_lang', LANG);
+function switchLang() {
+  LANG = LANG === 'ru' ? 'en' : 'ru';
+  localStorage.setItem('boxdao_lang', LANG);
+  closeMobileNav();
+  renderHeader();
+  if (typeof window.initBrandCube === 'function') window.initBrandCube();
+  renderFooter();
+  setupWalletModal();
+  setupLangToggle();
+  setupButtonRipple();
+}
 
-      /* Перерендерить всё */
-      closeMobileNav();
-      renderHeader();
-      if (typeof window.initBrandCube === 'function') window.initBrandCube();
-      renderFooter();
-      setupWalletModal();
-      setupLangToggle();  /* переподвязать на новые кнопки */
-      setupButtonRipple();
-    });
-  });
+function setupLangToggle() {
+  var btn  = document.getElementById('lang-toggle');
+  var btnM = document.getElementById('mobile-lang-toggle');
+  if (btn)  btn.addEventListener('click', switchLang);
+  if (btnM) btnM.addEventListener('click', switchLang);
 }
 
 /* ══════════════════════════════════════════
