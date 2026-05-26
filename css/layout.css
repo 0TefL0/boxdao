@@ -207,9 +207,10 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: 20px;
-  padding-block: 10px;
+  padding-block: 6px;
+  padding-inline: var(--gutter);
 }
 .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
 .footer-links a {
