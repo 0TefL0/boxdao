@@ -21,6 +21,7 @@ var PH = {
   cube: phS('<polygon points="128,24 224,72 224,184 128,232 32,184 32,72"/><line x1="128" y1="24" x2="128" y2="128"/><line x1="32" y1="72" x2="128" y2="128"/><line x1="224" y1="72" x2="128" y2="128"/>'),
   wallet: phM('<path d="M40,64A16,16,0,0,1,56,48H192" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><path d="M40,64V192a16,16,0,0,0,16,16H216a8,8,0,0,0,8-8V88a8,8,0,0,0-8-8H56A16,16,0,0,1,40,64Z" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><circle cx="180" cy="140" r="10" fill="currentColor"/>'),
   xLogo:       phF('<polygon points="96,32 128,104 160,32 224,96 152,128 224,160 160,224 128,152 96,224 32,160 104,128 32,96"/>'),
+  tiktokLogo:  phF('<path d="M224,72a48.05,48.05,0,0,1-48-48,8,8,0,0,0-8-8H120a8,8,0,0,0-8,8V156a20,20,0,1,1-28.57-18.08A8,8,0,0,0,88,130V88a8,8,0,0,0-8.94-7.94C50.91,83.9,24,109.39,24,143a88,88,0,0,0,176,0V80a8,8,0,0,0-8-8Z"/>'),
   discordLogo: phM('<path d="M90,68A120,120,0,0,0,32,136v36a16,16,0,0,0,16,16H60l10,20a56,56,0,0,0,116,0l10-20h12a16,16,0,0,0,16-16V136A120,120,0,0,0,166,68" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/><line x1="90" y1="68" x2="76" y2="44" stroke="currentColor" stroke-width="16" stroke-linecap="round" fill="none"/><line x1="166" y1="68" x2="180" y2="44" stroke="currentColor" stroke-width="16" stroke-linecap="round" fill="none"/><circle cx="100" cy="144" r="14" fill="currentColor"/><circle cx="156" cy="144" r="14" fill="currentColor"/>'),
   telegramLogo: phF('<path d="M228,26.07,25.85,105.8a12,12,0,0,0,1.68,22.9L76,141.25V200a12,12,0,0,0,21.6,7.2L125,170l52.22,37.28A12,12,0,0,0,196,197.49L240,37.49A12,12,0,0,0,228,26.07ZM98.41,176.55V151.52l16.55,11.82ZM182.8,186.46l-83.8-59.81L221.71,53.26Z"/>'),
   githubLogo:  phF('<path d="M208.31,75.68A59.78,59.78,0,0,0,202.93,28,8,8,0,0,0,196,24a59.75,59.75,0,0,0-48,24H124A59.75,59.75,0,0,0,76,24a8,8,0,0,0-6.93,4,59.78,59.78,0,0,0-5.38,47.68A58.14,58.14,0,0,0,56,104v8a56.06,56.06,0,0,0,48.44,55.47A39.8,39.8,0,0,0,96,192v8H72a24,24,0,0,1-24-24,40,40,0,0,0-40-40,8,8,0,0,0,0,16,24,24,0,0,1,24,24,40,40,0,0,0,40,40H96v16a8,8,0,0,0,16,0V192a24,24,0,0,1,48,0v40a8,8,0,0,0,16,0V192a39.8,39.8,0,0,0-8.44-24.53A56.06,56.06,0,0,0,216,112v-8A58.14,58.14,0,0,0,208.31,75.68ZM200,112a40,40,0,0,1-40,40H112a40,40,0,0,1-40-40v-8a41.74,41.74,0,0,1,6.9-22.48,8,8,0,0,0,1.1-7.69,43.81,43.81,0,0,1,2-37.86,43.94,43.94,0,0,1,32.91,22.2,8,8,0,0,0,6.83,3.83h26.34a8,8,0,0,0,6.83-3.83,43.94,43.94,0,0,1,32.91-22.2,43.81,43.81,0,0,1,2,37.86,8,8,0,0,0,1.1,7.69A41.74,41.74,0,0,1,200,104Z"/>'),
@@ -49,6 +50,7 @@ var T = {
     socialDiscord: 'Discord',
     socialTg:      'Telegram',
     socialGh:      'GitHub',
+    socialTk:      'TikTok',
   },
   en: {
     navHome:       'Home',
@@ -65,6 +67,7 @@ var T = {
     socialDiscord: 'Discord',
     socialTg:      'Telegram',
     socialGh:      'GitHub',
+    socialTk:      'TikTok',
   }
 };
 
@@ -82,8 +85,9 @@ var NAV_KEYS = [
 ];
 
 var FOOTER_ITEMS = [
-  { href: '#', key: 'socialX',  icon: PH.xLogo       },
-  { href: '#', key: 'socialTg', icon: PH.telegramLogo },
+  { href: 'https://x.com/boxdaoorg',                key: 'socialX',  icon: PH.xLogo       },
+  { href: 'https://t.me/boxdaoorg',                 key: 'socialTg', icon: PH.telegramLogo },
+  { href: 'https://www.tiktok.com/@boxdao.org',     key: 'socialTk', icon: PH.tiktokLogo  },
 ];
 
 function currentPage() {
@@ -199,7 +203,7 @@ function renderFooter() {
   if (!mount) return;
 
   var links = FOOTER_ITEMS.map(function (l) {
-    return '<a href="' + l.href + '">' + l.icon + t(l.key) + '</a>';
+    return '<a href="' + l.href + '" target="_blank" rel="noopener noreferrer">' + l.icon + t(l.key) + '</a>';
   }).join('');
 
   mount.innerHTML = '<footer class="site-footer">'
