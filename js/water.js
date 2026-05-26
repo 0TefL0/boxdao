@@ -17,7 +17,8 @@
   var loader = document.createElement('div');
   loader.style.cssText = [
     'position:fixed','inset:0',
-    'background:#0a0a0c',
+    'background:#0a0a0c center/cover no-repeat',
+    'background-image:url(assets/img/background.jpg)',
     'z-index:9999',
     'transition:opacity 0.9s ease',
     'pointer-events:none',
@@ -159,7 +160,7 @@
     addRipple(
       Math.floor(e.clientX / SCALE),
       Math.floor(e.clientY / SCALE),
-      1, 1.2
+      1, 1.5
     );
   });
   document.addEventListener('click', function (e) {
