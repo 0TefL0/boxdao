@@ -36,21 +36,32 @@
   const isGL2 = typeof WebGL2RenderingContext !== 'undefined'
              && gl instanceof WebGL2RenderingContext;
 
-  /* Floating-point texture negotiation */
+  /* Floating-point texture negotiation + render-to-float check */
   let intFmt, texFmt, texType;
+  let ready = false;
+
   if (isGL2) {
-    intFmt  = gl.RGBA16F;
-    texFmt  = gl.RGBA;
-    texType = gl.HALF_FLOAT;
-  } else {
-    const hf = gl.getExtension('OES_texture_half_float');
-    gl.getExtension('OES_texture_half_float_linear');
-    const fl = !hf && gl.getExtension('OES_texture_float');
-    if (!hf) gl.getExtension('OES_texture_float_linear');
-    if      (hf) { intFmt = gl.RGBA; texFmt = gl.RGBA; texType = hf.HALF_FLOAT_OES; }
-    else if (fl) { intFmt = gl.RGBA; texFmt = gl.RGBA; texType = gl.FLOAT; }
-    else         { return; } // нет поддержки float текстур
+    /* WebGL2: нужно расширение для рендера в float-буфер */
+    if (gl.getExtension('EXT_color_buffer_float') ||
+        gl.getExtension('EXT_color_buffer_half_float')) {
+      intFmt  = gl.RGBA16F;
+      texFmt  = gl.RGBA;
+      texType = gl.HALF_FLOAT;
+      ready   = true;
+    }
   }
+
+  if (!ready) {
+    /* WebGL1 fallback */
+    const hf = gl.getExtension('OES_texture_half_float');
+    if (hf) gl.getExtension('OES_texture_half_float_linear');
+    const fl = !hf && gl.getExtension('OES_texture_float');
+    if (fl) gl.getExtension('OES_texture_float_linear');
+    if      (hf) { intFmt = gl.RGBA; texFmt = gl.RGBA; texType = hf.HALF_FLOAT_OES; ready = true; }
+    else if (fl) { intFmt = gl.RGBA; texFmt = gl.RGBA; texType = gl.FLOAT;           ready = true; }
+  }
+
+  if (!ready) return; // нет поддержки float текстур — выходим
 
   /* ── VERTEX SHADER (общий) ── */
   const VS = `\
@@ -184,7 +195,9 @@ void main(){
     gl.bindFramebuffer(gl.FRAMEBUFFER, fb);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0,
                             gl.TEXTURE_2D, tex, 0);
+    const ok = gl.checkFramebufferStatus(gl.FRAMEBUFFER) === gl.FRAMEBUFFER_COMPLETE;
     gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+    if (!ok) { gl.deleteFramebuffer(fb); return null; }
     return fb;
   }
 
@@ -200,6 +213,7 @@ void main(){
     texB = mkSimTex(SW, SH);
     fboA = mkFBO(texA);
     fboB = mkFBO(texB);
+    if (!fboA || !fboB) return; // FBO не поддерживается — тихо выходим
     ping = true;
     if (bgImg.complete && bgImg.naturalWidth) uploadBg();
   }
