@@ -1,130 +1,65 @@
 /* =========================================================================
-   water.js — видео-фон + оригинальная height-map симуляция воды
-   • Симуляция 1:1 как в оригинале (три буфера, DAMPING, rain)
-   • Рендер — shimmer поверх видео вместо рефракции background.jpg
-   • Чувствительность мыши снижена
+   water.js — интерактивный анимированный фон (имитация воды)
+   --------------------------------------------------------------------------
+   • Height-map симуляция на сетке SCALE раз меньше вьюпорта.
+   • Мышь создаёт рябь, клик — большую волну.
+   • Фоновое изображение (background.jpg) преломляется через нормали воды
+     (эффект refraction), придавая реалистичное ощущение движения воды.
+   • Янтарные блики на гребнях волн — акцент проекта.
    ========================================================================= */
 (function () {
   'use strict';
 
   /* ── CONFIG ── */
-  var SCALE   = 3;
-  var DAMPING = 0.988;
+  const SCALE   = 3;     /* разрешение = viewport / SCALE */
+  const DAMPING = 0.988; /* затухание (1 = бесконечно, 0 = мгновенно) */
+  const REFRACT = 3.2;   /* сила преломления (пиксели сетки) */
+  const DARK    = 0.42;  /* затемнение фона (0 = чёрный, 1 = оригинал) */
+  const AMBER = [7, 117, 13];
 
-  /* ══════════════════════════════
-     1. PRELOADER
-  ══════════════════════════════ */
-  var loader = document.createElement('div');
-  loader.style.cssText = [
-    'position:fixed','inset:0',
-    'background:#0a0a0c',
-    'z-index:9999',
-    'transition:opacity 0.9s ease',
-    'pointer-events:none',
-  ].join(';');
-  document.body.appendChild(loader);
-
-  function hideLoader() {
-    if (!loader.parentNode) return;
-    loader.style.opacity = '0';
-    setTimeout(function () { if (loader.parentNode) loader.remove(); }, 950);
-  }
-  var loaderFallback = setTimeout(hideLoader, 6000);
-
-  /* ══════════════════════════════
-     2. ВИДЕО × 2 — плавный loop
-  ══════════════════════════════ */
-  var FADE_BEFORE = 1.4;
-  var FADE_MS     = 1200;
-
-  function makeVideo(op) {
-    var v = document.createElement('video');
-    v.src         = 'assets/bg.mp4';
-    v.muted       = true;
-    v.playsInline = true;
-    v.setAttribute('playsinline', '');
-    v.preload     = 'auto';
-    v.style.cssText = [
-      'position:fixed','inset:0',
-      'width:100%','height:100%',
-      'object-fit:cover',
-      'transform:rotate(180deg)',
-      'background:#0a0a0c',
-      'z-index:-2',
-      'pointer-events:none',
-      'opacity:' + (op || 0),
-      'transition:opacity ' + (FADE_MS / 1000) + 's ease',
-    ].join(';');
-    document.body.appendChild(v);
-    return v;
-  }
-
-  var va = makeVideo(0), vb = makeVideo(0);
-  var active = va, standby = vb, crossing = false;
-
-  function crossfade() {
-    if (crossing) return;
-    crossing = true;
-    standby.currentTime = 0;
-    standby.play().catch(function(){});
-    active.style.opacity  = '0';
-    standby.style.opacity = '1';
-    setTimeout(function () {
-      active.pause();
-      var tmp = active; active = standby; standby = tmp;
-      crossing = false;
-    }, FADE_MS);
-  }
-
-  function onTimeUpdate() {
-    if (this !== active || !this.duration || this.duration === Infinity) return;
-    if ((this.duration - this.currentTime) <= FADE_BEFORE) crossfade();
-  }
-  va.addEventListener('timeupdate', onTimeUpdate);
-  vb.addEventListener('timeupdate', onTimeUpdate);
-
-  va.addEventListener('canplaythrough', function () {
-    clearTimeout(loaderFallback);
-    va.play().then(function () { va.style.opacity = '1'; hideLoader(); }).catch(hideLoader);
-  }, { once: true });
-  if (va.readyState >= 4) {
-    clearTimeout(loaderFallback);
-    va.play().then(function () { va.style.opacity = '1'; hideLoader(); }).catch(hideLoader);
-  }
-
-  /* ══════════════════════════════
-     3. WATER SIMULATION (оригинал)
-  ══════════════════════════════ */
+  /* ── STATE ── */
   var W, H, len;
-  var cur, prev, nxt;
-  var imgData, pix;
+  var cur, prev, nxt; /* три буфера высот */
+  var imgData, pix;   /* пиксельный вывод */
+  var bgPix  = null;  /* пиксели фона при текущем разрешении */
+  var bgImg  = null;  /* исходное изображение (нужно при ресайзе) */
 
-  /* Display canvas — поверх видео, прозрачный */
+  /* ── CANVASES ── */
+
+  /* Основной: фиксированный, на весь вьюпорт */
   var display = document.createElement('canvas');
+  display.id = 'water-canvas';
   display.style.cssText = [
-    'position:fixed','top:0','left:0',
-    'width:100%','height:100%',
-    'z-index:-1','pointer-events:none',
+    'position:fixed', 'top:0', 'left:0',
+    'width:100%', 'height:100%',
+    'z-index:-2', 'pointer-events:none'
   ].join(';');
-  document.body.appendChild(display);
+  document.body.prepend(display);
   var dCtx = display.getContext('2d');
 
-  /* Sim canvas — рабочий, маленький */
+  /* Симуляционный: рабочий холст разрешения W×H */
   var sim  = document.createElement('canvas');
   var sCtx = sim.getContext('2d', { willReadFrequently: true });
 
+  /* Фоновый: хранит background.jpg в масштабе симуляции */
+  var bgCvs = document.createElement('canvas');
+  var bgCx  = bgCvs.getContext('2d');
+
+  /* ── RESIZE ── */
   function resize() {
     display.width  = window.innerWidth;
     display.height = window.innerHeight;
+
+    /* Сглаживание при масштабировании пиксельного буфера */
     dCtx.imageSmoothingEnabled = true;
     dCtx.imageSmoothingQuality = 'high';
 
-    W   = Math.max(4, Math.ceil(window.innerWidth  / SCALE));
-    H   = Math.max(4, Math.ceil(window.innerHeight / SCALE));
+    W = Math.max(4, Math.ceil(window.innerWidth  / SCALE));
+    H = Math.max(4, Math.ceil(window.innerHeight / SCALE));
     len = W * H;
 
-    sim.width  = W;
-    sim.height = H;
+    sim.width   = W; sim.height   = H;
+    bgCvs.width = W; bgCvs.height = H;
 
     cur  = new Float32Array(len);
     prev = new Float32Array(len);
@@ -132,12 +67,28 @@
 
     imgData = sCtx.createImageData(W, H);
     pix = imgData.data;
-    /* alpha = 0 по умолчанию (прозрачно) */
+    /* pre-fill alpha = 255 */
+    for (var a = 3; a < pix.length; a += 4) pix[a] = 255;
+
+    /* Перерисовать фон при новом размере */
+    if (bgImg && bgImg.complete && bgImg.naturalWidth) {
+      bgCx.drawImage(bgImg, 0, 0, W, H);
+      bgPix = bgCx.getImageData(0, 0, W, H).data;
+    }
   }
+
   window.addEventListener('resize', resize);
   resize();
 
-  /* ── РЯБЬ (оригинальная функция) ── */
+  /* ── ЗАГРУЗКА ФОНА ── */
+  bgImg = new Image();
+  bgImg.src = 'assets/img/background.jpg';
+  bgImg.onload = function () {
+    bgCx.drawImage(bgImg, 0, 0, W, H);
+    bgPix = bgCx.getImageData(0, 0, W, H).data;
+  };
+
+  /* ── РЯБЬ ── */
   function addRipple(cx, cy, r, str) {
     var r2 = r * r;
     for (var dy = -r; dy <= r; dy++) {
@@ -150,27 +101,27 @@
     }
   }
 
-  /* ── ВВОД (мышь) — чувствительность снижена ── */
+  /* ── ВВОД (мышь) ── */
   var lastMouse = 0;
   document.addEventListener('mousemove', function (e) {
     var now = performance.now();
-    if (now - lastMouse < 100) return;
+    if (now - lastMouse < 38) return;
     lastMouse = now;
     addRipple(
       Math.floor(e.clientX / SCALE),
       Math.floor(e.clientY / SCALE),
-      1, 1.2
+      2, 7
     );
   });
   document.addEventListener('click', function (e) {
     addRipple(
       Math.floor(e.clientX / SCALE),
       Math.floor(e.clientY / SCALE),
-      4, 6
+      8, 22
     );
   });
 
-  /* ── ФОНОВЫЕ КАПЛИ (оригинал) ── */
+  /* ── ФОНОВЫЕ КАПЛИ ── */
   function dropRain() {
     addRipple(
       1 + Math.floor(Math.random() * (W - 2)),
@@ -182,7 +133,7 @@
   }
   dropRain();
 
-  /* ── СИМУЛЯЦИЯ (оригинал) ── */
+  /* ── СИМУЛЯЦИЯ ── */
   function step() {
     var i, x, y;
     for (y = 1; y < H - 1; y++) {
@@ -191,49 +142,53 @@
         nxt[i] = ((cur[i - 1] + cur[i + 1] + cur[i - W] + cur[i + W]) * 0.5 - prev[i]) * DAMPING;
       }
     }
+    /* Вращаем буферы: prev ← cur ← nxt ← (старый prev) */
     var tmp = prev; prev = cur; cur = nxt; nxt = tmp;
   }
 
-  /* ── РЕНДЕР — shimmer поверх видео ── */
-  /* Акцентный цвет проекта (B8FF3C) */
-  var AR = 184, AG = 255, AB = 60;
-
+  /* ── РЕНДЕР ── */
   function render() {
     var Wm = W - 1, Hm = H - 1;
-    var i, x, y, pi, gx, gy, h, light, alpha;
-
-    /* Очищаем буфер */
-    for (var a = 0; a < pix.length; a++) pix[a] = 0;
+    var i, x, y, pi, si, sx, sy, gx, gy, h, spec, r, g, b;
 
     for (y = 1; y < Hm; y++) {
       for (x = 1; x < Wm; x++) {
         i = y * W + x;
         h  = cur[i];
-        if (h < 0.08 && h > -0.08) continue; /* пропускаем плоские зоны */
 
+        /* Градиент → нормаль поверхности */
         gx = (cur[i + 1] - cur[i - 1]) * 0.5;
         gy = (cur[i + W] - cur[i - W]) * 0.5;
 
-        /* Блик — свет сверху-слева */
-        light = Math.max(0, -gx * 0.65 - gy * 0.75);
-        /* Гребни волн */
-        var crest = h > 0 ? h * 0.045 : 0;
+        /* Смещение выборки = имитация преломления */
+        sx = (x + gx * REFRACT + 0.5) | 0;
+        sy = (y + gy * REFRACT + 0.5) | 0;
+        if (sx < 0) sx = 0; else if (sx > Wm) sx = Wm;
+        if (sy < 0) sy = 0; else if (sy > Hm) sy = Hm;
 
-        alpha = ((light * 0.55 + crest) * 160) | 0;
-        if (alpha < 3) continue;
-        if (alpha > 72) alpha = 72;
+        if (bgPix) {
+          si = (sy * W + sx) << 2;
+          r = bgPix[si]     * DARK;
+          g = bgPix[si + 1] * DARK;
+          b = bgPix[si + 2] * DARK;
+        } else {
+          r = 10; g = 10; b = 12;
+        }
+
+        /* Янтарный блик на гребнях */
+        spec = h > 0 ? h * 0.068 : 0;
+        r += spec * AMBER[0] * 0.30;
+        g += spec * AMBER[1] * 0.17;
+        b += spec * AMBER[2] * 0.07;
 
         pi = i << 2;
-        pix[pi]     = AR;
-        pix[pi + 1] = AG;
-        pix[pi + 2] = AB;
-        pix[pi + 3] = alpha;
+        pix[pi]     = r < 255 ? r : 255;
+        pix[pi + 1] = g < 255 ? g : 255;
+        pix[pi + 2] = b < 255 ? b : 255;
       }
     }
 
-    sCtx.clearRect(0, 0, W, H);
     sCtx.putImageData(imgData, 0, 0);
-    dCtx.clearRect(0, 0, display.width, display.height);
     dCtx.drawImage(sim, 0, 0, display.width, display.height);
   }
 
