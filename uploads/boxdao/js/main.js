@@ -75,10 +75,9 @@ function t(key) {
    NAV CONFIG
 ══════════════════════════════════════════ */
 var NAV_KEYS = [
-  { href: './',          key: 'navHome'    },
-  { href: 'about',      key: 'navAbout'   },
-  { href: 'staking',    key: 'navStaking' },
-  { href: 'dao',        key: 'navDao'     },
+  { href: './',     key: 'navHome'  },
+  { href: 'about',  key: 'navAbout' },
+  { href: 'dao',    key: 'navDao'   },
 ];
 
 var FOOTER_ITEMS = [
