@@ -129,6 +129,7 @@ function renderHeader() {
 
   renderMobileNav();
   setupBurger();
+  updateHeaderScroll(); // восстановить класс scrolled после перерисовки
 }
 
 /* ══════════════════════════════════════════
@@ -277,13 +278,14 @@ function setupLangToggle() {
 /* ══════════════════════════════════════════
    SCROLL - прозрачный → тёмный header
 ══════════════════════════════════════════ */
+function updateHeaderScroll() {
+  var h = document.querySelector('.site-header');
+  if (h) h.classList.toggle('scrolled', window.scrollY > 24);
+}
+
 (function () {
-  function updateScroll() {
-    var h = document.querySelector('.site-header');
-    if (h) h.classList.toggle('scrolled', window.scrollY > 24);
-  }
-  window.addEventListener('scroll', updateScroll, { passive: true });
-  document.addEventListener('DOMContentLoaded', updateScroll);
+  window.addEventListener('scroll', updateHeaderScroll, { passive: true });
+  document.addEventListener('DOMContentLoaded', updateHeaderScroll);
 })();
 
 /* ══════════════════════════════════════════
