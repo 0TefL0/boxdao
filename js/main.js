@@ -205,7 +205,7 @@ function renderFooter() {
   mount.innerHTML = '<footer class="site-footer">'
     + '<div class="container footer-inner">'
     +   '<div class="footer-links">' + links + '</div>'
-    +   '<div class="footer-copy">© ' + new Date().getFullYear() + ' BoxDAO · ' + t('footerDemo') + '</div>'
+    + ''
     + '</div>'
     + '</footer>';
 }

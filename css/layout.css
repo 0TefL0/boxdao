@@ -195,18 +195,21 @@
 
 /* ── ФУТЕР ── */
 .site-footer {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 90;
   border-top: 1px solid var(--border);
-  background: rgba(10, 10, 12, 0.60);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background: rgba(10, 10, 12, 0.75);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 .footer-inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: 20px;
-  padding-block: 32px;
+  padding-block: 10px;
 }
 .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
 .footer-links a {
