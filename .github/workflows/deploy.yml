@@ -29,8 +29,8 @@ jobs:
           cp index.html about.html dao.html cabinet.html .nojekyll /tmp/site/
           cp -r css js assets /tmp/site/
 
-          # Fetch and switch to gh-pages
-          git fetch origin gh-pages
+          # Fetch gh-pages into a local tracking branch
+          git fetch origin gh-pages:gh-pages
           git checkout gh-pages
 
           # Clear files (keep .git)
