@@ -17,9 +17,9 @@
   --muted:         #6B6B73;   /* подписи, плейсхолдеры */
 
   /* --- Акцент --- */
-  --accent:        #07750d;
-  --accent-soft:   #0a9411;
-  --accent-glow:   rgba(7, 117, 13, 0.22);
+  --accent:        #B8FF3C;
+  --accent-soft:   #c8ff5a;
+  --accent-glow:   rgba(184, 255, 60, 0.22);
 
   /* --- Линии и границы --- */
   --border:        rgba(255, 255, 255, 0.08);

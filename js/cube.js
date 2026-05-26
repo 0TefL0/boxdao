@@ -13,7 +13,7 @@
 
   /* --- Цвета из CSS-переменных --- */
   const css    = getComputedStyle(document.documentElement);
-  const ACCENT = (css.getPropertyValue("--accent") || "#07750d").trim();
+  const ACCENT = (css.getPropertyValue("--accent") || "#B8FF3C").trim();
   const LINE   = "#8A8A93";
 
   /* --- Геометрия --- */

@@ -60,7 +60,7 @@
     .sb-nav a.active {
       color: var(--text);
       border-left-color: var(--accent);
-      background: rgba(7,117,13,.07);
+      background: rgba(184,255,60,.07);
     }
     .sb-dot {
       width: 5px; height: 5px; border-radius: 50%;
@@ -102,8 +102,8 @@
     .pills { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
     .pill {
       display: flex; align-items: center; gap: 6px;
-      background: rgba(7,117,13,.08);
-      border: 1px solid rgba(7,117,13,.22);
+      background: rgba(184,255,60,.08);
+      border: 1px solid rgba(184,255,60,.22);
       border-radius: 100px; padding: 5px 13px;
       font-size: 12px; color: var(--text);
     }
@@ -122,8 +122,8 @@
     .step-icon {
       width: 52px; height: 52px; flex-shrink: 0;
       border-radius: 12px;
-      background: rgba(7,117,13,.10);
-      border: 1px solid rgba(7,117,13,.22);
+      background: rgba(184,255,60,.10);
+      border: 1px solid rgba(184,255,60,.22);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; position: relative; z-index: 1;
     }
@@ -133,7 +133,7 @@
     /* STAKING CARDS */
     .stk-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 24px; }
     .stk-card { border-radius: var(--radius); padding: 20px; border: 1px solid; }
-    .stk-fixed { background: rgba(7,117,13,.07); border-color: rgba(7,117,13,.28); }
+    .stk-fixed { background: rgba(184,255,60,.07); border-color: rgba(184,255,60,.28); }
     .stk-flex  { background: var(--surface); border-color: var(--border-hi); }
     .stk-badge {
       display: inline-flex; border-radius: 100px;
@@ -141,7 +141,7 @@
       font-family: var(--font-mono); letter-spacing: .08em;
       text-transform: uppercase; margin-bottom: 10px;
     }
-    .b-fixed { background: rgba(7,117,13,.18); color: var(--accent); }
+    .b-fixed { background: rgba(184,255,60,.18); color: var(--accent); }
     .b-flex  { background: rgba(255,255,255,.07); color: var(--text-dim); }
     .stk-name { font-family: var(--font-display); font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .stk-rate { font-family: var(--font-mono); font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1; }
@@ -173,7 +173,7 @@
       transition: background var(--t-fast);
     }
     .lvl-row:hover { background: var(--surface-hi); }
-    .lvl-row.boss  { border-color: rgba(7,117,13,.35); background: rgba(7,117,13,.06); }
+    .lvl-row.boss  { border-color: rgba(184,255,60,.35); background: rgba(184,255,60,.06); }
     .lv-n    { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
     .lv-name { font-size: 13px; font-weight: 700; color: var(--text); }
     .lv-days { font-size: 11px; color: var(--muted); }
@@ -199,7 +199,7 @@
     .dao-bar { display: flex; border-radius: var(--radius-sm); overflow: hidden; height: 42px; margin-top: 24px; }
     .dao-o {
       display: flex; align-items: center; justify-content: center; flex: 10;
-      background: rgba(7,117,13,.22); color: var(--accent);
+      background: rgba(184,255,60,.22); color: var(--accent);
       font-family: var(--font-mono); font-size: 11px; font-weight: 700;
     }
     .dao-i {
@@ -259,8 +259,8 @@
 
     /* Пульс иконок шагов */
     @keyframes iconGlow {
-      0%,100% { box-shadow: 0 0 0 0 rgba(7,117,13,0.00); }
-      50%      { box-shadow: 0 0 0 8px rgba(7,117,13,0.10), 0 0 20px rgba(7,117,13,0.06); }
+      0%,100% { box-shadow: 0 0 0 0 rgba(184,255,60,0.00); }
+      50%      { box-shadow: 0 0 0 8px rgba(184,255,60,0.10), 0 0 20px rgba(184,255,60,0.06); }
     }
     .step-icon { animation: iconGlow 4s ease-in-out infinite; }
 
@@ -271,7 +271,7 @@
       transition: background 0.22s ease;
       margin: 0 -10px;
     }
-    .step:hover { background: rgba(7,117,13,0.04); }
+    .step:hover { background: rgba(184,255,60,0.04); }
 
     /* Прогресс-бары: старт с 0, анимация до target */
     .lv-bar { width: 0 !important; transition: width 1.3s cubic-bezier(0.23,1,0.32,1); }
@@ -280,7 +280,7 @@
     /* Свечение акцентных чисел */
     .num-val .a {
       color: var(--accent);
-      text-shadow: 0 0 20px rgba(7,117,13,0.55);
+      text-shadow: 0 0 20px rgba(184,255,60,0.55);
     }
 
     /* Hover карточек чисел */
@@ -293,8 +293,8 @@
     }
     .num-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 10px 36px rgba(7,117,13,0.12);
-      border-color: rgba(7,117,13,0.28);
+      box-shadow: 0 10px 36px rgba(184,255,60,0.12);
+      border-color: rgba(184,255,60,0.28);
     }
 
     /* Vote item сдвиг вправо при hover */
@@ -304,7 +304,7 @@
         background    0.22s ease,
         border-color  0.22s ease;
     }
-    .vote-item:hover { transform: translateX(4px); border-color: rgba(7,117,13,0.28); }
+    .vote-item:hover { transform: translateX(4px); border-color: rgba(184,255,60,0.28); }
 
     /* DAO bar пульс */
     @keyframes daoGlow {
@@ -321,7 +321,7 @@
     .stk-card {
       transition: transform 0.28s cubic-bezier(0.23,1,0.32,1), box-shadow 0.28s ease, border-color 0.28s ease;
     }
-    .stk-fixed:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(7,117,13,0.14); }
+    .stk-fixed:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(184,255,60,0.14); }
     .stk-flex:hover  { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.25); }
 
     /* ─── RESPONSIVE ─── */
