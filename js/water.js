@@ -11,7 +11,7 @@
   'use strict';
 
   /* ── CONFIG ── */
-  const SCALE   = 3;    /* разрешение = viewport / SCALE */
+  const SCALE   = 2;    /* разрешение = viewport / SCALE */
   const DAMPING = 0.988; /* затухание (1 = бесконечно, 0 = мгновенно) */
   const REFRACT = 3.2;   /* сила преломления (пиксели сетки) */
   const DARK    = 0.42;  /* затемнение фона (0 = чёрный, 1 = оригинал) */
