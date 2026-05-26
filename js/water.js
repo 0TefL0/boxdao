@@ -72,21 +72,35 @@
 
     /* Перерисовать фон при новом размере */
     if (bgImg && bgImg.complete && bgImg.naturalWidth) {
-      bgCx.drawImage(bgImg, 0, 0, W, H);
-      bgPix = bgCx.getImageData(0, 0, W, H).data;
+      drawBg();
     }
   }
 
   window.addEventListener('resize', resize);
   resize();
 
-  /* ── ЗАГРУЗКА ФОНА ── */
+  /* ── ЗАГРУЗКА ФОНА — contain (16:9 вписать целиком) ── */
+  function drawBg() {
+    var iw = bgImg.naturalWidth, ih = bgImg.naturalHeight;
+    var imgAR = iw / ih;
+    var canAR = W / H;
+    var dw, dh, dx, dy;
+    if (imgAR > canAR) {
+      dw = W; dh = W / imgAR;
+      dx = 0; dy = (H - dh) / 2;
+    } else {
+      dh = H; dw = H * imgAR;
+      dy = 0; dx = (W - dw) / 2;
+    }
+    bgCx.fillStyle = '#0a0a0c';
+    bgCx.fillRect(0, 0, W, H);
+    bgCx.drawImage(bgImg, dx, dy, dw, dh);
+    bgPix = bgCx.getImageData(0, 0, W, H).data;
+  }
+
   bgImg = new Image();
   bgImg.src = 'assets/img/background.jpg';
-  bgImg.onload = function () {
-    bgCx.drawImage(bgImg, 0, 0, W, H);
-    bgPix = bgCx.getImageData(0, 0, W, H).data;
-  };
+  bgImg.onload = drawBg;
 
   /* ── РЯБЬ ── */
   function addRipple(cx, cy, r, str) {
