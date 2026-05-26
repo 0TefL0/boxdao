@@ -12,10 +12,15 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Deploy site to gh-pages branch
+      - name: Clone and deploy
+        env:
+          TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.sha }}
         run: |
+          git clone --depth 1 https://x-access-token:${TOKEN}@github.com/${REPO}.git repo
+          cd repo
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
@@ -24,17 +29,17 @@ jobs:
           cp index.html about.html dao.html cabinet.html .nojekyll /tmp/site/
           cp -r css js assets /tmp/site/
 
-          # Fetch gh-pages branch
+          # Fetch and switch to gh-pages
           git fetch origin gh-pages
           git checkout gh-pages
 
-          # Clear everything except .git
+          # Clear files (keep .git)
           find . -mindepth 1 -maxdepth 1 ! -name '.git' -exec rm -rf {} +
 
-          # Copy site files back
+          # Copy site files
           cp -r /tmp/site/. .
 
           # Commit and push
           git add -A
-          git diff --cached --quiet || git commit -m "Deploy from main @ ${{ github.sha }}"
+          git diff --cached --quiet || git commit -m "Deploy from ${SHA}"
           git push origin gh-pages
