@@ -45,7 +45,8 @@
     v.style.cssText = [
       'position:fixed', 'inset:0',
       'width:100%', 'height:100%',
-      'object-fit:contain',       /* весь кадр, не обрезан — фон «дальше» */
+      'object-fit:cover',
+      'transform:rotate(180deg)',
       'background:#0a0a0c',
       'z-index:-2',
       'pointer-events:none',
