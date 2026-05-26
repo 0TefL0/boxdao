@@ -379,7 +379,7 @@
             </div>
             <div>
               <div class="step-title">Положил в стейкинг</div>
-              <div class="step-desc">Подключаешь кошелёк и выбираешь режим - Fixed (максимальный доход, блокировка 20 мес) или Flexible (вывести когда угодно).</div>
+              <div class="step-desc">Подключаешь кошелёк и выбираешь режим стейкинга. Режимы и условия выплат формирует автор проекта — он сам рассчитывает финансовую модель под свою идею.</div>
             </div>
           </div>
           <div class="step">
@@ -387,8 +387,8 @@
               <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><polygon points="128,24 224,72 224,184 128,232 32,184 32,72"/><line x1="128" y1="24" x2="128" y2="128"/><line x1="32" y1="72" x2="128" y2="128"/><line x1="224" y1="72" x2="128" y2="128"/></svg>
             </div>
             <div>
-              <div class="step-title">Автомат продаёт боксы</div>
-              <div class="step-desc">Box продаётся в ТЦ Триумф Молл Саратов (400 000+ посетителей/мес). Парсер снимает данные ежедневно.</div>
+              <div class="step-title">Проект генерирует доход</div>
+              <div class="step-desc">Бизнес работает. Система отслеживает доходность и автоматически считает долю каждого NFT-холдера по заданной автором модели.</div>
             </div>
           </div>
           <div class="step">
@@ -407,40 +407,79 @@
 
       <!-- СТЕЙКИНГ -->
       <section class="ab-sec" id="staking">
-        <div class="sec-label">Режимы стейкинга</div>
-        <div class="sec-title">Два способа зарабатывать</div>
+        <div class="sec-label">Стейкинг</div>
+        <div class="sec-title">Условия задаёт <span class="acc">автор проекта</span></div>
+        <p class="sec-body">Каждый, кто выкладывает свою идею на BoxDAO, сам строит финансовую модель — количество NFT-долей, режимы выплат, проценты, сроки блокировки. Платформа предоставляет инструменты, автор настраивает под свой бизнес.</p>
         <div class="stk-grid">
           <div class="stk-card stk-fixed">
             <div class="stk-badge b-fixed">
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 256 256" fill="currentColor" style="display:inline-block;vertical-align:-0.1em"><polygon points="216,112 128,24 88,112 40,112 128,232 152,144"/></svg>
-              Fixed · Старт
+              Fixed · Пример режима
             </div>
             <div class="stk-name">Фиксированный</div>
-            <div class="stk-rate">2.16%</div>
-            <div class="stk-sub">от цены бокса · с первого дня</div>
+            <div class="stk-rate">%</div>
+            <div class="stk-sub">задаётся автором · с первого дня</div>
             <ul class="stk-list">
-              <li>Только первые 3 недели</li>
-              <li>Блокировка на 20 месяцев</li>
-              <li>Максимум сразу - без ожидания</li>
-              <li>~1 050₽ / мес при 75 продажах</li>
-              <li>Окупаемость ~19 месяцев ✅</li>
+              <li>Максимальный процент — сразу</li>
+              <li>Блокировка на срок, заданный автором</li>
+              <li>Подходит инвесторам с горизонтом</li>
+              <li>Автор рассчитывает окупаемость</li>
+              <li>Доход начисляется в GEM ежедневно</li>
             </ul>
           </div>
           <div class="stk-card stk-flex">
             <div class="stk-badge b-flex">
               <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:-0.1em"><rect x="48" y="104" width="160" height="104" rx="8"/><path d="M96,104V76a32,32,0,0,1,64,0"/></svg>
-              Flexible · Всегда
+              Flexible · Пример режима
             </div>
             <div class="stk-name">Гибкий</div>
-            <div class="stk-rate dim">1.54%</div>
-            <div class="stk-sub">максимум · уровень Элита</div>
+            <div class="stk-rate dim">%↑</div>
+            <div class="stk-sub">прогрессивный · растёт со временем</div>
             <ul class="stk-list dim">
-              <li>Доступен всегда</li>
-              <li>Вывести в любой момент</li>
-              <li>6 уровней - растёт со временем</li>
-              <li>~750₽ / мес на Элите</li>
-              <li>Окупаемость ~27 месяцев</li>
+              <li>Доступен в любой момент</li>
+              <li>Вывод без штрафов</li>
+              <li>Процент растёт по уровням холда</li>
+              <li>Автор задаёт количество уровней</li>
+              <li>Доход начисляется в GEM ежедневно</li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <div class="ab-divider"></div>
+
+      <!-- АВТОР ПРОЕКТА -->
+      <section class="ab-sec" id="creator">
+        <div class="sec-label">Для авторов</div>
+        <div class="sec-title">Запусти свой проект <span class="acc">на платформе</span></div>
+        <p class="sec-body">У тебя есть идея, бизнес или оборудование? Выложи проект на BoxDAO — и привлеки инвесторов через NFT. Ты сам определяешь все условия.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><circle cx="128" cy="128" r="96"/><line x1="88" y1="128" x2="168" y2="128"/><line x1="128" y1="88" x2="128" y2="168"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Описываешь проект</div>
+              <div class="step-desc">Рассказываешь что за идея, бизнес или оборудование. Показываешь финансовую модель: сколько стоит NFT-доля, сколько долей, как считается доход.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><rect x="40" y="40" width="176" height="176" rx="12"/><line x1="40" y1="96" x2="216" y2="96"/><line x1="96" y1="96" x2="96" y2="216"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Настраиваешь стейкинг</div>
+              <div class="step-desc">Выбираешь режимы выплат: Fixed, Flexible, или оба. Устанавливаешь проценты, сроки блокировки, количество уровней — всё под твою модель.</div>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"><path d="M197.17,133.17l-99.5,99.5a12,12,0,0,1-17,0L28.83,180.83a12,12,0,0,1,0-17l99.5-99.5A12,12,0,0,1,137,60.5H212a12,12,0,0,1,12,12v74.84A12,12,0,0,1,197.17,133.17Z"/><circle cx="180" cy="84" r="16" fill="var(--accent)" stroke="none"/></svg>
+            </div>
+            <div>
+              <div class="step-title">Запускаешь коллекцию</div>
+              <div class="step-desc">NFT-ячейки уходят в продажу — на сайте и на OpenSea. Инвесторы покупают доли, получают GEM, участвуют в DAO-голосованиях.</div>
+            </div>
           </div>
         </div>
       </section>
@@ -449,37 +488,34 @@
 
       <!-- УРОВНИ -->
       <section class="ab-sec" id="levels">
-        <div class="sec-label">Уровни Flexible</div>
-        <div class="sec-title">Чем дольше держишь - тем <span class="acc">выше доход</span></div>
-        <p class="sec-body">Начинаешь с нуля, поднимаешься по уровням. Fixed инвестор - сразу на максимуме.</p>
+        <div class="sec-label">Уровни Flexible · принцип</div>
+        <div class="sec-title">Чем дольше держишь — тем <span class="acc">выше доход</span></div>
+        <p class="sec-body">Автор проекта сам задаёт количество уровней, сроки и проценты. Ниже — пример прогрессивной системы: чем дольше инвестор держит NFT в стейкинге, тем выше его ставка.</p>
         <div class="lvl-head">
-          <span>#</span><span>Уровень</span><span>Дней</span><span>Прогресс</span><span>%</span><span>В месяц</span>
+          <span>#</span><span>Уровень</span><span>Дней</span><span>Прогресс</span><span>%</span><span>Награда</span>
         </div>
-        <div class="lvl-row"><span class="lv-n">0</span><span class="lv-name">Старт</span><span class="lv-days">0–10 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:0%"></div></div><span class="lv-pct">0%</span><span class="lv-usdt">0 ₽</span></div>
-        <div class="lvl-row"><span class="lv-n">1</span><span class="lv-name">Базовый</span><span class="lv-days">11–30 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:30%"></div></div><span class="lv-pct">0.46%</span><span class="lv-usdt">~225 ₽</span></div>
-        <div class="lvl-row"><span class="lv-n">2</span><span class="lv-name">Продвинутый</span><span class="lv-days">31–80 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:50%"></div></div><span class="lv-pct">0.93%</span><span class="lv-usdt">~450 ₽</span></div>
-        <div class="lvl-row"><span class="lv-n">3</span><span class="lv-name">Эксперт</span><span class="lv-days">81–180 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:65%"></div></div><span class="lv-pct">1.23%</span><span class="lv-usdt">~600 ₽</span></div>
-        <div class="lvl-row"><span class="lv-n">4</span><span class="lv-name">Мастер</span><span class="lv-days">181–280 дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:82%"></div></div><span class="lv-pct">1.39%</span><span class="lv-usdt">~675 ₽</span></div>
-        <div class="lvl-row"><span class="lv-n">5</span><span class="lv-name">Элита</span><span class="lv-days">281+ дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">1.54%</span><span class="lv-usdt">~750 ₽</span></div>
-        <div class="lvl-row boss"><span class="lv-n">★</span><span class="lv-name">FIXED БОСС</span><span class="lv-days">С 1-го дня</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">2.16%</span><span class="lv-usdt" style="color:var(--accent)">~1 050 ₽</span></div>
+        <div class="lvl-row"><span class="lv-n">0</span><span class="lv-name">Старт</span><span class="lv-days">0–N дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:0%"></div></div><span class="lv-pct">base</span><span class="lv-usdt">мин.</span></div>
+        <div class="lvl-row"><span class="lv-n">1</span><span class="lv-name">Базовый</span><span class="lv-days">N–N дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:30%"></div></div><span class="lv-pct">↑</span><span class="lv-usdt">GEM</span></div>
+        <div class="lvl-row"><span class="lv-n">2</span><span class="lv-name">Продвинутый</span><span class="lv-days">N–N дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:50%"></div></div><span class="lv-pct">↑↑</span><span class="lv-usdt">GEM</span></div>
+        <div class="lvl-row"><span class="lv-n">3</span><span class="lv-name">Эксперт</span><span class="lv-days">N–N дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:65%"></div></div><span class="lv-pct">↑↑↑</span><span class="lv-usdt">GEM</span></div>
+        <div class="lvl-row"><span class="lv-n">4</span><span class="lv-name">Мастер</span><span class="lv-days">N–N дн</span><div class="lv-bar-w"><div class="lv-bar" style="width:82%"></div></div><span class="lv-pct">↑↑↑↑</span><span class="lv-usdt">GEM</span></div>
+        <div class="lvl-row boss"><span class="lv-n">★</span><span class="lv-name">Элита / Fixed</span><span class="lv-days">макс.</span><div class="lv-bar-w"><div class="lv-bar" style="width:100%"></div></div><span class="lv-pct">max%</span><span class="lv-usdt" style="color:var(--accent)">GEM ✅</span></div>
       </section>
 
       <div class="ab-divider"></div>
 
       <!-- ЦИФРЫ -->
       <section class="ab-sec" id="numbers">
-        <div class="sec-label">Цифры</div>
-        <div class="sec-title">Честная статистика</div>
-        <p class="sec-body">Все расчёты по базовой цене бокса 649 ₽ - худший расклад.</p>
+        <div class="sec-label">Платформа</div>
+        <div class="sec-title">Как устроена <span class="acc">BoxDAO</span></div>
+        <p class="sec-body">Несколько ключевых принципов, на которых строится вся платформа.</p>
         <div class="num-grid">
-          <div class="num-card"><div class="num-val">20 000 ₽</div><div class="num-lbl">Цена 1 NFT-ячейки</div><div class="num-sub">1 ячейка = 1 автомат</div></div>
-          <div class="num-card"><div class="num-val"><span class="a">~19</span> мес</div><div class="num-lbl">Окупаемость Fixed</div><div class="num-sub">При 75 продаж / мес</div></div>
-          <div class="num-card"><div class="num-val">21 000 ₽</div><div class="num-lbl">Доход Fixed за 20 мес</div><div class="num-sub">Худший сценарий</div></div>
-          <div class="num-card"><div class="num-val"><span class="a">649</span> ₽</div><div class="num-lbl">Цена Box</div><div class="num-sub">База для расчётов</div></div>
-          <div class="num-card"><div class="num-val"><span class="a">75</span> шт</div><div class="num-lbl">Продаж в месяц</div><div class="num-sub">Лето ~55, зима ~85</div></div>
-          <div class="num-card"><div class="num-val"><span class="a">34.5</span>%</div><div class="num-lbl">Чистая прибыль с бокса</div><div class="num-sub">~224 ₽ с продажи</div></div>
-          <div class="num-card"><div class="num-val">400k+</div><div class="num-lbl">Посетителей ТЦ / мес</div><div class="num-sub">Триумф Молл, Саратов</div></div>
-          <div class="num-card"><div class="num-val">16 800 ₽</div><div class="num-lbl">Прибыль в месяц</div><div class="num-sub">С одного автомата</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">N</span> NFT</div><div class="num-lbl">Размер коллекции</div><div class="num-sub">Автор сам задаёт количество долей</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">1</span> NFT</div><div class="num-lbl">= 1 доля проекта</div><div class="num-sub">И 1 голос в DAO-управлении</div></div>
+          <div class="num-card"><div class="num-val">GEM</div><div class="num-lbl">Выплаты ежедневно</div><div class="num-sub">Начисляются автоматически</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">2</span> режима</div><div class="num-lbl">Стейкинга на выбор</div><div class="num-sub">Fixed и Flexible — по модели проекта</div></div>
+          <div class="num-card"><div class="num-val">ETH</div><div class="num-lbl">Стейкинг на Ethereum</div><div class="num-sub">Прозрачные смарт-контракты</div></div>
+          <div class="num-card"><div class="num-val"><span class="a">51</span>%</div><div class="num-lbl">Порог голосования</div><div class="num-sub">Для принятия любого решения</div></div>
         </div>
       </section>
 
