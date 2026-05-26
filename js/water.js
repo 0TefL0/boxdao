@@ -80,25 +80,8 @@
   resize();
 
   /* ── ЗАГРУЗКА ФОНА — contain (16:9 вписать целиком) ── */
-  var BG_SCALE = 0.65; /* 1.0 = contain, меньше = дальше */
-
   function drawBg() {
-    var iw = bgImg.naturalWidth, ih = bgImg.naturalHeight;
-    var imgAR = iw / ih;
-    var canAR = W / H;
-    var dw, dh;
-    if (imgAR > canAR) {
-      dw = W; dh = W / imgAR;
-    } else {
-      dh = H; dw = H * imgAR;
-    }
-    dw *= BG_SCALE;
-    dh *= BG_SCALE;
-    var dx = (W - dw) / 2;
-    var dy = (H - dh) / 2;
-    bgCx.fillStyle = '#0a0a0c';
-    bgCx.fillRect(0, 0, W, H);
-    bgCx.drawImage(bgImg, dx, dy, dw, dh);
+    bgCx.drawImage(bgImg, 0, 0, W, H);
     bgPix = bgCx.getImageData(0, 0, W, H).data;
   }
 
