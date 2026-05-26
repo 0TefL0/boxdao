@@ -121,9 +121,6 @@ function renderHeader() {
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
     +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
-    +   '<button class="lang-globe" id="lang-toggle" title="Switch language">'
-    +     PH.globe + '<span class="lang-code">' + LANG.toUpperCase() + '</span>'
-    +   '</button>'
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'
     +   '</button>'
@@ -216,8 +213,10 @@ function renderFooter() {
 
   mount.innerHTML = '<footer class="site-footer">'
     + '<div class="container footer-inner">'
+    +   '<button class="lang-globe" id="lang-toggle" title="Switch language">'
+    +     PH.globe + '<span class="lang-code">' + LANG.toUpperCase() + '</span>'
+    +   '</button>'
     +   '<div class="footer-links">' + links + '</div>'
-    + ''
     + '</div>'
     + '</footer>';
 }
@@ -268,6 +267,7 @@ function switchLang() {
 }
 
 function setupLangToggle() {
+  /* lang-toggle теперь в футере (bottom-left) */
   var btn  = document.getElementById('lang-toggle');
   var btnM = document.getElementById('mobile-lang-toggle');
   if (btn)  btn.addEventListener('click', switchLang);
