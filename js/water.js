@@ -1,7 +1,15 @@
 /* =========================================================================
-   water.js — видео-фон + height-map симуляция воды + ripple мышью
+   water.js — видео-фон + оригинальная height-map симуляция воды
+   • Симуляция 1:1 как в оригинале (три буфера, DAMPING, rain)
+   • Рендер — shimmer поверх видео вместо рефракции background.jpg
+   • Чувствительность мыши снижена
    ========================================================================= */
 (function () {
+  'use strict';
+
+  /* ── CONFIG ── */
+  var SCALE   = 3;
+  var DAMPING = 0.988;
 
   /* ══════════════════════════════
      1. PRELOADER
@@ -77,8 +85,7 @@
 
   va.addEventListener('canplaythrough', function () {
     clearTimeout(loaderFallback);
-    va.play().then(function () { va.style.opacity = '1'; hideLoader(); })
-             .catch(hideLoader);
+    va.play().then(function () { va.style.opacity = '1'; hideLoader(); }).catch(hideLoader);
   }, { once: true });
   if (va.readyState >= 4) {
     clearTimeout(loaderFallback);
@@ -86,123 +93,156 @@
   }
 
   /* ══════════════════════════════
-     3. HEIGHT-MAP ВОДА
+     3. WATER SIMULATION (оригинал)
   ══════════════════════════════ */
-  var SCALE = 4;     /* пикселей экрана на одну ячейку сетки */
-  var DAMP  = 0.986; /* затухание волн */
+  var W, H, len;
+  var cur, prev, nxt;
+  var imgData, pix;
 
-  var canvas = document.createElement('canvas');
-  canvas.style.cssText = [
-    'position:fixed','inset:0',
-    'z-index:-1',
-    'pointer-events:none',
-    /* CSS масштабирует маленький canvas на весь экран — получаем
-       бесплатное билинейное размытие, волны выглядят мягко */
+  /* Display canvas — поверх видео, прозрачный */
+  var display = document.createElement('canvas');
+  display.style.cssText = [
+    'position:fixed','top:0','left:0',
     'width:100%','height:100%',
-    'image-rendering:auto',
+    'z-index:-1','pointer-events:none',
   ].join(';');
-  document.body.appendChild(canvas);
+  document.body.appendChild(display);
+  var dCtx = display.getContext('2d');
 
-  var ctx = canvas.getContext('2d');
-  var W, H;      /* размер экрана */
-  var gW, gH;    /* размер сетки */
-  var cur, prv;  /* ping-pong буферы высот */
-  var imgData;
+  /* Sim canvas — рабочий, маленький */
+  var sim  = document.createElement('canvas');
+  var sCtx = sim.getContext('2d', { willReadFrequently: true });
 
-  function initMap() {
-    W = window.innerWidth;
-    H = window.innerHeight;
-    gW = (W / SCALE | 0) + 2;
-    gH = (H / SCALE | 0) + 2;
-    canvas.width  = gW;
-    canvas.height = gH;
-    cur = new Float32Array(gW * gH);
-    prv = new Float32Array(gW * gH);
-    imgData = ctx.createImageData(gW, gH);
-    /* Предзаполняем alpha=0 */
-    for (var i = 3; i < imgData.data.length; i += 4) imgData.data[i] = 0;
+  function resize() {
+    display.width  = window.innerWidth;
+    display.height = window.innerHeight;
+    dCtx.imageSmoothingEnabled = true;
+    dCtx.imageSmoothingQuality = 'high';
+
+    W   = Math.max(4, Math.ceil(window.innerWidth  / SCALE));
+    H   = Math.max(4, Math.ceil(window.innerHeight / SCALE));
+    len = W * H;
+
+    sim.width  = W;
+    sim.height = H;
+
+    cur  = new Float32Array(len);
+    prev = new Float32Array(len);
+    nxt  = new Float32Array(len);
+
+    imgData = sCtx.createImageData(W, H);
+    pix = imgData.data;
+    /* alpha = 0 по умолчанию (прозрачно) */
   }
+  window.addEventListener('resize', resize);
+  resize();
 
-  window.addEventListener('resize', initMap);
-  initMap();
-
-  /* Возмущение в точке (px, py) силой str */
-  function splash(px, py, str) {
-    var gx = (px / SCALE | 0) + 1;
-    var gy = (py / SCALE | 0) + 1;
-    var r  = 3;
+  /* ── РЯБЬ (оригинальная функция) ── */
+  function addRipple(cx, cy, r, str) {
+    var r2 = r * r;
     for (var dy = -r; dy <= r; dy++) {
       for (var dx = -r; dx <= r; dx++) {
-        var d = Math.sqrt(dx * dx + dy * dy);
-        if (d > r) continue;
-        var idx = (gy + dy) * gW + (gx + dx);
-        if (idx >= 0 && idx < cur.length) {
-          cur[idx] += str * (1 - d / r);
-        }
+        var x = cx + dx, y = cy + dy;
+        if (x < 1 || x >= W - 1 || y < 1 || y >= H - 1) continue;
+        var d2 = dx * dx + dy * dy;
+        if (d2 <= r2) cur[y * W + x] += str * (1 - Math.sqrt(d2) / r);
       }
     }
   }
 
-  /* Один шаг симуляции */
-  function stepMap() {
-    for (var y = 1; y < gH - 1; y++) {
-      for (var x = 1; x < gW - 1; x++) {
-        var i = y * gW + x;
-        var v = (cur[i - 1] + cur[i + 1] + cur[i - gW] + cur[i + gW]) * 0.5 - prv[i];
-        prv[i] = v * DAMP;
-      }
-    }
-    var tmp = cur; cur = prv; prv = tmp;
-  }
-
-  /* Рендер нормалей как мягкий зелёный shimmer */
-  function renderMap() {
-    var d = imgData.data;
-    for (var y = 1; y < gH - 1; y++) {
-      for (var x = 1; x < gW - 1; x++) {
-        var i  = y * gW + x;
-        var nx = cur[i + 1]   - cur[i - 1];   /* горизонтальная нормаль */
-        var ny = cur[i + gW]  - cur[i - gW];  /* вертикальная нормаль   */
-        /* Свет падает сверху-слева */
-        var light = Math.max(0, -nx * 0.6 - ny * 0.8);
-        var alpha = Math.min(light * 90, 85) | 0;
-        var pi = i * 4;
-        d[pi]     = 184;   /* R акцента */
-        d[pi + 1] = 255;   /* G */
-        d[pi + 2] = 60;    /* B */
-        d[pi + 3] = alpha;
-      }
-    }
-    ctx.putImageData(imgData, 0, 0);
-  }
-
-  /* ══════════════════════════════
-     4. СОБЫТИЯ МЫШИ
-  ══════════════════════════════ */
-  var lastMX = -999, lastMY = -999;
-
+  /* ── ВВОД (мышь) — чувствительность снижена ── */
+  var lastMouse = 0;
   document.addEventListener('mousemove', function (e) {
-    var dx = e.clientX - lastMX, dy = e.clientY - lastMY;
-    if (dx * dx + dy * dy < 225) return; /* мин. 15px */
-    lastMX = e.clientX; lastMY = e.clientY;
-    splash(e.clientX, e.clientY, 2.5);
+    var now = performance.now();
+    if (now - lastMouse < 70) return;   /* было 38ms → 70ms */
+    lastMouse = now;
+    addRipple(
+      Math.floor(e.clientX / SCALE),
+      Math.floor(e.clientY / SCALE),
+      2, 3   /* было (2, 7) → (2, 3) */
+    );
   });
-
   document.addEventListener('click', function (e) {
-    splash(e.clientX, e.clientY, 12);
+    addRipple(
+      Math.floor(e.clientX / SCALE),
+      Math.floor(e.clientY / SCALE),
+      7, 16  /* было (8, 22) → (7, 16) */
+    );
   });
 
-  /* ══════════════════════════════
-     5. ANIMATION LOOP
-  ══════════════════════════════ */
-  var frame = 0;
-  function loop() {
-    frame++;
-    /* Симуляцию обновляем каждый кадр, рендер тоже */
-    stepMap();
-    renderMap();
-    requestAnimationFrame(loop);
+  /* ── ФОНОВЫЕ КАПЛИ (оригинал) ── */
+  function dropRain() {
+    addRipple(
+      1 + Math.floor(Math.random() * (W - 2)),
+      1 + Math.floor(Math.random() * (H - 2)),
+      1 + Math.floor(Math.random() * 2),
+      1.2 + Math.random() * 2.8
+    );
+    setTimeout(dropRain, 700 + Math.random() * 2200);
   }
-  loop();
+  dropRain();
+
+  /* ── СИМУЛЯЦИЯ (оригинал) ── */
+  function step() {
+    var i, x, y;
+    for (y = 1; y < H - 1; y++) {
+      for (x = 1; x < W - 1; x++) {
+        i = y * W + x;
+        nxt[i] = ((cur[i - 1] + cur[i + 1] + cur[i - W] + cur[i + W]) * 0.5 - prev[i]) * DAMPING;
+      }
+    }
+    var tmp = prev; prev = cur; cur = nxt; nxt = tmp;
+  }
+
+  /* ── РЕНДЕР — shimmer поверх видео ── */
+  /* Акцентный цвет проекта (B8FF3C) */
+  var AR = 184, AG = 255, AB = 60;
+
+  function render() {
+    var Wm = W - 1, Hm = H - 1;
+    var i, x, y, pi, gx, gy, h, light, alpha;
+
+    /* Очищаем буфер */
+    for (var a = 0; a < pix.length; a++) pix[a] = 0;
+
+    for (y = 1; y < Hm; y++) {
+      for (x = 1; x < Wm; x++) {
+        i = y * W + x;
+        h  = cur[i];
+        if (h < 0.08 && h > -0.08) continue; /* пропускаем плоские зоны */
+
+        gx = (cur[i + 1] - cur[i - 1]) * 0.5;
+        gy = (cur[i + W] - cur[i - W]) * 0.5;
+
+        /* Блик — свет сверху-слева */
+        light = Math.max(0, -gx * 0.65 - gy * 0.75);
+        /* Гребни волн */
+        var crest = h > 0 ? h * 0.045 : 0;
+
+        alpha = ((light * 0.55 + crest) * 160) | 0;
+        if (alpha < 3) continue;
+        if (alpha > 72) alpha = 72;
+
+        pi = i << 2;
+        pix[pi]     = AR;
+        pix[pi + 1] = AG;
+        pix[pi + 2] = AB;
+        pix[pi + 3] = alpha;
+      }
+    }
+
+    sCtx.clearRect(0, 0, W, H);
+    sCtx.putImageData(imgData, 0, 0);
+    dCtx.clearRect(0, 0, display.width, display.height);
+    dCtx.drawImage(sim, 0, 0, display.width, display.height);
+  }
+
+  /* ── ЦИКЛ ── */
+  function tick() {
+    step();
+    render();
+    requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
 
 })();
