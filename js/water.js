@@ -154,19 +154,19 @@
   var lastMouse = 0;
   document.addEventListener('mousemove', function (e) {
     var now = performance.now();
-    if (now - lastMouse < 150) return;
+    if (now - lastMouse < 100) return;
     lastMouse = now;
     addRipple(
       Math.floor(e.clientX / SCALE),
       Math.floor(e.clientY / SCALE),
-      1.5, 2
+      1, 1.2
     );
   });
   document.addEventListener('click', function (e) {
     addRipple(
       Math.floor(e.clientX / SCALE),
       Math.floor(e.clientY / SCALE),
-      5, 9
+      4, 6
     );
   });
 
