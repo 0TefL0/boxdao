@@ -249,28 +249,8 @@ var WALLET = {
   address:   null,
 };
 
-var MOCK_ADDRESS = '0x742d35Cc6634C0532925a3b844Bc9e7595f6E123';
-
 function fmtAddress(addr) {
   return addr.slice(0, 6) + '...' + addr.slice(-4);
-}
-
-function connectWalletDemo() {
-  WALLET.connected = true;
-  WALLET.address   = MOCK_ADDRESS;
-  renderHeader();
-  updateHeaderScroll();
-  setupWalletModal();
-  setupLangToggle();
-}
-
-function disconnectWallet() {
-  WALLET.connected = false;
-  WALLET.address   = null;
-  renderHeader();
-  updateHeaderScroll();
-  setupWalletModal();
-  setupLangToggle();
 }
 
 /* ══════════════════════════════════════════
@@ -306,6 +286,12 @@ function renderHeader() {
   renderMobileNav();
   setupBurger();
   updateHeaderScroll(); // восстановить класс scrolled после перерисовки
+
+  /* Кнопка «Подключить кошелёк» — открываем wallet.js модал */
+  var wb = document.getElementById('connect-wallet');
+  if (wb) wb.addEventListener('click', function () {
+    if (typeof openWalletSelect === 'function') openWalletSelect();
+  });
 }
 
 /* ══════════════════════════════════════════
@@ -343,8 +329,7 @@ function renderMobileNav() {
   var mw = document.getElementById('mobile-connect-wallet');
   if (mw) mw.addEventListener('click', function () {
     closeMobileNav();
-    var overlay = document.getElementById('wallet-modal');
-    if (overlay) overlay.classList.add('open');
+    if (typeof openWalletSelect === 'function') openWalletSelect();
   });
 }
 
@@ -399,39 +384,6 @@ function renderFooter() {
 }
 
 /* ══════════════════════════════════════════
-   МОДАЛКА
-══════════════════════════════════════════ */
-function setupWalletModal() {
-  var old = document.getElementById('wallet-modal');
-  if (old) old.remove();
-
-  var overlay = document.createElement('div');
-  overlay.className = 'modal-overlay';
-  overlay.id = 'wallet-modal';
-  overlay.innerHTML = '<div class="modal" role="dialog" aria-modal="true">'
-    + '<h3>' + t('modalHeading') + '</h3>'
-    + '<p>' + t('modalText') + '</p>'
-    + '<button class="btn btn-primary" data-connect>' + PH.wallet + ' ' + t('modalBtn') + '</button>'
-    + '</div>';
-  document.body.appendChild(overlay);
-
-  function open()  { overlay.classList.add('open'); }
-  function close() { overlay.classList.remove('open'); }
-
-  var wb = document.getElementById('connect-wallet');
-  if (wb) wb.addEventListener('click', open);
-
-  overlay.addEventListener('click', function (e) {
-    if (e.target === overlay) close();
-    if (e.target.closest('[data-connect]')) {
-      close();
-      connectWalletDemo(); /* Demo: имитируем подключение */
-    }
-  });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
-}
-
-/* ══════════════════════════════════════════
    ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА
 ══════════════════════════════════════════ */
 function switchLang() {
@@ -441,7 +393,6 @@ function switchLang() {
   renderHeader();
   if (typeof window.initBrandCube === 'function') window.initBrandCube();
   renderFooter();
-  setupWalletModal();
   setupLangToggle();
   setupButtonRipple();
   applyTranslations();
@@ -528,7 +479,6 @@ document.addEventListener('DOMContentLoaded', function () {
   renderHeader();
   if (typeof window.initBrandCube === 'function') window.initBrandCube();
   renderFooter();
-  setupWalletModal();
   setupLangToggle();
   setupButtonRipple();
   applyTranslations();
