@@ -59,6 +59,69 @@ var T = {
     socialTg:      'Telegram',
     socialGh:      'GitHub',
     socialTk:      'TikTok',
+
+    idea_label: 'Идея проекта',
+    idea_title: 'Совладение реальным бизнесом <span class="acc">через NFT</span>',
+    idea_body:  'DoleFi — платформа цифрового совладения реальными проектами. Мы берём оборудование, бизнес или идею и дробим её на NFT-доли. Каждый NFT — часть проекта. Держи в стейкинге и получай выплаты в GEM с дохода проекта.',
+    idea_p1: 'одна идея = коллекция из N-кол NFT',
+    idea_p2: 'Стейкинг на Ethereum',
+    idea_p3: 'Выплаты в GEM ежедневно',
+    idea_p4: '1 NFT = 1 голос в DAO',
+    idea_p5: 'Вход = подключение кошелька',
+
+    mech_label: 'Механика',
+    mech_title: 'Как это работает',
+    mech_s1t: 'Купил NFT',
+    mech_s1d: 'Покупаешь NFT-ячейку проекта на сайте или на OpenSea. Каждый NFT - доля в одном из проектов.',
+    mech_s2t: 'Положил в стейкинг',
+    mech_s2d: 'Подключаешь кошелёк и выбираешь режим стейкинга. Режимы и условия выплат формирует автор проекта — он сам рассчитывает финансовую модель под свою идею.',
+    mech_s3t: 'Проект генерирует доход',
+    mech_s3d: 'Бизнес работает. Система отслеживает доходность и автоматически считает долю каждого NFT-холдера по заданной автором модели.',
+    mech_s4t: 'Получаешь GEM',
+    mech_s4d: 'Скрипт считает твою долю, конвертирует по курсу $/₽ и начисляет баланс. Выводи на свой кошелёк в GEM.',
+
+    stk_label: 'Стейкинг',
+    stk_title: 'Как ты зарабатываешь <span class="acc">с NFT</span>',
+    stk_body1: 'Стейкинг — это то, за счёт чего твой NFT приносит деньги. Ты размещаешь NFT в смарт-контракте и начинаешь получать выплаты в GEM — ежедневно, пропорционально своей доле в проекте. Ты не продаёшь NFT, он остаётся твоим.',
+    stk_body2: 'Проще говоря: купил NFT → положил в стейкинг → проект работает и генерирует доход → ты получаешь свою часть в GEM каждый день.',
+    stk_r1: 'NFT остаётся твоим — ты в любой момент можешь его продать или вывести',
+    stk_r2: 'Доход начисляется в GEM ежедневно — без ручных действий',
+    stk_r3: 'Конкретные условия стейкинга у каждого проекта свои — их задаёт автор идеи',
+
+    crt_label: 'Для авторов',
+    crt_title: 'Запусти свой проект <span class="acc">на платформе</span>',
+    crt_body:  'У тебя есть идея, бизнес или оборудование? Выложи проект на DoleFi — и привлеки инвесторов через NFT. Ты сам определяешь все условия.',
+    crt_s1t: 'Описываешь проект',
+    crt_s1d: 'Рассказываешь что за идея, бизнес или оборудование. Показываешь финансовую модель: сколько стоит NFT-доля, сколько долей, как считается доход.',
+    crt_s2t: 'Настраиваешь стейкинг',
+    crt_s2d: 'Выбираешь режимы выплат: Fixed, Flexible, или оба. Устанавливаешь проценты, сроки блокировки, количество уровней — всё под твою модель.',
+    crt_s3t: 'Запускаешь коллекцию',
+    crt_s3d: 'NFT-ячейки уходят в продажу — на сайте и на OpenSea. Инвесторы покупают доли, получают GEM, участвуют в DAO-голосованиях.',
+
+    dao_label: 'DAO - управление',
+    dao_title: 'NFT = ячейка + <span class="acc">право голоса</span>',
+    dao_body:  'DoleFi - настоящая децентрализованная организация. Каждый NFT даёт право голоса. Сообщество NFT-холдеров совместно управляет каждым проектом - никто не может продавить решение в одиночку.',
+    dao_r1: '1 NFT = 1 голос - у кого 2 NFT, у того 2 голоса',
+    dao_r2: 'Порог принятия решения: 51% = минимум 11 голосов',
+    dao_r3: 'Владелец один не может принять решение',
+    dao_r4: 'Инвесторы без владельца тоже не могут',
+    dao_vt: 'Дополнительные преференции NFT-холдера',
+    dao_vs: 'Каждый держатель NFT получает персональное влияние на развитие проекта и его изменения — отдельно для каждого холдера.',
+    dao_v1t: 'Право голоса по каждому изменению',
+    dao_v1d: 'Любое изменение параметров проекта — только через голосование холдеров',
+    dao_v2t: 'Персональный вес голоса',
+    dao_v2d: 'Чем больше NFT у держателя — тем сильнее его влияние на решения',
+    dao_v3t: 'Инициатива изменений',
+    dao_v3d: 'Каждый холдер может вынести любой вопрос на голосование сообщества',
+    dao_v4t: 'Влияние на условия новых коллекций',
+    dao_v4d: 'Холдеры участвуют в формировании параметров следующих проектов на платформе',
+    dao_v5t: 'Защита интересов',
+    dao_v5d: 'Ни один участник не может изменить проект в одностороннем порядке без согласия сообщества',
+
+    dao_ey: 'Governance',
+    dao_h2: 'DAO и голосования',
+    dao_p:  'Это заготовка страницы «DAO». Наполни её своим контентом — структура, стили и навигация уже готовы.',
+    dao_ph: 'Контент страницы «DAO» - добавь сюда',
   },
   en: {
     navHome:       'Home',
@@ -76,6 +139,69 @@ var T = {
     socialTg:      'Telegram',
     socialGh:      'GitHub',
     socialTk:      'TikTok',
+
+    idea_label: 'Project Idea',
+    idea_title: 'Real business co-ownership <span class="acc">through NFT</span>',
+    idea_body:  'DoleFi is a platform for digital co-ownership of real projects. We take equipment, a business, or an idea and split it into NFT shares. Each NFT is a piece of the project. Stake it and receive daily GEM payouts from the project\'s income.',
+    idea_p1: 'one idea = collection of N NFTs',
+    idea_p2: 'Staking on Ethereum',
+    idea_p3: 'Daily payouts in GEM',
+    idea_p4: '1 NFT = 1 vote in DAO',
+    idea_p5: 'Entry = connect wallet',
+
+    mech_label: 'How it works',
+    mech_title: 'How it works',
+    mech_s1t: 'Buy NFT',
+    mech_s1d: 'Purchase an NFT share of the project on our site or on OpenSea. Each NFT is a stake in one of the projects.',
+    mech_s2t: 'Stake it',
+    mech_s2d: 'Connect your wallet and choose a staking mode. Modes and payout terms are set by the project creator — they design the financial model for their idea.',
+    mech_s3t: 'Project generates income',
+    mech_s3d: 'The business runs. The system tracks revenue and automatically calculates each NFT holder\'s share according to the creator\'s model.',
+    mech_s4t: 'Earn GEM',
+    mech_s4d: 'The script calculates your share, converts at the exchange rate and credits your balance. Withdraw to your wallet in GEM.',
+
+    stk_label: 'Staking',
+    stk_title: 'How you earn <span class="acc">with NFT</span>',
+    stk_body1: 'Staking is how your NFT makes money. You place your NFT in a smart contract and start receiving GEM payouts — daily, proportional to your share in the project. You don\'t sell the NFT, it stays yours.',
+    stk_body2: 'Simply put: buy NFT → stake it → project runs and generates income → you get your share in GEM every day.',
+    stk_r1: 'NFT stays yours — you can sell or withdraw it at any time',
+    stk_r2: 'Income is accrued in GEM daily — no manual actions needed',
+    stk_r3: 'Exact staking terms differ per project — set by the project creator',
+
+    crt_label: 'For creators',
+    crt_title: 'Launch your project <span class="acc">on the platform</span>',
+    crt_body:  'Have an idea, business, or equipment? List your project on DoleFi — and attract investors through NFT. You set all the terms.',
+    crt_s1t: 'Describe your project',
+    crt_s1d: 'Tell us about your idea, business, or equipment. Show the financial model: NFT share price, number of shares, how income is calculated.',
+    crt_s2t: 'Set up staking',
+    crt_s2d: 'Choose payout modes: Fixed, Flexible, or both. Set percentages, lock-up periods, number of levels — all tailored to your model.',
+    crt_s3t: 'Launch the collection',
+    crt_s3d: 'NFT shares go on sale — on the site and on OpenSea. Investors buy shares, earn GEM, and participate in DAO votes.',
+
+    dao_label: 'DAO — Governance',
+    dao_title: 'NFT = share + <span class="acc">voting right</span>',
+    dao_body:  'DoleFi is a true decentralized organization. Every NFT gives a vote. The community of NFT holders jointly governs each project — no one can push through a decision alone.',
+    dao_r1: '1 NFT = 1 vote — 2 NFTs = 2 votes',
+    dao_r2: 'Decision threshold: 51% = minimum 11 votes',
+    dao_r3: 'The owner alone cannot make a decision',
+    dao_r4: 'Investors without the owner cannot either',
+    dao_vt: 'Additional NFT holder privileges',
+    dao_vs: 'Every NFT holder gets personal influence over the project\'s development and changes — individually for each holder.',
+    dao_v1t: 'Voting right on every change',
+    dao_v1d: 'Any change to project parameters — only through holder voting',
+    dao_v2t: 'Personal voting weight',
+    dao_v2d: 'The more NFTs a holder has — the stronger their influence on decisions',
+    dao_v3t: 'Right to initiate changes',
+    dao_v3d: 'Any holder can put any issue to a community vote',
+    dao_v4t: 'Influence on new collection terms',
+    dao_v4d: 'Holders participate in shaping parameters of upcoming projects on the platform',
+    dao_v5t: 'Interest protection',
+    dao_v5d: 'No participant can change the project unilaterally without community consent',
+
+    dao_ey: 'Governance',
+    dao_h2: 'DAO & Governance',
+    dao_p:  'This is a draft of the "DAO" page. Fill it with your content — the structure, styles, and navigation are already set up.',
+    dao_ph: 'DAO page content — add yours here',
   }
 };
 
@@ -265,6 +391,7 @@ function switchLang() {
   setupWalletModal();
   setupLangToggle();
   setupButtonRipple();
+  applyTranslations();
 }
 
 function setupLangToggle() {
@@ -312,6 +439,36 @@ function setupButtonRipple() {
 }
 
 /* ══════════════════════════════════════════
+   APPLY TRANSLATIONS TO PAGE CONTENT
+══════════════════════════════════════════ */
+function applyTranslations() {
+  document.documentElement.lang = LANG;
+
+  // Update page title
+  var pg = currentPage();
+  var titles = {
+    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Кабинет' },
+    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Cabinet' }
+  };
+  var langTitles = titles[LANG] || titles.ru;
+  if (langTitles[pg]) document.title = langTitles[pg];
+
+  // Plain text replacement
+  document.querySelectorAll('[data-i18n]').forEach(function (el) {
+    var key = el.getAttribute('data-i18n');
+    var val = t(key);
+    if (val !== key) el.textContent = val;
+  });
+
+  // HTML replacement (for elements with <span class="acc"> etc)
+  document.querySelectorAll('[data-i18n-html]').forEach(function (el) {
+    var key = el.getAttribute('data-i18n-html');
+    var val = t(key);
+    if (val !== key) el.innerHTML = val;
+  });
+}
+
+/* ══════════════════════════════════════════
    INIT
 ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', function () {
@@ -321,4 +478,5 @@ document.addEventListener('DOMContentLoaded', function () {
   setupWalletModal();
   setupLangToggle();
   setupButtonRipple();
+  applyTranslations();
 });
