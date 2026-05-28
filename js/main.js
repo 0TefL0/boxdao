@@ -50,11 +50,9 @@ var T = {
     navStaking:    'Стейкинг',
     navDao:        'DAO',
     connectWallet: 'Подключить кошелёк',
-    modalEyebrow:  'Demo mode',
     modalHeading:  'Подключение кошелька',
-    modalText:     'Это тестовая версия сайта. Нажмите кнопку ниже для имитации подключения.',
-    modalBtn:      'Подключить (Demo)',
-    footerDemo:    'Demo / тестовая версия',
+    modalText:     'Нажмите кнопку ниже для подключения.',
+    modalBtn:      'Подключить',
     socialX:       'Twitter / X',
     socialDiscord: 'Discord',
     socialTg:      'Telegram',
@@ -137,11 +135,9 @@ var T = {
     navStaking:    'Staking',
     navDao:        'DAO',
     connectWallet: 'Connect Wallet',
-    modalEyebrow:  'Demo mode',
     modalHeading:  'Connect Wallet',
-    modalText:     'This is a test version of the site. Click the button below to simulate a wallet connection.',
-    modalBtn:      'Connect (Demo)',
-    footerDemo:    'Demo / test version',
+    modalText:     'Click the button below to connect.',
+    modalBtn:      'Connect',
     socialX:       'Twitter / X',
     socialDiscord: 'Discord',
     socialTg:      'Telegram',
@@ -413,7 +409,6 @@ function setupWalletModal() {
   overlay.className = 'modal-overlay';
   overlay.id = 'wallet-modal';
   overlay.innerHTML = '<div class="modal" role="dialog" aria-modal="true">'
-    + '<span class="eyebrow">' + t('modalEyebrow') + '</span>'
     + '<h3>' + t('modalHeading') + '</h3>'
     + '<p>' + t('modalText') + '</p>'
     + '<button class="btn btn-primary" data-connect>' + PH.wallet + ' ' + t('modalBtn') + '</button>'
