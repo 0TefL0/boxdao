@@ -241,6 +241,42 @@
   50%      { transform: rotate(45deg) translateY(6px); }
 }
 
+/* ── ПОДКЛЮЧЁННЫЙ КОШЕЛЁК (адрес) ── */
+.wallet-address {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(184,255,60,.08);
+  border: 1px solid rgba(184,255,60,.28);
+  border-radius: var(--radius-sm);
+  color: var(--accent);
+  padding: 6px 14px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-decoration: none;
+  transition: background .2s, border-color .2s, box-shadow .2s;
+  white-space: nowrap;
+}
+.wallet-address:hover {
+  background: rgba(184,255,60,.15);
+  border-color: rgba(184,255,60,.5);
+  box-shadow: 0 0 12px rgba(184,255,60,.12);
+}
+.wallet-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px rgba(184,255,60,.8);
+  flex-shrink: 0;
+  animation: walletPulse 2.5s ease-in-out infinite;
+}
+@keyframes walletPulse {
+  0%,100% { box-shadow: 0 0 4px rgba(184,255,60,.6); }
+  50%      { box-shadow: 0 0 10px rgba(184,255,60,.9); }
+}
+
 /* ── ПЕРЕКЛЮЧАТЕЛЬ ЯЗЫКА (глобус) ── */
 .lang-globe {
   display: flex;

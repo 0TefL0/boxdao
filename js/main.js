@@ -51,9 +51,9 @@ var T = {
     navDao:        'DAO',
     connectWallet: 'Подключить кошелёк',
     modalEyebrow:  'Demo mode',
-    modalHeading:  'Подключение кошелька отключено',
-    modalText:     'Это тестовая версия сайта. Реальное подключение к кошельку и блокчейн-транзакции здесь не выполняются.',
-    modalBtn:      'Понятно',
+    modalHeading:  'Подключение кошелька',
+    modalText:     'Это тестовая версия сайта. Нажмите кнопку ниже для имитации подключения.',
+    modalBtn:      'Подключить (Demo)',
     footerDemo:    'Demo / тестовая версия',
     socialX:       'Twitter / X',
     socialDiscord: 'Discord',
@@ -138,9 +138,9 @@ var T = {
     navDao:        'DAO',
     connectWallet: 'Connect Wallet',
     modalEyebrow:  'Demo mode',
-    modalHeading:  'Wallet connection disabled',
-    modalText:     'This is a test version of the site. Real wallet connections and blockchain transactions are not performed here.',
-    modalBtn:      'Got it',
+    modalHeading:  'Connect Wallet',
+    modalText:     'This is a test version of the site. Click the button below to simulate a wallet connection.',
+    modalBtn:      'Connect (Demo)',
     footerDemo:    'Demo / test version',
     socialX:       'Twitter / X',
     socialDiscord: 'Discord',
@@ -246,6 +246,38 @@ function currentPage() {
 }
 
 /* ══════════════════════════════════════════
+   WALLET STATE
+══════════════════════════════════════════ */
+var WALLET = {
+  connected: false,
+  address:   null,
+};
+
+var MOCK_ADDRESS = '0x742d35Cc6634C0532925a3b844Bc9e7595f6E123';
+
+function fmtAddress(addr) {
+  return addr.slice(0, 6) + '...' + addr.slice(-4);
+}
+
+function connectWalletDemo() {
+  WALLET.connected = true;
+  WALLET.address   = MOCK_ADDRESS;
+  renderHeader();
+  updateHeaderScroll();
+  setupWalletModal();
+  setupLangToggle();
+}
+
+function disconnectWallet() {
+  WALLET.connected = false;
+  WALLET.address   = null;
+  renderHeader();
+  updateHeaderScroll();
+  setupWalletModal();
+  setupLangToggle();
+}
+
+/* ══════════════════════════════════════════
    РЕНДЕР ШАПКИ
 ══════════════════════════════════════════ */
 function renderHeader() {
@@ -257,11 +289,18 @@ function renderHeader() {
     return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">' + t(i.key) + '</a>';
   }).join('');
 
+  var walletHTML = WALLET.connected
+    ? '<a class="wallet-address" href="cabinet" title="' + WALLET.address + '">'
+        + '<span class="wallet-dot"></span>'
+        + fmtAddress(WALLET.address)
+      + '</a>'
+    : '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>';
+
   mount.innerHTML = '<header class="site-header">'
     + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Dole<b>Fi</b></a>'
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
-    +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
+    +   walletHTML
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'
     +   '</button>'
@@ -377,7 +416,7 @@ function setupWalletModal() {
     + '<span class="eyebrow">' + t('modalEyebrow') + '</span>'
     + '<h3>' + t('modalHeading') + '</h3>'
     + '<p>' + t('modalText') + '</p>'
-    + '<button class="btn btn-primary" data-close>' + PH.check + ' ' + t('modalBtn') + '</button>'
+    + '<button class="btn btn-primary" data-connect>' + PH.wallet + ' ' + t('modalBtn') + '</button>'
     + '</div>';
   document.body.appendChild(overlay);
 
@@ -388,7 +427,11 @@ function setupWalletModal() {
   if (wb) wb.addEventListener('click', open);
 
   overlay.addEventListener('click', function (e) {
-    if (e.target === overlay || e.target.hasAttribute('data-close')) close();
+    if (e.target === overlay) close();
+    if (e.target.closest('[data-connect]')) {
+      close();
+      connectWalletDemo(); /* Demo: имитируем подключение */
+    }
   });
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
 }
