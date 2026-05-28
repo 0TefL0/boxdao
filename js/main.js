@@ -120,6 +120,9 @@ function renderHeader() {
     + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Dole<b>Fi</b></a>'
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
+    +   '<button class="lang-globe lang-globe--header" id="header-lang-toggle" title="Switch language">'
+    +     PH.globe + '<span class="lang-code">' + LANG.toUpperCase() + '</span>'
+    +   '</button>'
     +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'
@@ -268,11 +271,12 @@ function switchLang() {
 }
 
 function setupLangToggle() {
-  /* lang-toggle теперь в футере (bottom-left) */
-  var btn  = document.getElementById('lang-toggle');
-  var btnM = document.getElementById('mobile-lang-toggle');
-  if (btn)  btn.addEventListener('click', switchLang);
-  if (btnM) btnM.addEventListener('click', switchLang);
+  var btnHeader = document.getElementById('header-lang-toggle');
+  var btnFooter = document.getElementById('lang-toggle');
+  var btnMobile = document.getElementById('mobile-lang-toggle');
+  if (btnHeader) btnHeader.addEventListener('click', switchLang);
+  if (btnFooter) btnFooter.addEventListener('click', switchLang);
+  if (btnMobile) btnMobile.addEventListener('click', switchLang);
 }
 
 /* ══════════════════════════════════════════
