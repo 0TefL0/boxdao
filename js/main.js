@@ -46,6 +46,7 @@ var T = {
   ru: {
     navHome:       'Главная',
     navAbout:      'О проекте',
+    navProjects:   'Проекты',
     navStaking:    'Стейкинг',
     navDao:        'DAO',
     connectWallet: 'Подключить кошелёк',
@@ -122,10 +123,17 @@ var T = {
     dao_h2: 'DAO и голосования',
     dao_p:  'Это заготовка страницы «DAO». Наполни её своим контентом — структура, стили и навигация уже готовы.',
     dao_ph: 'Контент страницы «DAO» - добавь сюда',
+
+    proj_ey:     'Каталог',
+    proj_title:  'Проекты <span class="acc">на платформе</span>',
+    proj_sub:    'Здесь будут отображаться все активные проекты — с описанием, условиями стейкинга и доходностью.',
+    proj_soon_h: 'Скоро',
+    proj_soon_p: 'Первые проекты появятся здесь после запуска платформы. Следи за обновлениями.',
   },
   en: {
     navHome:       'Home',
     navAbout:      'About',
+    navProjects:   'Projects',
     navStaking:    'Staking',
     navDao:        'DAO',
     connectWallet: 'Connect Wallet',
@@ -202,6 +210,12 @@ var T = {
     dao_h2: 'DAO & Governance',
     dao_p:  'This is a draft of the "DAO" page. Fill it with your content — the structure, styles, and navigation are already set up.',
     dao_ph: 'DAO page content — add yours here',
+
+    proj_ey:     'Catalogue',
+    proj_title:  'Projects <span class="acc">on the platform</span>',
+    proj_sub:    'All active projects will be listed here — with descriptions, staking terms, and yield details.',
+    proj_soon_h: 'Coming soon',
+    proj_soon_p: 'The first projects will appear here after the platform launches. Stay tuned.',
   }
 };
 
@@ -213,9 +227,10 @@ function t(key) {
    NAV CONFIG
 ══════════════════════════════════════════ */
 var NAV_KEYS = [
-  { href: './',     key: 'navHome'  },
-  { href: 'about',  key: 'navAbout' },
-  { href: 'dao',    key: 'navDao'   },
+  { href: './',        key: 'navHome'     },
+  { href: 'about',     key: 'navAbout'   },
+  { href: 'projects',  key: 'navProjects' },
+  { href: 'dao',       key: 'navDao'     },
 ];
 
 var FOOTER_ITEMS = [
@@ -447,8 +462,8 @@ function applyTranslations() {
   // Update page title
   var pg = currentPage();
   var titles = {
-    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Кабинет' },
-    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Cabinet' }
+    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Кабинет' },
+    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Cabinet' }
   };
   var langTitles = titles[LANG] || titles.ru;
   if (langTitles[pg]) document.title = langTitles[pg];
