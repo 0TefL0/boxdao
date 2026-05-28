@@ -1,5 +1,5 @@
 /* =========================================================================
-   main.js - общая логика BoxDAO
+   main.js - общая логика DoleFi
    • Inline SVG (Phosphor-style)
    • i18n RU / EN (localStorage)
    • Header, Footer, Modal рендеринг
