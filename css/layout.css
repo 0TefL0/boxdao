@@ -411,6 +411,135 @@
 }
 
 /* ── АДАПТИВ ── */
+/* ── МОДАЛ ВЫБОРА КОШЕЛЬКА (wallet.js) ── */
+.wm-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+.wm-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+.wm-box {
+  background: #111115;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  padding: 24px;
+  width: min(380px, calc(100vw - 32px));
+  transform: translateY(12px);
+  transition: transform 0.28s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.6);
+}
+.wm-overlay.open .wm-box {
+  transform: translateY(0);
+}
+.wm-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.wm-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+}
+.wm-close {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--muted);
+  width: 30px; height: 30px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 14px;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.wm-close:hover { color: #fff; border-color: var(--border-hi); }
+.wm-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.wm-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 12px 14px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.18s, border-color 0.18s;
+  position: relative;
+  overflow: hidden;
+}
+.wm-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.09);
+  border-color: var(--border-hi);
+}
+.wm-btn--wc {
+  border-color: rgba(59,153,252,0.35);
+}
+.wm-btn--wc:hover:not(:disabled) {
+  border-color: rgba(59,153,252,0.65);
+  background: rgba(59,153,252,0.08);
+}
+.wm-btn-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+}
+.wm-btn-icon img { border-radius: 8px; }
+.wm-btn-name { flex: 1; }
+.wm-hint {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin: 0;
+}
+.wm-no-wallet {
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+  padding: 12px 0;
+  line-height: 1.7;
+}
+.wm-no-wallet a { color: var(--accent); text-decoration: underline; }
+.wm-spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.15);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: wmSpin 0.65s linear infinite;
+  margin-left: auto;
+  flex-shrink: 0;
+}
+@keyframes wmSpin {
+  to { transform: rotate(360deg); }
+}
+
 @media (max-width: 860px) {
   :root { --gutter: 1.25rem; }
   .nav { display: none; }
