@@ -264,6 +264,11 @@
   border-color: var(--accent);
 }
 .lang-globe svg { font-size: 15px; flex-shrink: 0; }
+.lang-globe--header {
+  /* в шапке чуть компактнее */
+  padding: 4px 8px;
+}
+
 .lang-globe--mobile {
   border: none;
   font-size: 16px;
@@ -273,6 +278,10 @@
 }
 .lang-globe--mobile svg { font-size: 22px; }
 .lang-globe--mobile:hover { color: var(--accent); border: none; }
+
+@media (max-width: 767px) {
+  .lang-globe--header { display: none; } /* на мобильных — в бургер-меню */
+}
 
 /* ── БУРГЕР ── */
 .burger {
