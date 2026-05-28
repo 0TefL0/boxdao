@@ -40,7 +40,7 @@ var PH = {
 /* ══════════════════════════════════════════
    i18n
 ══════════════════════════════════════════ */
-var LANG = localStorage.getItem('boxdao_lang') || 'ru';
+var LANG = localStorage.getItem('dolefi_lang') || localStorage.getItem('boxdao_lang') || 'ru';
 
 var T = {
   ru: {
@@ -117,7 +117,7 @@ function renderHeader() {
   }).join('');
 
   mount.innerHTML = '<header class="site-header">'
-    + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Box<b>DAO</b></a>'
+    + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Dole<b>Fi</b></a>'
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
     +   '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>'
@@ -257,7 +257,7 @@ function setupWalletModal() {
 ══════════════════════════════════════════ */
 function switchLang() {
   LANG = LANG === 'ru' ? 'en' : 'ru';
-  localStorage.setItem('boxdao_lang', LANG);
+  localStorage.setItem('dolefi_lang', LANG);
   closeMobileNav();
   renderHeader();
   if (typeof window.initBrandCube === 'function') window.initBrandCube();
