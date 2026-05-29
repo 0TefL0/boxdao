@@ -277,38 +277,44 @@
 
   function openWalletMenu(anchor) {
     closeWalletMenu();
-    var addr    = global.WALLET && global.WALLET.address ? global.WALLET.address : '';
-    var isEn    = typeof LANG !== 'undefined' && LANG === 'en';
-    var name    = global.WALLET && global.WALLET.walletName ? global.WALLET.walletName : '';
+    var addr = global.WALLET && global.WALLET.address ? global.WALLET.address : '';
+    var isEn = typeof LANG !== 'undefined' && LANG === 'en';
+    var name = global.WALLET && global.WALLET.walletName ? global.WALLET.walletName : '';
+    var short = addr.slice(0, 6) + '...' + addr.slice(-4);
+
+    var ICO_COPY = '<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="88" width="128" height="128" rx="8"/><path d="M88 88V56a8 8 0 0 1 8-8h112a8 8 0 0 1 8 8v112a8 8 0 0 1-8 8h-32"/></svg>';
+    var ICO_OUT  = '<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M112 40H48a8 8 0 0 0-8 8v160a8 8 0 0 0 8 8h64"/><polyline points="168,96 216,128 168,160"/><line x1="104" y1="128" x2="216" y2="128"/></svg>';
 
     menuEl = document.createElement('div');
     menuEl.className = 'wm-account';
     menuEl.innerHTML =
-      '<div class="wm-account-addr">' +
-        '<span class="wallet-dot"></span>' +
-        '<span class="wm-account-full">' + addr.slice(0, 6) + '...' + addr.slice(-4) + '</span>' +
-        (name ? '<span class="wm-account-name">' + name + '</span>' : '') +
+      /* — Блок адреса — */
+      '<div class="wm-ac-head">' +
+        '<div class="wm-ac-dot-wrap"><span class="wallet-dot"></span></div>' +
+        '<div class="wm-ac-info">' +
+          '<span class="wm-ac-addr">' + short + '</span>' +
+          (name ? '<span class="wm-ac-wallet">' + name + '</span>' : '') +
+        '</div>' +
       '</div>' +
-      '<button class="wm-account-btn" id="wm-copy">' +
-        '<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="88" width="128" height="128" rx="8"/><path d="M88 88V56a8 8 0 0 1 8-8h112a8 8 0 0 1 8 8v112a8 8 0 0 1-8 8h-32"/></svg>' +
-        (isEn ? 'Copy address' : 'Копировать адрес') +
+      '<div class="wm-account-sep"></div>' +
+      /* — Действия — */
+      '<button class="wm-account-btn" id="wm-copy">' + ICO_COPY +
+        '<span>' + (isEn ? 'Copy address' : 'Копировать адрес') + '</span>' +
       '</button>' +
       '<div class="wm-account-sep"></div>' +
-      '<button class="wm-account-btn wm-account-btn--danger" id="wm-disconnect">' +
-        '<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M112 40H48a8 8 0 0 0-8 8v160a8 8 0 0 0 8 8h64"/><polyline points="168,96 216,128 168,160"/><line x1="104" y1="128" x2="216" y2="128"/></svg>' +
-        (isEn ? 'Disconnect' : 'Отключить кошелёк') +
+      '<button class="wm-account-btn wm-account-btn--danger" id="wm-disconnect">' + ICO_OUT +
+        '<span>' + (isEn ? 'Disconnect' : 'Отключить') + '</span>' +
       '</button>';
 
     document.body.appendChild(menuEl);
 
-    /* Позиционирование под чипом */
-    var r = anchor.getBoundingClientRect();
-    menuEl.style.top  = (r.bottom + window.scrollY + 8) + 'px';
-    menuEl.style.left = (r.right  - menuEl.offsetWidth + window.scrollX) + 'px';
-    /* корректировка если вышли за правый край */
-    var mw = menuEl.offsetWidth;
+    /* Позиционирование под чипом — выравнивание по правому краю */
+    var r   = anchor.getBoundingClientRect();
+    var mw  = menuEl.offsetWidth;
+    var top = r.bottom + window.scrollY + 8;
     var left = r.right - mw + window.scrollX;
     if (left < 8) left = 8;
+    menuEl.style.top  = top + 'px';
     menuEl.style.left = left + 'px';
 
     requestAnimationFrame(function () { menuEl.classList.add('open'); });
