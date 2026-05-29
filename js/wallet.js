@@ -32,7 +32,24 @@
   }
 
   /* ── CONFIG ── */
-  var WC_PROJECT_ID = '38f22bfb583dd189ac7075450b154467'; /* ← вставь Project ID с cloud.walletconnect.com */
+  var WC_PROJECT_ID = '38f22bfb583dd189ac7075450b154467';
+
+  /* ── ОПТИМИСТИЧНОЕ ВОССТАНОВЛЕНИЕ (до DOMContentLoaded) ──
+     Читаем localStorage синхронно и сразу ставим WALLET.connected,
+     чтобы renderHeader() в main.js видел кошелёк при первом рендере.
+     Реальная верификация провайдера идёт в фоне через tryAutoReconnect. */
+  (function initOptimistic() {
+    var addr = '';
+    var name = '';
+    try { addr = localStorage.getItem('dolefi_wallet_addr') || ''; } catch (e) {}
+    try { name = localStorage.getItem('dolefi_wallet_name') || ''; } catch (e) {}
+    if (!addr) return;
+    global.WALLET = global.WALLET || {};
+    global.WALLET.connected  = true;
+    global.WALLET.address    = addr;
+    global.WALLET.walletName = name;
+    global.WALLET.provider   = null; /* провайдер придёт после верификации */
+  })();
 
   /* ── ICONS ── */
   var ICON_WC = '<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" width="32" height="32"><circle cx="150" cy="150" r="150" fill="#3B99FC"/><path fill="#fff" d="M93.5 117.4c31.3-30.6 82-30.6 113.3 0l3.8 3.7c1.6 1.5 1.6 4 0 5.6l-12.9 12.6c-.8.8-2.1.8-2.9 0l-5.2-5.1c-21.8-21.3-57.2-21.3-79 0l-5.6 5.5c-.8.8-2.1.8-2.9 0l-12.9-12.6c-1.6-1.5-1.6-4 0-5.6l4.3-4.1zm139.9 26.1 11.5 11.2c1.6 1.5 1.6 4 0 5.6l-51.8 50.7c-1.6 1.5-4.1 1.5-5.7 0l-36.8-36c-.4-.4-1-.4-1.4 0l-36.8 36c-1.6 1.5-4.1 1.5-5.7 0L55 160.3c-1.6-1.5-1.6-4 0-5.6l11.5-11.2c1.6-1.5 4.1-1.5 5.7 0l36.8 36c.4.4 1 .4 1.4 0l36.8-36c1.6-1.5 4.1-1.5 5.7 0l36.8 36c.4.4 1 .4 1.4 0l36.8-36c1.6-1.5 4.1-1.5 5.5 0z"/></svg>';
@@ -328,11 +345,12 @@
         var accounts = provider.accounts;
         if (accounts && accounts.length > 0 &&
             accounts[0].toLowerCase() === savedAddr.toLowerCase()) {
-          onConnected(accounts[0], provider, 'WalletConnect');
+          /* Сессия жива — только обновляем провайдер, адрес уже показан */
+          global.WALLET.provider = provider;
         } else {
-          clearSavedWallet();
+          global.disconnectWallet();
         }
-      }).catch(clearSavedWallet);
+      }).catch(function () { global.disconnectWallet(); });
       return;
     }
 
@@ -358,12 +376,27 @@
       found.request({ method: 'eth_accounts' }).then(function (accounts) {
         if (accounts && accounts.length > 0 &&
             accounts[0].toLowerCase() === savedAddr.toLowerCase()) {
-          onConnected(accounts[0], found, foundName);
+          /* Верификация прошла — просто обновляем провайдер (адрес уже показан) */
+          global.WALLET.provider   = found;
+          global.WALLET.walletName = foundName;
+          /* Вешаем слушатели изменений */
+          if (found.on) {
+            found.on('accountsChanged', function (accs) {
+              if (!accs || accs.length === 0) { global.disconnectWallet(); }
+              else {
+                global.WALLET.address = accs[0];
+                try { localStorage.setItem('dolefi_wallet_addr', accs[0]); } catch (e) {}
+                if (typeof renderHeader === 'function') renderHeader();
+              }
+            });
+            found.on('disconnect', function () { global.disconnectWallet(); });
+          }
         } else {
-          clearSavedWallet();
+          /* Верификация провалилась — откатываем показанный адрес */
+          global.disconnectWallet();
         }
-      }).catch(clearSavedWallet);
-    }, 800); /* чуть больше времени для EIP-6963 announce */
+      }).catch(function () { global.disconnectWallet(); });
+    }, 600);
   }
 
   /* ── МЕНЮ АККАУНТА (попап при клике на адрес) ── */
