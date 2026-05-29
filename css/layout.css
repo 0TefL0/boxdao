@@ -259,6 +259,15 @@
   transition: background .2s, border-color .2s, box-shadow .2s;
   white-space: nowrap;
 }
+.wallet-chip-av {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 20px; height: 20px;
+}
+.wallet-chip-av svg { display: block; border-radius: 50%; }
 .wallet-address:hover {
   background: rgba(184,255,60,.15);
   border-color: rgba(184,255,60,.5);
@@ -438,18 +447,14 @@
   gap: 12px;
   padding: 10px 12px 12px;
 }
-.wm-ac-dot-wrap {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: rgba(184,255,60,0.1);
+.wm-ac-avatar {
   flex-shrink: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  width: 40px; height: 40px;
+  box-shadow: 0 0 0 2px rgba(255,255,255,0.12);
 }
-.wm-ac-dot-wrap .wallet-dot {
-  width: 10px; height: 10px;
-}
+.wm-ac-avatar svg { display: block; }
 .wm-ac-info {
   display: flex;
   flex-direction: column;
