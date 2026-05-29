@@ -166,6 +166,28 @@
   }
 
   /* ── ПОДКЛЮЧЕНИЕ — WALLETCONNECT ── */
+  function showWCLoading() {
+    var box = modalEl && modalEl.querySelector('.wm-box');
+    if (!box) return;
+    var isEn = typeof LANG !== 'undefined' && LANG === 'en';
+    box.innerHTML =
+      '<div class="wm-head">' +
+        '<span class="wm-title">' + (isEn ? 'Connect Wallet' : 'Подключить кошелёк') + '</span>' +
+        '<button class="wm-close" id="wm-close" aria-label="Close">&#x2715;</button>' +
+      '</div>' +
+      '<div class="wm-wc-loading">' +
+        '<div class="wm-wc-logo">' +
+          '<svg viewBox="0 0 300 185" xmlns="http://www.w3.org/2000/svg" width="48" height="30"><path fill="#3B99FC" d="M61.4 36.3c48.9-47.9 128.3-47.9 177.2 0l5.9 5.8a6 6 0 0 1 0 8.7l-20.2 19.7a3.2 3.2 0 0 1-4.4 0l-8.1-7.9c-34.1-33.4-89.4-33.4-123.5 0l-8.7 8.5a3.2 3.2 0 0 1-4.4 0L75 51.4a6 6 0 0 1 0-8.7l-13.6-6.4zm218.8 40.8 18 17.6a6 6 0 0 1 0 8.7l-81.1 79.4a6.3 6.3 0 0 1-8.9 0l-57.5-56.3a1.6 1.6 0 0 0-2.2 0l-57.5 56.3a6.3 6.3 0 0 1-8.9 0L.9 103.4a6 6 0 0 1 0-8.7l18-17.6a6.3 6.3 0 0 1 8.9 0l57.5 56.3a1.6 1.6 0 0 0 2.2 0l57.5-56.3a6.3 6.3 0 0 1 8.9 0l57.5 56.3a1.6 1.6 0 0 0 2.2 0l57.5-56.3a6.3 6.3 0 0 1 8.9 0z"/></svg>' +
+        '</div>' +
+        '<div class="wm-wc-spinner-wrap">' +
+          '<div class="wm-wc-arc"></div>' +
+        '</div>' +
+        '<p class="wm-wc-label">' + (isEn ? 'Loading WalletConnect…' : 'Загружаем WalletConnect…') + '</p>' +
+        '<p class="wm-wc-sub">' + (isEn ? 'First load may take ~10 s' : 'Первый запуск займёт ~10 сек') + '</p>' +
+      '</div>';
+    document.getElementById('wm-close').addEventListener('click', closeWalletSelect);
+  }
+
   function connectWC() {
     if (!WC_PROJECT_ID) {
       clearLoading();
@@ -175,8 +197,8 @@
       return;
     }
 
-    /* Закрываем наш модал — WalletConnect откроет свой поверх страницы */
-    closeWalletSelect();
+    /* Показываем экран загрузки внутри нашего модала */
+    showWCLoading();
 
     /* Динамическая загрузка SDK */
     import('https://esm.sh/@walletconnect/ethereum-provider@2.13.3').then(function (m) {
@@ -193,16 +215,16 @@
         },
       });
     }).then(function (provider) {
+      /* SDK готов — закрываем наш модал, WalletConnect откроет свой */
+      closeWalletSelect();
       return provider.enable().then(function () {
         var accounts = provider.accounts;
         if (accounts && accounts.length > 0) {
           onConnected(accounts[0], provider, 'WalletConnect');
-        } else {
-          clearLoading();
         }
       });
     }).catch(function (e) {
-      clearLoading();
+      closeWalletSelect();
       if (e && e.message !== 'Connection request reset. Please try again.') {
         console.error('[wallet WC]', e);
       }

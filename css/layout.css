@@ -641,6 +641,44 @@
   transition: color var(--t-fast);
 }
 .wm-terms a:hover { color: var(--accent); }
+/* ── WalletConnect loading screen ── */
+.wm-wc-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 28px 16px 24px;
+  gap: 6px;
+}
+.wm-wc-logo {
+  margin-bottom: 18px;
+  opacity: 0.9;
+}
+.wm-wc-spinner-wrap {
+  position: relative;
+  width: 52px; height: 52px;
+  margin-bottom: 16px;
+}
+.wm-wc-arc {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid rgba(59,153,252,0.18);
+  border-top-color: #3B99FC;
+  animation: wcSpin 0.9s linear infinite;
+}
+@keyframes wcSpin { to { transform: rotate(360deg); } }
+.wm-wc-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+  margin: 0;
+}
+.wm-wc-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin: 0;
+}
 .wm-no-wallet {
   text-align: center;
   font-size: 14px;
