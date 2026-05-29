@@ -457,8 +457,8 @@ function applyTranslations() {
   // Update page title
   var pg = currentPage();
   var titles = {
-    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Кабинет' },
-    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO', 'cabinet': 'DoleFi — Cabinet' }
+    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO' },
+    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO' }
   };
   var langTitles = titles[LANG] || titles.ru;
   if (langTitles[pg]) document.title = langTitles[pg];
