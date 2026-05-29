@@ -122,10 +122,12 @@
     .step-icon {
       width: 52px; height: 52px; flex-shrink: 0;
       border-radius: 12px;
-      background: rgba(184,255,60,.10);
-      border: 1px solid rgba(184,255,60,.22);
+      background: linear-gradient(145deg, #162108, #0c1605);
+      border: 1px solid rgba(184,255,60,.28);
+      box-shadow: inset 0 1px 0 rgba(184,255,60,.08);
       display: flex; align-items: center; justify-content: center;
       font-size: 22px; position: relative; z-index: 1;
+      overflow: hidden;
     }
     .step-title { font-family: var(--font-display); font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 4px; }
     .step-desc  { font-size: 13px; color: var(--text-dim); line-height: 1.6; }
@@ -263,17 +265,6 @@
       50%      { box-shadow: 0 0 0 8px rgba(184,255,60,0.10), 0 0 20px rgba(184,255,60,0.06); }
     }
     .step-icon { animation: iconGlow 4s ease-in-out infinite; }
-    .step-icon--gem {
-      background: none;
-      border: none;
-      padding: 0;
-      overflow: hidden;
-      animation: gemGlow 4s ease-in-out infinite;
-    }
-    @keyframes gemGlow {
-      0%,100% { box-shadow: 0 0 0 0 rgba(184,255,60,0.00); }
-      50%      { box-shadow: 0 0 0 8px rgba(184,255,60,0.15), 0 0 24px rgba(184,255,60,0.10); }
-    }
 
     /* Hover подсветка строк шагов */
     .step {
@@ -403,8 +394,8 @@
             </div>
           </div>
           <div class="step">
-            <div class="step-icon step-icon--gem">
-              <img src="assets/gem.png" alt="GEM" style="width:100%;height:100%;object-fit:cover;border-radius:11px;display:block;">
+            <div class="step-icon">
+              <img src="assets/gem.png" alt="GEM" style="width:100%;height:100%;object-fit:cover;display:block;">
             </div>
             <div>
               <div class="step-title" data-i18n="mech_s4t">Получаешь GEM</div>
