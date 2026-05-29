@@ -511,13 +511,45 @@
 }
 .wm-btn-icon img { border-radius: 8px; }
 .wm-btn-name { flex: 1; }
-.wm-hint {
-  font-family: var(--font-mono);
+.wm-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin: -8px 0 16px;
+  line-height: 1.5;
+}
+.wm-footer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.wm-learn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color var(--t-fast);
+  width: fit-content;
+}
+.wm-learn:hover { color: var(--accent); }
+.wm-terms {
   font-size: 11px;
   color: var(--muted);
-  text-align: center;
+  line-height: 1.5;
   margin: 0;
 }
+.wm-terms a {
+  color: var(--text-dim);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  transition: color var(--t-fast);
+}
+.wm-terms a:hover { color: var(--accent); }
 .wm-no-wallet {
   text-align: center;
   font-size: 14px;

@@ -37,13 +37,26 @@
     if (modalEl) return;
     modalEl = document.createElement('div');
     modalEl.className = 'wm-overlay';
+    var isEn = typeof LANG !== 'undefined' && LANG === 'en';
     modalEl.innerHTML =
       '<div class="wm-box" role="dialog" aria-modal="true">' +
         '<div class="wm-head">' +
-          '<span class="wm-title">' + (typeof LANG !== 'undefined' && LANG === 'en' ? 'Connect Wallet' : 'Подключить кошелёк') + '</span>' +
+          '<span class="wm-title">' + (isEn ? 'Connect Wallet' : 'Подключить кошелёк') + '</span>' +
           '<button class="wm-close" id="wm-close" aria-label="Close">&#x2715;</button>' +
         '</div>' +
+        '<p class="wm-sub">' + (isEn ? 'Connect securely — your keys always stay with you' : 'Безопасное подключение — ключи всегда у тебя') + '</p>' +
         '<div class="wm-list" id="wm-list"></div>' +
+        '<div class="wm-footer">' +
+          '<a class="wm-learn" href="https://ethereum.org/en/wallets/" target="_blank" rel="noopener">' +
+            '<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="128" cy="128" r="96"/><line x1="128" y1="120" x2="128" y2="176"/><circle cx="128" cy="84" r="8" fill="currentColor" stroke="none"/></svg>' +
+            (isEn ? 'What is a wallet?' : 'Что такое кошелёк?') +
+          '</a>' +
+          '<p class="wm-terms">' +
+            (isEn
+              ? 'By connecting you agree to our <a href="#" target="_blank">Terms of Service</a>'
+              : 'Подключаясь, вы принимаете <a href="#" target="_blank">Условия использования</a>') +
+          '</p>' +
+        '</div>' +
       '</div>';
     document.body.appendChild(modalEl);
 
