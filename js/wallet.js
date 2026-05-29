@@ -44,7 +44,6 @@
           '<button class="wm-close" id="wm-close" aria-label="Close">&#x2715;</button>' +
         '</div>' +
         '<div class="wm-list" id="wm-list"></div>' +
-        '<p class="wm-hint">' + (typeof LANG !== 'undefined' && LANG === 'en' ? 'Choose your wallet to continue' : 'Выбери кошелёк для продолжения') + '</p>' +
       '</div>';
     document.body.appendChild(modalEl);
 
@@ -91,16 +90,6 @@
       list.appendChild(mkWalletBtn(n, ICON_GENERIC, function () {
         connectInjected(window.ethereum, n);
       }));
-    }
-
-    /* — Нет кошельков — */
-    if (providers.length === 0 && !window.ethereum) {
-      var msg = document.createElement('div');
-      msg.className = 'wm-no-wallet';
-      msg.innerHTML = typeof LANG !== 'undefined' && LANG === 'en'
-        ? 'No wallet detected.<br><a href="https://metamask.io" target="_blank" rel="noopener">Install MetaMask ↗</a>'
-        : 'Кошелёк не найден.<br><a href="https://metamask.io" target="_blank" rel="noopener">Установить MetaMask ↗</a>';
-      list.appendChild(msg);
     }
 
     /* — WalletConnect — */
