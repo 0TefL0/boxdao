@@ -154,6 +154,9 @@
       return;
     }
 
+    /* Закрываем наш модал — WalletConnect откроет свой поверх страницы */
+    closeWalletSelect();
+
     /* Динамическая загрузка SDK */
     import('https://esm.sh/@walletconnect/ethereum-provider@2.13.3').then(function (m) {
       var EthProvider = m.EthereumProvider || m.default;
