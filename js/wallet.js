@@ -325,33 +325,12 @@
     try { savedName = localStorage.getItem('dolefi_wallet_name') || ''; } catch (e) {}
     if (!savedAddr) return;
 
-    /* — WalletConnect: восстанавливаем сессию тихо — */
+    /* — WalletConnect: доверяем localStorage, не загружаем SDK при каждом открытии —
+       SDK требует @walletconnect/modal даже с showQrModal:false, что ломает страницу.
+       Адрес уже показан оптимистично; провайдер будет установлен при следующем
+       реальном взаимодействии пользователя (нажал WC → SDK загрузится тогда). */
     if (savedName === 'WalletConnect') {
-      if (!WC_PROJECT_ID) { clearSavedWallet(); return; }
-      import('https://esm.sh/@walletconnect/ethereum-provider@2.13.3').then(function (m) {
-        var EthProvider = m.EthereumProvider || m.default;
-        return EthProvider.init({
-          projectId: WC_PROJECT_ID,
-          chains: [1],
-          showQrModal: false, /* не показываем QR — только восстанавливаем сессию */
-          metadata: {
-            name: 'DoleFi',
-            description: 'DoleFi — NFT Co-Ownership Platform',
-            url: window.location.origin,
-            icons: [window.location.origin + '/assets/img/background.jpg'],
-          },
-        });
-      }).then(function (provider) {
-        var accounts = provider.accounts;
-        if (accounts && accounts.length > 0 &&
-            accounts[0].toLowerCase() === savedAddr.toLowerCase()) {
-          /* Сессия жива — только обновляем провайдер, адрес уже показан */
-          global.WALLET.provider = provider;
-        } else {
-          global.disconnectWallet();
-        }
-      }).catch(function () { global.disconnectWallet(); });
-      return;
+      return; /* адрес уже показан, верификация не нужна */
     }
 
     /* — Инжектированный провайдер (MetaMask / Rabby / …) — */
