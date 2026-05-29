@@ -243,11 +243,12 @@ function currentPage() {
 
 /* ══════════════════════════════════════════
    WALLET STATE
+   Не перезаписываем если wallet.js уже восстановил состояние из localStorage
 ══════════════════════════════════════════ */
-var WALLET = {
-  connected: false,
-  address:   null,
-};
+if (!window.WALLET) {
+  window.WALLET = { connected: false, address: null };
+}
+var WALLET = window.WALLET;
 
 function fmtAddress(addr) {
   return addr.slice(0, 6) + '...' + addr.slice(-4);
