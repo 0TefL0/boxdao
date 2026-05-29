@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoleFi — Проекты</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .projects-page {
+      padding-top: calc(var(--header-h) + 4rem);
+      padding-bottom: 6rem;
+      max-width: var(--maxw);
+      margin: 0 auto;
+      padding-inline: var(--gutter);
+    }
+
+    .projects-head {
+      margin-bottom: 3rem;
+    }
+
+    .projects-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 10px;
+    }
+
+    .projects-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 12px;
+    }
+
+    .projects-title .acc { color: var(--accent); }
+
+    .projects-sub {
+      font-size: 15px;
+      color: var(--text-dim);
+      line-height: 1.7;
+      max-width: 560px;
+    }
+
+    /* Coming soon */
+    .coming-soon {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem;
+      border: 1px dashed var(--border-hi);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+
+    .coming-soon-icon {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: rgba(184,255,60,.10);
+      border: 1px solid rgba(184,255,60,.22);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .coming-soon h3 {
+      font-size: 20px;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+
+    .coming-soon p {
+      font-size: 14px;
+      color: var(--muted);
+      max-width: 360px;
+      line-height: 1.7;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header"></div>
+
+  <div class="projects-page">
+    <div class="projects-head">
+      <div class="projects-eyebrow" data-i18n="proj_ey">Каталог</div>
+      <div class="projects-title" data-i18n-html="proj_title">Проекты <span class="acc">на платформе</span></div>
+      <p class="projects-sub" data-i18n="proj_sub">Здесь будут отображаться все активные проекты — с описанием, условиями стейкинга и доходностью.</p>
+    </div>
+
+    <div class="coming-soon">
+      <div class="coming-soon-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 256 256" fill="none" stroke="var(--accent)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="32" y="48" width="192" height="160" rx="8"/>
+          <line x1="32" y1="96" x2="224" y2="96"/>
+          <line x1="80" y1="24" x2="80" y2="72"/>
+          <line x1="176" y1="24" x2="176" y2="72"/>
+          <line x1="80" y1="136" x2="176" y2="136"/>
+          <line x1="80" y1="168" x2="128" y2="168"/>
+        </svg>
+      </div>
+      <h3 data-i18n="proj_soon_h">Скоро</h3>
+      <p data-i18n="proj_soon_p">Первые проекты появятся здесь после запуска платформы. Следи за обновлениями.</p>
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/water.js"></script>
+  <script src="js/brand-cube.js"></script>
+  <script src="js/wallet.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
