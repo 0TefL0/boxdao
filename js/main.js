@@ -266,10 +266,10 @@ function renderHeader() {
   }).join('');
 
   var walletHTML = WALLET.connected
-    ? '<a class="wallet-address" href="cabinet" title="' + WALLET.address + '">'
+    ? '<button class="wallet-address" id="wallet-chip" title="' + WALLET.address + '">'
         + '<span class="wallet-dot"></span>'
         + fmtAddress(WALLET.address)
-      + '</a>'
+      + '</button>'
     : '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>';
 
   mount.innerHTML = '<header class="site-header">'
@@ -291,6 +291,12 @@ function renderHeader() {
   var wb = document.getElementById('connect-wallet');
   if (wb) wb.addEventListener('click', function () {
     if (typeof openWalletSelect === 'function') openWalletSelect();
+  });
+
+  /* Чип адреса — открываем wallet.js меню аккаунта */
+  var chip = document.getElementById('wallet-chip');
+  if (chip) chip.addEventListener('click', function () {
+    if (typeof openWalletMenu === 'function') openWalletMenu(chip);
   });
 }
 

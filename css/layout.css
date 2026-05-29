@@ -411,6 +411,78 @@
 }
 
 /* ── АДАПТИВ ── */
+/* ── ПОПАП АККАУНТА (wallet.js) ── */
+.wm-account {
+  position: absolute;
+  z-index: 600;
+  min-width: 220px;
+  background: #111115;
+  border: 1px solid var(--border-hi);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.55);
+  opacity: 0;
+  transform: translateY(-6px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s cubic-bezier(0.23,1,0.32,1);
+}
+.wm-account.open {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: all;
+}
+.wm-account-addr {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px 10px;
+}
+.wm-account-full {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  flex: 1;
+}
+.wm-account-name {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  background: rgba(255,255,255,0.06);
+  border-radius: 4px;
+  padding: 2px 6px;
+}
+.wm-account-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+.wm-account-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  color: var(--text-dim);
+  padding: 9px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+}
+.wm-account-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: var(--text);
+}
+.wm-account-btn--danger { color: #ff6b6b; }
+.wm-account-btn--danger:hover {
+  background: rgba(255,80,80,0.1);
+  color: #ff4f4f;
+}
+
 /* ── МОДАЛ ВЫБОРА КОШЕЛЬКА (wallet.js) ── */
 .wm-overlay {
   position: fixed;

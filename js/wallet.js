@@ -272,9 +272,84 @@
     }, 600);
   }
 
+  /* ── МЕНЮ АККАУНТА (попап при клике на адрес) ── */
+  var menuEl = null;
+
+  function openWalletMenu(anchor) {
+    closeWalletMenu();
+    var addr    = global.WALLET && global.WALLET.address ? global.WALLET.address : '';
+    var isEn    = typeof LANG !== 'undefined' && LANG === 'en';
+    var name    = global.WALLET && global.WALLET.walletName ? global.WALLET.walletName : '';
+
+    menuEl = document.createElement('div');
+    menuEl.className = 'wm-account';
+    menuEl.innerHTML =
+      '<div class="wm-account-addr">' +
+        '<span class="wallet-dot"></span>' +
+        '<span class="wm-account-full">' + addr.slice(0, 6) + '...' + addr.slice(-4) + '</span>' +
+        (name ? '<span class="wm-account-name">' + name + '</span>' : '') +
+      '</div>' +
+      '<button class="wm-account-btn" id="wm-copy">' +
+        '<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="88" width="128" height="128" rx="8"/><path d="M88 88V56a8 8 0 0 1 8-8h112a8 8 0 0 1 8 8v112a8 8 0 0 1-8 8h-32"/></svg>' +
+        (isEn ? 'Copy address' : 'Копировать адрес') +
+      '</button>' +
+      '<div class="wm-account-sep"></div>' +
+      '<button class="wm-account-btn wm-account-btn--danger" id="wm-disconnect">' +
+        '<svg width="14" height="14" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M112 40H48a8 8 0 0 0-8 8v160a8 8 0 0 0 8 8h64"/><polyline points="168,96 216,128 168,160"/><line x1="104" y1="128" x2="216" y2="128"/></svg>' +
+        (isEn ? 'Disconnect' : 'Отключить кошелёк') +
+      '</button>';
+
+    document.body.appendChild(menuEl);
+
+    /* Позиционирование под чипом */
+    var r = anchor.getBoundingClientRect();
+    menuEl.style.top  = (r.bottom + window.scrollY + 8) + 'px';
+    menuEl.style.left = (r.right  - menuEl.offsetWidth + window.scrollX) + 'px';
+    /* корректировка если вышли за правый край */
+    var mw = menuEl.offsetWidth;
+    var left = r.right - mw + window.scrollX;
+    if (left < 8) left = 8;
+    menuEl.style.left = left + 'px';
+
+    requestAnimationFrame(function () { menuEl.classList.add('open'); });
+
+    /* Копировать */
+    document.getElementById('wm-copy').addEventListener('click', function () {
+      navigator.clipboard.writeText(addr).then(function () {
+        var btn = document.getElementById('wm-copy');
+        if (btn) { btn.textContent = isEn ? 'Copied!' : 'Скопировано!'; }
+        setTimeout(closeWalletMenu, 1200);
+      });
+    });
+
+    /* Отключить */
+    document.getElementById('wm-disconnect').addEventListener('click', function () {
+      closeWalletMenu();
+      if (typeof global.disconnectWallet === 'function') global.disconnectWallet();
+    });
+
+    /* Закрыть при клике вне */
+    setTimeout(function () {
+      document.addEventListener('click', onMenuOutside);
+    }, 10);
+  }
+
+  function onMenuOutside(e) {
+    if (menuEl && !menuEl.contains(e.target)) closeWalletMenu();
+  }
+
+  function closeWalletMenu() {
+    document.removeEventListener('click', onMenuOutside);
+    if (!menuEl) return;
+    menuEl.classList.remove('open');
+    var el = menuEl; menuEl = null;
+    setTimeout(function () { if (el) el.remove(); }, 220);
+  }
+
   /* ── ЭКСПОРТ ── */
   global.openWalletSelect = openWalletSelect;
   global.closeWalletSelect = closeWalletSelect;
+  global.openWalletMenu = openWalletMenu;
 
   /* Инициализация */
   document.addEventListener('DOMContentLoaded', tryAutoReconnect);
