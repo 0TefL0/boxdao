@@ -267,7 +267,9 @@ function renderHeader() {
 
   var walletHTML = WALLET.connected
     ? '<button class="wallet-address" id="wallet-chip" title="' + WALLET.address + '">'
-        + '<span class="wallet-dot"></span>'
+        + '<span class="wallet-chip-av">'
+          + (typeof walletAddrAvatar === 'function' ? walletAddrAvatar(WALLET.address, 20) : '<span class="wallet-dot"></span>')
+        + '</span>'
         + fmtAddress(WALLET.address)
       + '</button>'
     : '<button class="btn btn-wallet" id="connect-wallet">' + PH.wallet + ' ' + t('connectWallet') + '</button>';

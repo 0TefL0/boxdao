@@ -12,6 +12,25 @@
 (function (global) {
   'use strict';
 
+  /* ── АВАТАРКА ПО АДРЕСУ (детерминированный SVG-градиент) ── */
+  function addrAvatar(addr, size) {
+    size = size || 36;
+    var h    = (addr || '').toLowerCase().replace('0x', '').padEnd(40, '0');
+    var hue1 = parseInt(h.slice(0, 4), 16) % 360;
+    var hue2 = (hue1 + 40 + parseInt(h.slice(4, 6), 16) % 80) % 360;
+    var sat  = 65 + parseInt(h.slice(6, 8), 16) % 20;
+    var lit  = 45 + parseInt(h.slice(8, 10), 16) % 15;
+    var uid  = 'av' + h.slice(0, 8);
+    var r    = size / 2;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" xmlns="http://www.w3.org/2000/svg">'
+      + '<defs><linearGradient id="' + uid + '" x1="0%" y1="0%" x2="100%" y2="100%">'
+      + '<stop offset="0%" stop-color="hsl(' + hue1 + ',' + sat + '%,' + lit + '%)"/>'
+      + '<stop offset="100%" stop-color="hsl(' + hue2 + ',' + (sat - 10) + '%,' + (lit + 12) + '%)"/>'
+      + '</linearGradient></defs>'
+      + '<circle cx="' + r + '" cy="' + r + '" r="' + r + '" fill="url(#' + uid + ')"/>'
+      + '</svg>';
+  }
+
   /* ── CONFIG ── */
   var WC_PROJECT_ID = '38f22bfb583dd189ac7075450b154467'; /* ← вставь Project ID с cloud.walletconnect.com */
 
@@ -236,6 +255,13 @@
   /* ── ОТКЛЮЧЕНИЕ ── */
   global.disconnectWallet = function () {
     global.WALLET = global.WALLET || {};
+    /* Явно разрываем сессию — критично для WalletConnect */
+    var provider = global.WALLET.provider;
+    if (provider) {
+      try {
+        if (typeof provider.disconnect === 'function') provider.disconnect();
+      } catch (e) { /* игнорируем ошибки при дисконнекте */ }
+    }
     global.WALLET.connected  = false;
     global.WALLET.address    = null;
     global.WALLET.provider   = null;
@@ -290,7 +316,7 @@
     menuEl.innerHTML =
       /* — Блок адреса — */
       '<div class="wm-ac-head">' +
-        '<div class="wm-ac-dot-wrap"><span class="wallet-dot"></span></div>' +
+        '<div class="wm-ac-avatar">' + addrAvatar(addr, 40) + '</div>' +
         '<div class="wm-ac-info">' +
           '<span class="wm-ac-addr">' + short + '</span>' +
           (name ? '<span class="wm-ac-wallet">' + name + '</span>' : '') +
@@ -353,9 +379,10 @@
   }
 
   /* ── ЭКСПОРТ ── */
-  global.openWalletSelect = openWalletSelect;
+  global.openWalletSelect  = openWalletSelect;
   global.closeWalletSelect = closeWalletSelect;
-  global.openWalletMenu = openWalletMenu;
+  global.openWalletMenu    = openWalletMenu;
+  global.walletAddrAvatar  = addrAvatar;
 
   /* Инициализация */
   document.addEventListener('DOMContentLoaded', tryAutoReconnect);
