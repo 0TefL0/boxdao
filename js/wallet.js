@@ -296,28 +296,74 @@
   };
 
   /* ── АВТО-ПЕРЕПОДКЛЮЧЕНИЕ ── */
+  function clearSavedWallet() {
+    try { localStorage.removeItem('dolefi_wallet_addr'); } catch (e) {}
+    try { localStorage.removeItem('dolefi_wallet_name'); } catch (e) {}
+  }
+
   function tryAutoReconnect() {
     var savedAddr = '';
+    var savedName = '';
     try { savedAddr = localStorage.getItem('dolefi_wallet_addr') || ''; } catch (e) {}
+    try { savedName = localStorage.getItem('dolefi_wallet_name') || ''; } catch (e) {}
     if (!savedAddr) return;
 
-    setTimeout(function () {
-      var providers = Object.values(detectedProviders);
-      var provider = providers.length > 0 ? providers[0].provider : window.ethereum;
-      var name = providers.length > 0 ? providers[0].info.name : 'Wallet';
-      if (!provider) return;
-
-      provider.request({ method: 'eth_accounts' }).then(function (accounts) {
+    /* — WalletConnect: восстанавливаем сессию тихо — */
+    if (savedName === 'WalletConnect') {
+      if (!WC_PROJECT_ID) { clearSavedWallet(); return; }
+      import('https://esm.sh/@walletconnect/ethereum-provider@2.13.3').then(function (m) {
+        var EthProvider = m.EthereumProvider || m.default;
+        return EthProvider.init({
+          projectId: WC_PROJECT_ID,
+          chains: [1],
+          showQrModal: false, /* не показываем QR — только восстанавливаем сессию */
+          metadata: {
+            name: 'DoleFi',
+            description: 'DoleFi — NFT Co-Ownership Platform',
+            url: window.location.origin,
+            icons: [window.location.origin + '/assets/img/background.jpg'],
+          },
+        });
+      }).then(function (provider) {
+        var accounts = provider.accounts;
         if (accounts && accounts.length > 0 &&
             accounts[0].toLowerCase() === savedAddr.toLowerCase()) {
-          onConnected(accounts[0], provider, name);
+          onConnected(accounts[0], provider, 'WalletConnect');
         } else {
-          try { localStorage.removeItem('dolefi_wallet_addr'); } catch (e) {}
+          clearSavedWallet();
         }
-      }).catch(function () {
-        try { localStorage.removeItem('dolefi_wallet_addr'); } catch (e) {}
-      });
-    }, 600);
+      }).catch(clearSavedWallet);
+      return;
+    }
+
+    /* — Инжектированный провайдер (MetaMask / Rabby / …) — */
+    setTimeout(function () {
+      var list = Object.values(detectedProviders);
+      var found = null;
+      var foundName = savedName || 'Wallet';
+
+      /* Ищем провайдер по сохранённому имени */
+      if (savedName) {
+        for (var i = 0; i < list.length; i++) {
+          if (list[i].info.name === savedName) { found = list[i].provider; break; }
+        }
+      }
+      /* Если не нашли по имени — берём первый или window.ethereum */
+      if (!found) {
+        if (list.length > 0) { found = list[0].provider; foundName = list[0].info.name; }
+        else if (window.ethereum) { found = window.ethereum; }
+      }
+      if (!found) { clearSavedWallet(); return; }
+
+      found.request({ method: 'eth_accounts' }).then(function (accounts) {
+        if (accounts && accounts.length > 0 &&
+            accounts[0].toLowerCase() === savedAddr.toLowerCase()) {
+          onConnected(accounts[0], found, foundName);
+        } else {
+          clearSavedWallet();
+        }
+      }).catch(clearSavedWallet);
+    }, 800); /* чуть больше времени для EIP-6963 announce */
   }
 
   /* ── МЕНЮ АККАУНТА (попап при клике на адрес) ── */
