@@ -1,7 +1,7 @@
 /* =========================================================================
-   brand-cube.js — мини-версия куба из hero (cube.js) для логотипа в шапке
-   • Изометрическая сетка 2×2 маленьких кубов
-   • Один акцентный куб (зелёный) плавно плавает вверх-вниз
+   brand-cube.js — один изометрический куб в логотипе шапки
+   • Три видимые грани (верх, лево, право) в цветах акцента
+   • Плавное покачивание вверх-вниз
    ========================================================================= */
 (function () {
   'use strict';
@@ -11,7 +11,7 @@
     if (!mark) return;
 
     var DPR  = Math.min(window.devicePixelRatio || 1, 2);
-    var DISP = 36;            /* чуть больше — куб помещается без обрезки */
+    var DISP = 34;
     var SIZE = DISP * DPR;
 
     var canvas = document.createElement('canvas');
@@ -27,88 +27,66 @@
 
     var css    = getComputedStyle(document.documentElement);
     var ACCENT = (css.getPropertyValue('--accent') || '#B8FF3C').trim();
-    var LINE   = 'rgba(255,255,255,0.55)';
 
-    var U  = 9;               /* размер одного куба */
-    var A  = Math.PI / 6;
-    var CA = Math.cos(A);
-    var SA = Math.sin(A);
-    /* Центр подобран так, чтобы 2×2 сетка (ширина ≈31px, высота ≈27px)
-       лежала ровно: X: [2.5, 33.5], Y: [3, 30] */
-    var CX = DISP / 2;       /* 18 */
-    var CY = 12;              /* смещение вверх, чтобы куб был по центру */
+    /* ── Параметры куба ── */
+    var U  = 13;               /* размер куба в px */
+    var A  = Math.PI / 6;      /* 30° — угол изометрии */
+    var CA = Math.cos(A);      /* ≈ 0.866 */
+    var SA = Math.sin(A);      /* 0.5 */
 
-    function isoP(gx, gy, gz, oy) {
+    /* Центр: куб x:[4..30], y:[3..29] в canvas 34×34 */
+    var CX = 17;
+    var CY = 16;
+
+    /* Изометрическая проекция точки (gx,gy,gz) */
+    function p(gx, gy, gz, oy) {
       return [
         CX + (gx - gy) * U * CA,
         CY + (gx + gy) * U * SA - gz * U + (oy || 0),
       ];
     }
 
-    function drawFace(pts, stroke, strokeA, fill, fillA, lw) {
+    function face(pts, fillColor, fillAlpha, strokeColor, strokeAlpha, lw) {
       ctx.beginPath();
       ctx.moveTo(pts[0][0], pts[0][1]);
       for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
       ctx.closePath();
-      if (fill && fillA > 0) {
-        ctx.fillStyle = fill;
-        ctx.globalAlpha = fillA;
-        ctx.fill();
-      }
-      ctx.strokeStyle = stroke;
-      ctx.lineWidth   = lw || 1.4;
+      ctx.globalAlpha = fillAlpha;
+      ctx.fillStyle   = fillColor;
+      ctx.fill();
+      ctx.globalAlpha = strokeAlpha;
+      ctx.strokeStyle = strokeColor;
+      ctx.lineWidth   = lw;
       ctx.lineJoin    = 'round';
-      ctx.globalAlpha = strokeA;
       ctx.stroke();
       ctx.globalAlpha = 1;
     }
 
-    function drawCube(gx, gy, gz, oy, isAccent) {
-      oy = oy || 0;
-      var col = isAccent ? ACCENT : LINE;
-
-      var top = [
-        isoP(gx,   gy,   gz+1, oy), isoP(gx+1, gy,   gz+1, oy),
-        isoP(gx+1, gy+1, gz+1, oy), isoP(gx,   gy+1, gz+1, oy),
-      ];
-      var left = [
-        isoP(gx,   gy+1, gz+1, oy), isoP(gx,   gy+1, gz, oy),
-        isoP(gx+1, gy+1, gz,   oy), isoP(gx+1, gy+1, gz+1, oy),
-      ];
-      var right = [
-        isoP(gx+1, gy,   gz+1, oy), isoP(gx+1, gy,   gz, oy),
-        isoP(gx+1, gy+1, gz,   oy), isoP(gx+1, gy+1, gz+1, oy),
-      ];
-
-      if (isAccent) {
-        drawFace(top,   col, 0.95, col, 0.18, 1.6);
-        drawFace(left,  col, 0.95, col, 0.10, 1.6);
-        drawFace(right, col, 0.95, col, 0.14, 1.6);
-      } else {
-        drawFace(top,   col, 0.75, null, 0, 1.3);
-        drawFace(left,  col, 0.40, null, 0, 1.3);
-        drawFace(right, col, 0.55, null, 0, 1.3);
-      }
-    }
-
-    /* Сетка 2×2: позиции кубов */
-    var grid = [
-      [0, 0, 0], [1, 0, 0],
-      [0, 1, 0], [1, 1, 0],
-    ];
-    /* Акцентный куб — правый верхний */
-    var accentIdx = 1;
-
     function draw(time) {
       ctx.clearRect(0, 0, DISP, DISP);
 
-      /* Плавное движение акцентного куба */
-      var floatY = Math.sin(time * 0.002) * 1.4;
+      var oy = Math.sin(time * 0.0018) * 1.8; /* плавное покачивание */
 
-      grid.forEach(function (pos, idx) {
-        var oy = (idx === accentIdx) ? floatY : 0;
-        drawCube(pos[0], pos[1], pos[2], oy, idx === accentIdx);
-      });
+      /* ── Верхняя грань ── */
+      face(
+        [p(0,0,1,oy), p(1,0,1,oy), p(1,1,1,oy), p(0,1,1,oy)],
+        ACCENT, 0.22,
+        ACCENT, 0.95, 1.6
+      );
+
+      /* ── Левая грань (передняя левая) ── */
+      face(
+        [p(0,1,1,oy), p(0,1,0,oy), p(1,1,0,oy), p(1,1,1,oy)],
+        ACCENT, 0.10,
+        ACCENT, 0.65, 1.5
+      );
+
+      /* ── Правая грань (передняя правая) ── */
+      face(
+        [p(1,0,1,oy), p(1,0,0,oy), p(1,1,0,oy), p(1,1,1,oy)],
+        ACCENT, 0.14,
+        ACCENT, 0.80, 1.5
+      );
 
       requestAnimationFrame(draw);
     }
