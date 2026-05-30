@@ -1,11 +1,10 @@
 /* =========================================================================
    cubes-bg.js — фон с плавающими изометрическими кубами DoleFi
-   На основе assets/preview.html
+   Оптимизирован: без shadowBlur, меньше объектов, throttle 30fps
    ========================================================================= */
 (function () {
   'use strict';
 
-  /* ── Создаём контейнер и canvas ── */
   var wrap = document.createElement('div');
   wrap.className = 'toxic-cubes-bg';
   wrap.setAttribute('aria-hidden', 'true');
@@ -13,19 +12,21 @@
   var canvas = document.createElement('canvas');
   canvas.id = 'toxic-cubes-canvas';
   wrap.appendChild(canvas);
-
-  /* Вставляем первым элементом body */
   document.body.insertBefore(wrap, document.body.firstChild);
 
   var ctx = canvas.getContext('2d', { alpha: true });
 
-  var TOXIC       = '#b8ff3c';
-  var TOXIC_BRIGHT = '#39ff14';
-  var LINE        = '#8a8a93';
+  var TOXIC = '#b8ff3c';
+  var CA    = Math.cos(Math.PI / 6);
+  var SA    = Math.sin(Math.PI / 6);
 
   var width = 0, height = 0, dpr = 1;
   var cubes = [], particles = [];
   var mouse = { x: -9999, y: -9999, active: false };
+
+  /* Throttle: рендерим ~30fps вместо 60 */
+  var lastTime = 0;
+  var FRAME_MS = 1000 / 30;
 
   function rnd(min, max) { return min + Math.random() * (max - min); }
 
@@ -43,135 +44,165 @@
 
   function createScene() {
     cubes = []; particles = [];
-    var sf         = Math.max(1, (width * height) / (1440 * 900));
-    var cubeCount  = Math.round(Math.min(42, Math.max(24, 26 * sf)));
-    var partCount  = Math.round(Math.min(130, Math.max(55, 75 * sf)));
+
+    /* Меньше кубов — меньше нагрузки */
+    var cubeCount = Math.round(Math.min(18, Math.max(10, 12 * (width * height) / (1440 * 900))));
+    var partCount = Math.round(Math.min(40, Math.max(15, 25 * (width * height) / (1440 * 900))));
 
     for (var i = 0; i < cubeCount; i++) {
-      var size = rnd(9, 21);
+      var size = rnd(10, 20);
       cubes.push({
-        x: rnd(-120, width + 120), y: rnd(-120, height + 120),
+        x: rnd(-80, width + 80), y: rnd(-80, height + 80),
         size: size,
-        alpha: rnd(0.45, 1),
-        vx: rnd(-0.34, 0.34), vy: rnd(-0.26, 0.26),
-        floatRadiusX: rnd(20, 90), floatRadiusY: rnd(18, 74),
-        floatSpeed: rnd(0.45, 1.15),
-        spinSpeed: rnd(-0.18, 0.18),
+        alpha: rnd(0.35, 0.85),
+        vx: rnd(-0.25, 0.25), vy: rnd(-0.2, 0.2),
+        floatRadiusX: rnd(15, 60), floatRadiusY: rnd(12, 50),
+        floatSpeed: rnd(0.3, 0.8),
         angle: rnd(0, Math.PI * 2),
+        spinSpeed: rnd(-0.12, 0.12),
         phase: rnd(0, Math.PI * 2),
-        glow: Math.random() > 0.52,
-        accentCube: Math.floor(rnd(0, 8)),
+        /* Предрасcчитываем порядок отрисовки 2×2×2 раз и навсегда */
+        units: makeUnits(),
       });
     }
+
     for (var j = 0; j < partCount; j++) {
       particles.push({
         x: rnd(0, width), y: rnd(0, height),
-        r: rnd(0.35, 1.25),
-        alpha: rnd(0.035, 0.16),
-        vx: rnd(-0.07, 0.07), vy: rnd(-0.08, 0.08),
+        r: rnd(0.4, 1.1),
+        alpha: rnd(0.04, 0.14),
+        vx: rnd(-0.06, 0.06), vy: rnd(-0.07, 0.07),
         phase: rnd(0, Math.PI * 2),
       });
     }
   }
 
-  function isoPoint(x, y, z, unit, ox, oy) {
-    var a = Math.PI / 6;
-    return [
-      (x - y) * unit * Math.cos(a) + ox,
-      (x + y) * unit * Math.sin(a) - z * unit + oy,
-    ];
+  /* Порядок back-to-front считается один раз */
+  function makeUnits() {
+    var arr = [];
+    for (var z = 0; z < 2; z++)
+      for (var y = 0; y < 2; y++)
+        for (var x = 0; x < 2; x++)
+          arr.push({ x: x, y: y, z: z, depth: x + y - z });
+    arr.sort(function (a, b) { return a.depth - b.depth; });
+    return arr;
   }
 
-  function drawFace(pts, stroke, strokeA, fill, fillA, lw) {
+  /* Быстрая изометрическая точка — без new Array, напрямую в переменные */
+  function ip(gx, gy, gz, u, ox, oy, out) {
+    out[0] = (gx - gy) * u * CA + ox;
+    out[1] = (gx + gy) * u * SA - gz * u + oy;
+  }
+
+  /* Переиспользуемые буферы точек — не создаём массивы каждый кадр */
+  var _p = [[0,0],[0,0],[0,0],[0,0]];
+
+  function drawFace(p0,p1,p2,p3, strokeA, fillA, lw) {
     ctx.beginPath();
-    ctx.moveTo(pts[0][0], pts[0][1]);
-    for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+    ctx.moveTo(p0[0], p0[1]);
+    ctx.lineTo(p1[0], p1[1]);
+    ctx.lineTo(p2[0], p2[1]);
+    ctx.lineTo(p3[0], p3[1]);
     ctx.closePath();
-    if (fill) { ctx.globalAlpha = fillA; ctx.fillStyle = fill; ctx.fill(); }
-    ctx.globalAlpha = strokeA; ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke();
+    if (fillA > 0) {
+      ctx.globalAlpha = fillA;
+      ctx.fillStyle = TOXIC;
+      ctx.fill();
+    }
+    ctx.globalAlpha = strokeA;
+    ctx.strokeStyle = TOXIC;
+    ctx.lineWidth = lw;
+    ctx.stroke();
     ctx.globalAlpha = 1;
   }
 
-  function drawSmallCube(gx, gy, gz, unit, ox, oy, isAccent, alpha, t) {
-    var top   = [isoPoint(gx,gy,gz+1,unit,ox,oy), isoPoint(gx+1,gy,gz+1,unit,ox,oy), isoPoint(gx+1,gy+1,gz+1,unit,ox,oy), isoPoint(gx,gy+1,gz+1,unit,ox,oy)];
-    var left  = [isoPoint(gx,gy+1,gz+1,unit,ox,oy), isoPoint(gx,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz+1,unit,ox,oy)];
-    var right = [isoPoint(gx+1,gy,gz+1,unit,ox,oy), isoPoint(gx+1,gy,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz+1,unit,ox,oy)];
+  var _t0=[0,0],_t1=[0,0],_t2=[0,0],_t3=[0,0];
+  var _l0=[0,0],_l1=[0,0],_l2=[0,0],_l3=[0,0];
+  var _r0=[0,0],_r1=[0,0],_r2=[0,0],_r3=[0,0];
 
-    /* Все грани — зелёные (--accent), яркость зависит от грани */
-    var pulse = 0.75 + Math.sin(t * 2.2 + gx + gy + gz) * 0.25;
-    ctx.shadowColor = TOXIC_BRIGHT;
-    ctx.shadowBlur  = 1.5 + pulse * 1.5;
-    drawFace(top,   TOXIC, alpha,        TOXIC, 0.05  * alpha, 0.7);
-    drawFace(left,  TOXIC, 0.55 * alpha, TOXIC, 0.018 * alpha, 0.7);
-    drawFace(right, TOXIC, 0.75 * alpha, TOXIC, 0.03  * alpha, 0.7);
-    ctx.shadowBlur = 0;
+  function drawSmallCube(gx, gy, gz, u, ox, oy, alpha) {
+    /* Top */
+    ip(gx,   gy,   gz+1, u, ox, oy, _t0);
+    ip(gx+1, gy,   gz+1, u, ox, oy, _t1);
+    ip(gx+1, gy+1, gz+1, u, ox, oy, _t2);
+    ip(gx,   gy+1, gz+1, u, ox, oy, _t3);
+    /* Left */
+    ip(gx,   gy+1, gz+1, u, ox, oy, _l0);
+    ip(gx,   gy+1, gz,   u, ox, oy, _l1);
+    ip(gx+1, gy+1, gz,   u, ox, oy, _l2);
+    ip(gx+1, gy+1, gz+1, u, ox, oy, _l3);
+    /* Right */
+    ip(gx+1, gy,   gz+1, u, ox, oy, _r0);
+    ip(gx+1, gy,   gz,   u, ox, oy, _r1);
+    ip(gx+1, gy+1, gz,   u, ox, oy, _r2);
+    ip(gx+1, gy+1, gz+1, u, ox, oy, _r3);
+
+    drawFace(_t0,_t1,_t2,_t3, alpha,        0.045 * alpha, 0.65);
+    drawFace(_l0,_l1,_l2,_l3, 0.5 * alpha,  0.016 * alpha, 0.65);
+    drawFace(_r0,_r1,_r2,_r3, 0.7 * alpha,  0.028 * alpha, 0.65);
   }
 
   function drawCubeGroup(cube, t) {
     cube.x += cube.vx; cube.y += cube.vy;
     cube.angle += cube.spinSpeed * 0.01;
-    var margin = cube.size * 8;
-    if (cube.x < -margin)        cube.x = width  + margin;
-    if (cube.x > width  + margin) cube.x = -margin;
-    if (cube.y < -margin)        cube.y = height + margin;
-    if (cube.y > height + margin) cube.y = -margin;
+    var m = cube.size * 6;
+    if (cube.x < -m)       cube.x = width  + m;
+    if (cube.x > width + m) cube.x = -m;
+    if (cube.y < -m)       cube.y = height + m;
+    if (cube.y > height + m) cube.y = -m;
 
     var orbitX = Math.sin(t * cube.floatSpeed + cube.phase) * cube.floatRadiusX;
     var orbitY = Math.cos(t * cube.floatSpeed * 0.77 + cube.phase) * cube.floatRadiusY;
+
+    /* Отталкивание мышью */
     var dx = cube.x - mouse.x, dy = cube.y - mouse.y;
-    var dist = Math.hypot(dx, dy);
-    var push = mouse.active && dist < 220 ? (1 - dist / 220) * 32 : 0;
-    var px = push ? (dx / (dist || 1)) * push : 0;
-    var py = push ? (dy / (dist || 1)) * push : 0;
+    var dist = Math.sqrt(dx*dx + dy*dy) || 1;
+    var push = mouse.active && dist < 200 ? (1 - dist / 200) * 28 : 0;
 
     ctx.save();
-    ctx.translate(cube.x + orbitX + px, cube.y + orbitY + py);
-    ctx.rotate(cube.angle + Math.sin(t * 0.38 + cube.phase) * 0.06);
+    ctx.translate(
+      cube.x + orbitX + (push ? dx/dist*push : 0),
+      cube.y + orbitY + (push ? dy/dist*push : 0)
+    );
+    ctx.rotate(cube.angle);
 
-    if (cube.glow) {
-      var r = cube.size * 5.4;
-      var g = ctx.createRadialGradient(0, 0, 0, 0, 0, r);
-      g.addColorStop(0,    'rgba(184,255,60,0.045)');
-      g.addColorStop(0.42, 'rgba(184,255,60,0.015)');
-      g.addColorStop(1,    'rgba(184,255,60,0)');
-      ctx.fillStyle = g; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+    var u = cube.size;
+    var oy = u * 1.25;
+    var units = cube.units;
+    for (var k = 0; k < units.length; k++) {
+      var part = units[k];
+      var ag = Math.sin(t * 1.3 + cube.phase + k) * u * 0.14;
+      drawSmallCube(part.x, part.y, part.z, u, 0, oy + ag, cube.alpha);
     }
-
-    var units = [];
-    for (var z = 0; z < 2; z++)
-      for (var y = 0; y < 2; y++)
-        for (var x = 0; x < 2; x++)
-          units.push({ x: x, y: y, z: z, depth: x + y - z });
-    units.sort(function (a, b) { return a.depth - b.depth; });
-
-    units.forEach(function (part, idx) {
-      var ag = Math.sin(t * 1.35 + cube.phase + idx) * cube.size * 0.16;
-      drawSmallCube(part.x, part.y, part.z, cube.size, 0, cube.size * 1.25 + ag, idx === cube.accentCube, cube.alpha, t);
-    });
 
     ctx.restore();
   }
 
   function drawParticles(t) {
-    particles.forEach(function (p) {
+    ctx.fillStyle = TOXIC;
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
       p.x += p.vx; p.y += p.vy;
-      if (p.x < -10) p.x = width  + 10; if (p.x > width  + 10) p.x = -10;
-      if (p.y < -10) p.y = height + 10; if (p.y > height + 10) p.y = -10;
+      if (p.x < -5) p.x = width  + 5; if (p.x > width  + 5) p.x = -5;
+      if (p.y < -5) p.y = height + 5; if (p.y > height + 5) p.y = -5;
       var flicker = 0.55 + Math.sin(t * 1.8 + p.phase) * 0.45;
       ctx.globalAlpha = p.alpha * flicker;
-      ctx.fillStyle = TOXIC;
-      ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.fill();
-    });
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, 6.2832);
+      ctx.fill();
+    }
     ctx.globalAlpha = 1;
   }
 
   function animate(ms) {
+    requestAnimationFrame(animate);
+    if (ms - lastTime < FRAME_MS) return; /* пропускаем лишние кадры */
+    lastTime = ms;
+
     var t = ms / 1000;
     ctx.clearRect(0, 0, width, height);
     drawParticles(t);
-    cubes.slice().sort(function (a, b) { return a.size - b.size; })
-         .forEach(function (c) { drawCubeGroup(c, t); });
-    requestAnimationFrame(animate);
+    for (var i = 0; i < cubes.length; i++) drawCubeGroup(cubes[i], t);
   }
 
   window.addEventListener('resize', resize);
@@ -185,5 +216,4 @@
 
   resize();
   requestAnimationFrame(animate);
-
 })();
