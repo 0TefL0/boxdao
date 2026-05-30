@@ -97,18 +97,14 @@
     var left  = [isoPoint(gx,gy+1,gz+1,unit,ox,oy), isoPoint(gx,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz+1,unit,ox,oy)];
     var right = [isoPoint(gx+1,gy,gz+1,unit,ox,oy), isoPoint(gx+1,gy,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz,unit,ox,oy), isoPoint(gx+1,gy+1,gz+1,unit,ox,oy)];
 
-    if (isAccent) {
-      var pulse = 0.75 + Math.sin(t * 2.2 + gx + gy + gz) * 0.25;
-      ctx.shadowColor = TOXIC_BRIGHT; ctx.shadowBlur = 3.5 + pulse * 3;
-      drawFace(top,   TOXIC, alpha,        TOXIC, 0.045 * alpha, 0.75);
-      drawFace(left,  TOXIC, 0.74 * alpha, TOXIC, 0.02  * alpha, 0.75);
-      drawFace(right, TOXIC, 0.84 * alpha, TOXIC, 0.032 * alpha, 0.75);
-      ctx.shadowBlur = 0;
-    } else {
-      drawFace(top,   LINE, 0.7  * alpha, null, 0, 0.55);
-      drawFace(left,  LINE, 0.34 * alpha, null, 0, 0.55);
-      drawFace(right, LINE, 0.5  * alpha, null, 0, 0.55);
-    }
+    /* Все грани — зелёные (--accent), яркость зависит от грани */
+    var pulse = 0.75 + Math.sin(t * 2.2 + gx + gy + gz) * 0.25;
+    ctx.shadowColor = TOXIC_BRIGHT;
+    ctx.shadowBlur  = 1.5 + pulse * 1.5;
+    drawFace(top,   TOXIC, alpha,        TOXIC, 0.05  * alpha, 0.7);
+    drawFace(left,  TOXIC, 0.55 * alpha, TOXIC, 0.018 * alpha, 0.7);
+    drawFace(right, TOXIC, 0.75 * alpha, TOXIC, 0.03  * alpha, 0.7);
+    ctx.shadowBlur = 0;
   }
 
   function drawCubeGroup(cube, t) {
