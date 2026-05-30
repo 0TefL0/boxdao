@@ -1,6 +1,6 @@
 /* =========================================================================
    base.css - сброс стилей, базовая типографика
-   Фон заменён на анимацию water.js (canvas, z-index:-2).
+   Фон — cubes-bg.js (плавающие изометрические кубы).
    ========================================================================= */
 
 *, *::before, *::after {
@@ -17,23 +17,39 @@ body {
   min-height: 100vh;
   font-family: var(--font-body);
   color: var(--text);
-  /* Фон - сплошной цвет, видный пока water.js не загрузится */
-  background-color: var(--bg);
+  background-color: #000;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-/* Тёмный оверлей над water-canvas (z:-2), под контентом.
-   Снижена непрозрачность vs оригинала - чтобы вода просвечивала. */
-body::before {
-  content: "";
+/* ── Фон с плавающими кубами (cubes-bg.js) ── */
+.toxic-cubes-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
+  overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(7, 117, 13, 0.07), transparent 60%),
-    linear-gradient(180deg, rgba(10, 10, 12, 0.55), rgba(10, 10, 12, 0.70));
+    radial-gradient(circle at 18% 18%, rgba(184,255,60,0.05), transparent 24%),
+    radial-gradient(circle at 82% 72%, rgba(57,255,20,0.035), transparent 28%),
+    radial-gradient(circle at 50% 50%, rgba(184,255,60,0.02), transparent 34%),
+    linear-gradient(145deg, #050705 0%, #000 52%, #020302 100%);
+}
+.toxic-cubes-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.22) 54%, rgba(0,0,0,0.82) 100%);
+  pointer-events: none;
+}
+#toxic-cubes-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: drop-shadow(0 0 6px rgba(184,255,60,0.04));
 }
 
 /* ── Типографика ── */
