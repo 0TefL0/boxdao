@@ -34,11 +34,11 @@
 .brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-family: var(--font-display);
   font-weight: 700;
-  font-size: 18px;
-  letter-spacing: -0.01em;
+  font-size: 26px;
+  letter-spacing: -0.02em;
   color: #fff;
   transition: opacity var(--t-fast);
 }
@@ -49,8 +49,8 @@
   align-items: center;
   justify-content: center;
   color: var(--accent);
-  font-size: 22px;
-  filter: drop-shadow(0 0 6px rgba(184,255,60,0.65));
+  font-size: 30px;
+  filter: drop-shadow(0 0 8px rgba(184,255,60,0.7));
 }
 
 .brand b { color: var(--accent); font-weight: 700; }
