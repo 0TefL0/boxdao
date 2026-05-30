@@ -1,7 +1,7 @@
 /* =========================================================================
-   brand-cube.js — один изометрический куб в логотипе шапки
-   • Три видимые грани (верх, лево, право) в цветах акцента
-   • Плавное покачивание вверх-вниз
+   brand-cube.js — мини-версия hero-куба (cube.js) для логотипа в шапке
+   • 2×2×2 кубов, один акцентный зелёный (как на главной)
+   • Плавное покачивание акцентного куба
    ========================================================================= */
 (function () {
   'use strict';
@@ -11,7 +11,7 @@
     if (!mark) return;
 
     var DPR  = Math.min(window.devicePixelRatio || 1, 2);
-    var DISP = 34;
+    var DISP = 44;
     var SIZE = DISP * DPR;
 
     var canvas = document.createElement('canvas');
@@ -27,66 +27,93 @@
 
     var css    = getComputedStyle(document.documentElement);
     var ACCENT = (css.getPropertyValue('--accent') || '#B8FF3C').trim();
+    var LINE   = '#8A8A93';
 
-    /* ── Параметры куба ── */
-    var U  = 13;               /* размер куба в px */
-    var A  = Math.PI / 6;      /* 30° — угол изометрии */
-    var CA = Math.cos(A);      /* ≈ 0.866 */
-    var SA = Math.sin(A);      /* 0.5 */
+    /* ── Геометрия (масштаб cube.js × ~0.156) ── */
+    var U  = 10;
+    var A  = Math.PI / 6;
+    var CA = Math.cos(A);
+    var SA = Math.sin(A);
+    var CX = 22;
+    var CY = 22;
 
-    /* Центр: куб x:[4..30], y:[3..29] в canvas 34×34 */
-    var CX = 17;
-    var CY = 16;
-
-    /* Изометрическая проекция точки (gx,gy,gz) */
-    function p(gx, gy, gz, oy) {
+    function isoP(gx, gy, gz, ox, oy) {
       return [
-        CX + (gx - gy) * U * CA,
+        CX + (gx - gy) * U * CA + (ox || 0),
         CY + (gx + gy) * U * SA - gz * U + (oy || 0),
       ];
     }
 
-    function face(pts, fillColor, fillAlpha, strokeColor, strokeAlpha, lw) {
+    function drawFace(pts, stroke, strokeAlpha, fill, fillAlpha, lw) {
       ctx.beginPath();
       ctx.moveTo(pts[0][0], pts[0][1]);
       for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
       ctx.closePath();
-      ctx.globalAlpha = fillAlpha;
-      ctx.fillStyle   = fillColor;
-      ctx.fill();
-      ctx.globalAlpha = strokeAlpha;
-      ctx.strokeStyle = strokeColor;
-      ctx.lineWidth   = lw;
+      if (fill && fillAlpha > 0) {
+        ctx.fillStyle = fill; ctx.globalAlpha = fillAlpha; ctx.fill();
+      }
+      ctx.strokeStyle = stroke;
+      ctx.lineWidth   = lw || 1.6;
       ctx.lineJoin    = 'round';
+      ctx.globalAlpha = strokeAlpha;
       ctx.stroke();
       ctx.globalAlpha = 1;
     }
 
+    function drawCube(gx, gy, gz, ox, oy, isAccent) {
+      ox = ox || 0; oy = oy || 0;
+      var col = isAccent ? ACCENT : LINE;
+
+      var top = [
+        isoP(gx,   gy,   gz+1, ox, oy), isoP(gx+1, gy,   gz+1, ox, oy),
+        isoP(gx+1, gy+1, gz+1, ox, oy), isoP(gx,   gy+1, gz+1, ox, oy),
+      ];
+      var left = [
+        isoP(gx,   gy+1, gz+1, ox, oy), isoP(gx,   gy+1, gz, ox, oy),
+        isoP(gx+1, gy+1, gz,   ox, oy), isoP(gx+1, gy+1, gz+1, ox, oy),
+      ];
+      var right = [
+        isoP(gx+1, gy,   gz+1, ox, oy), isoP(gx+1, gy,   gz, ox, oy),
+        isoP(gx+1, gy+1, gz,   ox, oy), isoP(gx+1, gy+1, gz+1, ox, oy),
+      ];
+
+      if (isAccent) {
+        drawFace(top,   col, 0.95, col, 0.16, 1.4);
+        drawFace(left,  col, 0.95, col, 0.09, 1.4);
+        drawFace(right, col, 0.95, col, 0.13, 1.4);
+      } else {
+        drawFace(top,   col, 0.80, null, 0, 1.2);
+        drawFace(left,  col, 0.45, null, 0, 1.2);
+        drawFace(right, col, 0.60, null, 0, 1.2);
+      }
+    }
+
+    /* ── 2×2×2 = 8 кубов, акцентный — gx=1, gy=0, gz=1 (как в cube.js) ── */
+    var ACCENT_IDX = 5;
+    var cubes = [];
+    for (var gz = 0; gz <= 1; gz++)
+      for (var gy = 0; gy <= 1; gy++)
+        for (var gx = 0; gx <= 1; gx++)
+          cubes.push({ gx: gx, gy: gy, gz: gz, isAccent: false });
+    cubes[ACCENT_IDX].isAccent = true;
+
+    /* Порядок back-to-front */
+    var drawOrder = cubes
+      .map(function (c, i) { return { i: i, depth: c.gx + c.gy - c.gz }; })
+      .sort(function (a, b) { return a.depth - b.depth; })
+      .map(function (o) { return o.i; });
+
     function draw(time) {
       ctx.clearRect(0, 0, DISP, DISP);
 
-      var oy = Math.sin(time * 0.0018) * 1.8; /* плавное покачивание */
+      /* Плавное вертикальное покачивание акцентного куба */
+      var floatY = Math.sin(time * 0.0018) * 1.8;
 
-      /* ── Верхняя грань ── */
-      face(
-        [p(0,0,1,oy), p(1,0,1,oy), p(1,1,1,oy), p(0,1,1,oy)],
-        ACCENT, 0.22,
-        ACCENT, 0.95, 1.6
-      );
-
-      /* ── Левая грань (передняя левая) ── */
-      face(
-        [p(0,1,1,oy), p(0,1,0,oy), p(1,1,0,oy), p(1,1,1,oy)],
-        ACCENT, 0.10,
-        ACCENT, 0.65, 1.5
-      );
-
-      /* ── Правая грань (передняя правая) ── */
-      face(
-        [p(1,0,1,oy), p(1,0,0,oy), p(1,1,0,oy), p(1,1,1,oy)],
-        ACCENT, 0.14,
-        ACCENT, 0.80, 1.5
-      );
+      for (var k = 0; k < drawOrder.length; k++) {
+        var idx = drawOrder[k];
+        var c   = cubes[idx];
+        drawCube(c.gx, c.gy, c.gz, 0, c.isAccent ? floatY : 0, c.isAccent);
+      }
 
       requestAnimationFrame(draw);
     }
