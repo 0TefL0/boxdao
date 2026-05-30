@@ -389,7 +389,7 @@
     var short = addr.slice(0, 6) + '...' + addr.slice(-4);
 
     var ICO_COPY    = '<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><rect x="40" y="88" width="128" height="128" rx="8"/><path d="M88 88V56a8 8 0 0 1 8-8h112a8 8 0 0 1 8 8v112a8 8 0 0 1-8 8h-32"/></svg>';
-    var ICO_PROFILE = '<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><circle cx="128" cy="96" r="64"/><path d="M32 216c0-44.2 43-80 96-80s96 35.8 96 80"/></svg>';
+    var ICO_PROFILE = '<i class="ph ph-user-circle" style="font-size:17px;line-height:1;"></i>';
     var ICO_OUT     = '<svg width="16" height="16" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M112 40H48a8 8 0 0 0-8 8v160a8 8 0 0 0 8 8h64"/><polyline points="168,96 216,128 168,160"/><line x1="104" y1="128" x2="216" y2="128"/></svg>';
 
     menuEl = document.createElement('div');
