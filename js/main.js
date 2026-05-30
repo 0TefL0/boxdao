@@ -97,8 +97,8 @@ var T = {
     crt_s3t: 'Запускаешь коллекцию',
     crt_s3d: 'NFT-ячейки уходят в продажу — на сайте и на OpenSea. Инвесторы покупают доли, получают GEM, участвуют в DAO-голосованиях.',
 
-    dao_label: 'DAO - управление',
-    dao_title: 'NFT = ячейка + <span class="acc">право голоса</span>',
+    dao_label: 'Для владельцев',
+    dao_title: 'DAO — <span class="acc">Управление</span>',
     dao_body:  'DoleFi - настоящая децентрализованная организация. Каждый NFT даёт право голоса. Сообщество NFT-холдеров совместно управляет каждым проектом - никто не может продавить решение в одиночку.',
     dao_r1: '1 NFT = 1 голос - у кого 2 NFT, у того 2 голоса',
     dao_r2: 'Порог принятия решения: 51% = минимум 11 голосов',
@@ -182,8 +182,8 @@ var T = {
     crt_s3t: 'Launch the collection',
     crt_s3d: 'NFT shares go on sale — on the site and on OpenSea. Investors buy shares, earn GEM, and participate in DAO votes.',
 
-    dao_label: 'DAO — Governance',
-    dao_title: 'NFT = share + <span class="acc">voting right</span>',
+    dao_label: 'For Owners',
+    dao_title: 'DAO — <span class="acc">Governance</span>',
     dao_body:  'DoleFi is a true decentralized organization. Every NFT gives a vote. The community of NFT holders jointly governs each project — no one can push through a decision alone.',
     dao_r1: '1 NFT = 1 vote — 2 NFTs = 2 votes',
     dao_r2: 'Decision threshold: 51% = minimum 11 votes',
