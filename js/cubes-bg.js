@@ -16,7 +16,9 @@
 
   var ctx = canvas.getContext('2d', { alpha: true });
 
-  var TOXIC = '#b8ff3c';
+  var TOXIC        = '#b8ff3c';
+  var TOXIC_BRIGHT = '#39ff14';
+  var LINE         = '#7dff4d'; /* обновлено в preview */
   var CA    = Math.cos(Math.PI / 6);
   var SA    = Math.sin(Math.PI / 6);
 
@@ -97,7 +99,7 @@
   /* Переиспользуемые буферы точек — не создаём массивы каждый кадр */
   var _p = [[0,0],[0,0],[0,0],[0,0]];
 
-  function drawFace(p0,p1,p2,p3, strokeA, fillA, lw) {
+  function drawFace(p0,p1,p2,p3, strokeA, fillA, lw, strokeCol) {
     ctx.beginPath();
     ctx.moveTo(p0[0], p0[1]);
     ctx.lineTo(p1[0], p1[1]);
@@ -110,7 +112,7 @@
       ctx.fill();
     }
     ctx.globalAlpha = strokeA;
-    ctx.strokeStyle = TOXIC;
+    ctx.strokeStyle = strokeCol || TOXIC;
     ctx.lineWidth = lw;
     ctx.stroke();
     ctx.globalAlpha = 1;
@@ -120,7 +122,7 @@
   var _l0=[0,0],_l1=[0,0],_l2=[0,0],_l3=[0,0];
   var _r0=[0,0],_r1=[0,0],_r2=[0,0],_r3=[0,0];
 
-  function drawSmallCube(gx, gy, gz, u, ox, oy, alpha) {
+  function drawSmallCube(gx, gy, gz, u, ox, oy, isAccent, alpha) {
     /* Top */
     ip(gx,   gy,   gz+1, u, ox, oy, _t0);
     ip(gx+1, gy,   gz+1, u, ox, oy, _t1);
@@ -137,9 +139,17 @@
     ip(gx+1, gy+1, gz,   u, ox, oy, _r2);
     ip(gx+1, gy+1, gz+1, u, ox, oy, _r3);
 
-    drawFace(_t0,_t1,_t2,_t3, alpha,        0.045 * alpha, 0.65);
-    drawFace(_l0,_l1,_l2,_l3, 0.5 * alpha,  0.016 * alpha, 0.65);
-    drawFace(_r0,_r1,_r2,_r3, 0.7 * alpha,  0.028 * alpha, 0.65);
+    if (isAccent) {
+      /* Акцентный куб — ярко зелёный (shadowBlur убран для перфоманса) */
+      drawFace(_t0,_t1,_t2,_t3, alpha,        0.045 * alpha, 0.75);
+      drawFace(_l0,_l1,_l2,_l3, 0.74 * alpha, 0.02  * alpha, 0.75);
+      drawFace(_r0,_r1,_r2,_r3, 0.84 * alpha, 0.032 * alpha, 0.75);
+    } else {
+      /* Обычные кубы — LINE (#7dff4d) + subtle TOXIC fill */
+      drawFace(_t0,_t1,_t2,_t3, 0.62 * alpha, 0.012 * alpha, 0.55, LINE);
+      drawFace(_l0,_l1,_l2,_l3, 0.30 * alpha, 0.006 * alpha, 0.55, LINE);
+      drawFace(_r0,_r1,_r2,_r3, 0.44 * alpha, 0.009 * alpha, 0.55, LINE);
+    }
   }
 
   function drawCubeGroup(cube, t) {
@@ -172,7 +182,7 @@
     for (var k = 0; k < units.length; k++) {
       var part = units[k];
       var ag = Math.sin(t * 1.3 + cube.phase + k) * u * 0.14;
-      drawSmallCube(part.x, part.y, part.z, u, 0, oy + ag, cube.alpha);
+      drawSmallCube(part.x, part.y, part.z, u, 0, oy + ag, k === cube.accentCube, cube.alpha);
     }
 
     ctx.restore();
