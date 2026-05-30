@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Floating Toxic Cubes Background</title>
+
+  <style>
+    :root {
+      --toxic: #b8ff3c;
+      --toxic-bright: #39ff14;
+      --line: #7dff4d;
+      --black: #000000;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+    }
+
+    .toxic-cubes-bg {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(184, 255, 60, 0.05), transparent 24%),
+        radial-gradient(circle at 82% 72%, rgba(57, 255, 20, 0.035), transparent 28%),
+        radial-gradient(circle at 50% 50%, rgba(184, 255, 60, 0.02), transparent 34%),
+        linear-gradient(145deg, #050705 0%, #000 52%, #020302 100%);
+    }
+
+    .toxic-cubes-bg::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(
+        circle at center,
+        transparent 0%,
+        rgba(0, 0, 0, 0.22) 54%,
+        rgba(0, 0, 0, 0.82) 100%
+      );
+      pointer-events: none;
+    }
+
+    #toxic-cubes-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+      display: block;
+      filter: drop-shadow(0 0 6px rgba(184, 255, 60, 0.04));
+    }
+  </style>
+</head>
+
+<body>
+  <div class="toxic-cubes-bg" aria-hidden="true">
+    <canvas id="toxic-cubes-canvas"></canvas>
+  </div>
+
+  <script>
+    (() => {
+      const canvas = document.getElementById("toxic-cubes-canvas");
+      const ctx = canvas.getContext("2d", { alpha: true });
+
+      const TOXIC = "#b8ff3c";
+      const TOXIC_BRIGHT = "#39ff14";
+      const LINE = "#7dff4d";
+
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let cubes = [];
+      let particles = [];
+
+      const mouse = {
+        x: -9999,
+        y: -9999,
+        active: false,
+      };
+
+      function random(min, max) {
+        return min + Math.random() * (max - min);
+      }
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = window.innerWidth;
+        height = window.innerHeight;
+
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = width + "px";
+        canvas.style.height = height + "px";
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+        createScene();
+      }
+
+      function createScene() {
+        cubes = [];
+        particles = [];
+
+        const screenFactor = Math.max(1, (width * height) / (1440 * 900));
+        const cubeCount = Math.round(Math.min(42, Math.max(24, 26 * screenFactor)));
+        const particleCount = Math.round(Math.min(130, Math.max(55, 75 * screenFactor)));
+
+        for (let i = 0; i < cubeCount; i++) {
+          const size = random(9, 21);
+
+          cubes.push({
+            x: random(-120, width + 120),
+            y: random(-120, height + 120),
+            size,
+            alpha: random(0.45, 1),
+            vx: random(-0.34, 0.34),
+            vy: random(-0.26, 0.26),
+            floatRadiusX: random(20, 90),
+            floatRadiusY: random(18, 74),
+            floatSpeed: random(0.45, 1.15),
+            spinSpeed: random(-0.18, 0.18),
+            angle: random(0, Math.PI * 2),
+            phase: random(0, Math.PI * 2),
+            glow: Math.random() > 0.52,
+            accentCube: Math.floor(random(0, 8)),
+          });
+        }
+
+        for (let i = 0; i < particleCount; i++) {
+          particles.push({
+            x: random(0, width),
+            y: random(0, height),
+            r: random(0.35, 1.25),
+            alpha: random(0.035, 0.16),
+            vx: random(-0.07, 0.07),
+            vy: random(-0.08, 0.08),
+            phase: random(0, Math.PI * 2),
+          });
+        }
+      }
+
+      function isoPoint(x, y, z, unit, offsetX, offsetY) {
+        const angle = Math.PI / 6;
+
+        return [
+          (x - y) * unit * Math.cos(angle) + offsetX,
+          (x + y) * unit * Math.sin(angle) - z * unit + offsetY,
+        ];
+      }
+
+      function drawFace(points, stroke, strokeAlpha, fill, fillAlpha, lineWidth) {
+        ctx.beginPath();
+        ctx.moveTo(points[0][0], points[0][1]);
+
+        for (let i = 1; i < points.length; i++) {
+          ctx.lineTo(points[i][0], points[i][1]);
+        }
+
+        ctx.closePath();
+
+        if (fill) {
+          ctx.globalAlpha = fillAlpha;
+          ctx.fillStyle = fill;
+          ctx.fill();
+        }
+
+        ctx.globalAlpha = strokeAlpha;
+        ctx.strokeStyle = stroke;
+        ctx.lineWidth = lineWidth;
+        ctx.stroke();
+        ctx.globalAlpha = 1;
+      }
+
+      function drawSmallCube(gx, gy, gz, unit, offsetX, offsetY, isAccent, alpha, t) {
+        const top = [
+          isoPoint(gx, gy, gz + 1, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy, gz + 1, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy + 1, gz + 1, unit, offsetX, offsetY),
+          isoPoint(gx, gy + 1, gz + 1, unit, offsetX, offsetY),
+        ];
+
+        const left = [
+          isoPoint(gx, gy + 1, gz + 1, unit, offsetX, offsetY),
+          isoPoint(gx, gy + 1, gz, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy + 1, gz, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy + 1, gz + 1, unit, offsetX, offsetY),
+        ];
+
+        const right = [
+          isoPoint(gx + 1, gy, gz + 1, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy, gz, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy + 1, gz, unit, offsetX, offsetY),
+          isoPoint(gx + 1, gy + 1, gz + 1, unit, offsetX, offsetY),
+        ];
+
+        if (isAccent) {
+          const pulse = 0.75 + Math.sin(t * 2.2 + gx + gy + gz) * 0.25;
+
+          ctx.shadowColor = TOXIC_BRIGHT;
+          ctx.shadowBlur = 3.5 + pulse * 3;
+
+          drawFace(top, TOXIC, alpha, TOXIC, 0.045 * alpha, 0.75);
+          drawFace(left, TOXIC, 0.74 * alpha, TOXIC, 0.02 * alpha, 0.75);
+          drawFace(right, TOXIC, 0.84 * alpha, TOXIC, 0.032 * alpha, 0.75);
+
+          ctx.shadowBlur = 0;
+        } else {
+          drawFace(top, LINE, 0.62 * alpha, TOXIC, 0.012 * alpha, 0.55);
+          drawFace(left, LINE, 0.30 * alpha, TOXIC, 0.006 * alpha, 0.55);
+          drawFace(right, LINE, 0.44 * alpha, TOXIC, 0.009 * alpha, 0.55);
+        }
+      }
+
+      function drawCubeGroup(cube, t) {
+        cube.x += cube.vx;
+        cube.y += cube.vy;
+        cube.angle += cube.spinSpeed * 0.01;
+
+        const margin = cube.size * 8;
+
+        if (cube.x < -margin) cube.x = width + margin;
+        if (cube.x > width + margin) cube.x = -margin;
+        if (cube.y < -margin) cube.y = height + margin;
+        if (cube.y > height + margin) cube.y = -margin;
+
+        const orbitX = Math.sin(t * cube.floatSpeed + cube.phase) * cube.floatRadiusX;
+        const orbitY = Math.cos(t * cube.floatSpeed * 0.77 + cube.phase) * cube.floatRadiusY;
+
+        const dx = cube.x - mouse.x;
+        const dy = cube.y - mouse.y;
+        const distance = Math.hypot(dx, dy);
+        const push = mouse.active && distance < 220 ? (1 - distance / 220) * 32 : 0;
+        const pushX = push ? (dx / (distance || 1)) * push : 0;
+        const pushY = push ? (dy / (distance || 1)) * push : 0;
+
+        const x = cube.x + orbitX + pushX;
+        const y = cube.y + orbitY + pushY;
+
+        ctx.save();
+        ctx.translate(x, y);
+        ctx.rotate(cube.angle + Math.sin(t * 0.38 + cube.phase) * 0.06);
+
+        if (cube.glow) {
+          const radius = cube.size * 5.4;
+          const gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, radius);
+
+          gradient.addColorStop(0, "rgba(184, 255, 60, 0.045)");
+          gradient.addColorStop(0.42, "rgba(184, 255, 60, 0.015)");
+          gradient.addColorStop(1, "rgba(184, 255, 60, 0)");
+
+          ctx.fillStyle = gradient;
+          ctx.beginPath();
+          ctx.arc(0, 0, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        const units = [];
+
+        for (let z = 0; z < 2; z++) {
+          for (let y = 0; y < 2; y++) {
+            for (let x = 0; x < 2; x++) {
+              units.push({
+                x,
+                y,
+                z,
+                depth: x + y - z,
+              });
+            }
+          }
+        }
+
+        units.sort((a, b) => a.depth - b.depth);
+
+        units.forEach((part, index) => {
+          const accent = index === cube.accentCube;
+          const antiGravity = Math.sin(t * 1.35 + cube.phase + index) * cube.size * 0.16;
+
+          drawSmallCube(
+            part.x,
+            part.y,
+            part.z,
+            cube.size,
+            0,
+            cube.size * 1.25 + antiGravity,
+            accent,
+            cube.alpha,
+            t
+          );
+        });
+
+        ctx.restore();
+      }
+
+      function drawParticles(t) {
+        particles.forEach((p) => {
+          p.x += p.vx;
+          p.y += p.vy;
+
+          if (p.x < -10) p.x = width + 10;
+          if (p.x > width + 10) p.x = -10;
+          if (p.y < -10) p.y = height + 10;
+          if (p.y > height + 10) p.y = -10;
+
+          const flicker = 0.55 + Math.sin(t * 1.8 + p.phase) * 0.45;
+
+          ctx.globalAlpha = p.alpha * flicker;
+          ctx.fillStyle = TOXIC;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        });
+
+        ctx.globalAlpha = 1;
+      }
+
+      function animate(timeMs) {
+        const t = timeMs / 1000;
+
+        ctx.clearRect(0, 0, width, height);
+
+        drawParticles(t);
+
+        cubes
+          .slice()
+          .sort((a, b) => a.size - b.size)
+          .forEach((cube) => drawCubeGroup(cube, t));
+
+        requestAnimationFrame(animate);
+      }
+
+      window.addEventListener("resize", resize);
+
+      window.addEventListener("mousemove", (event) => {
+        mouse.x = event.clientX;
+        mouse.y = event.clientY;
+        mouse.active = true;
+      });
+
+      window.addEventListener("mouseleave", () => {
+        mouse.active = false;
+      });
+
+      window.addEventListener(
+        "touchmove",
+        (event) => {
+          if (!event.touches[0]) return;
+
+          mouse.x = event.touches[0].clientX;
+          mouse.y = event.touches[0].clientY;
+          mouse.active = true;
+        },
+        { passive: true }
+      );
+
+      window.addEventListener("touchend", () => {
+        mouse.active = false;
+      });
+
+      resize();
+      requestAnimationFrame(animate);
+    })();
+  </script>
+</body>
+</html>
