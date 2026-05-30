@@ -11,7 +11,7 @@
     if (!mark) return;
 
     var DPR  = Math.min(window.devicePixelRatio || 1, 2);
-    var DISP = 32;
+    var DISP = 36;            /* чуть больше — куб помещается без обрезки */
     var SIZE = DISP * DPR;
 
     var canvas = document.createElement('canvas');
@@ -33,8 +33,10 @@
     var A  = Math.PI / 6;
     var CA = Math.cos(A);
     var SA = Math.sin(A);
-    var CX = DISP / 2 - 1;
-    var CY = DISP / 2 + 3;
+    /* Центр подобран так, чтобы 2×2 сетка (ширина ≈31px, высота ≈27px)
+       лежала ровно: X: [2.5, 33.5], Y: [3, 30] */
+    var CX = DISP / 2;       /* 18 */
+    var CY = 12;              /* смещение вверх, чтобы куб был по центру */
 
     function isoP(gx, gy, gz, oy) {
       return [
@@ -101,7 +103,7 @@
       ctx.clearRect(0, 0, DISP, DISP);
 
       /* Плавное движение акцентного куба */
-      var floatY = Math.sin(time * 0.002) * 1.8;
+      var floatY = Math.sin(time * 0.002) * 1.4;
 
       grid.forEach(function (pos, idx) {
         var oy = (idx === accentIdx) ? floatY : 0;
