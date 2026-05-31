@@ -71,11 +71,10 @@
 
     /* MAIN */
     .about-main {
-      margin-left: 0;
+      margin-left: var(--sidebar);
       flex: 1;
       padding: 3.5rem 3.5rem 6rem;
       max-width: 860px;
-      margin-inline: auto;
     }
 
     /* SECTION */
@@ -343,6 +342,18 @@
 
   <div class="page-layout">
 
+    <!-- САЙДБАР -->
+    <aside class="sidebar">
+      <div class="sb-label" data-i18n="nav_sections">Разделы</div>
+      <nav class="sb-nav" id="sb-nav">
+        <a href="#idea"     class="active"><span class="sb-dot"></span><span data-i18n="idea_label">Идея проекта</span></a>
+        <a href="#mechanic"         ><span class="sb-dot"></span><span data-i18n="mech_label">Механика</span></a>
+        <a href="#staking"          ><span class="sb-dot"></span><span data-i18n="stk_label">Стейкинг</span></a>
+        <a href="#creator"          ><span class="sb-dot"></span><span data-i18n="crt_label">Для авторов</span></a>
+        <a href="#dao"              ><span class="sb-dot"></span><span data-i18n="dao_label">Для владельцев</span></a>
+      </nav>
+    </aside>
+
     <main class="about-main">
 
       <!-- ИДЕЯ -->
@@ -546,6 +557,26 @@
 
       var lvSec = document.getElementById('levels');
       if (lvSec) barsObs.observe(lvSec);
+
+      /* ── 3. Scroll spy для сайдбара ── */
+      var sections = ['idea','mechanic','staking','creator','dao'];
+      var sbLinks  = document.querySelectorAll('#sb-nav a');
+
+      var spyObs = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (!e.isIntersecting) return;
+          var id = e.target.id;
+          sbLinks.forEach(function (a) {
+            a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+          });
+        });
+      }, { rootMargin: '-30% 0px -60% 0px' });
+
+      sections.forEach(function (id) {
+        var el = document.getElementById(id);
+        if (el) spyObs.observe(el);
+      });
+
     })();
   </script>
 
