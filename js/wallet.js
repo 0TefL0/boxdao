@@ -154,16 +154,20 @@
   }
 
   /* ── ЭКРАН «ДРУГИЕ КОШЕЛЬКИ» ── */
+  function walletImg(src) {
+    return '<img src="' + src + '" width="32" height="32" alt="" style="border-radius:8px;display:block;">';
+  }
+
   var MORE_WALLETS = [
     {
       name: 'MetaMask',
-      icon: '<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#F6851B"/><path fill="#fff" fill-rule="evenodd" d="M22.5 6 17 10.2l1-2.4L22.5 6zm-13 0 5.4 4.2-1-2.4L9.5 6zM20.8 18.7l-1.5 2.3 3.2.9.9-3.1-2.6-.1zm-9.6 0-2.6.1.9 3.1 3.2-.9-1.5-2.3z"/></svg>',
+      icon: walletImg('https://github.com/MetaMask.png?size=64'),
       rdns: 'io.metamask',
       url: 'https://metamask.io/download/',
     },
     {
       name: 'Phantom',
-      icon: '<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#AB9FF2"/><path fill="#fff" d="M8 16.5C8 12.4 11.4 9 15.5 9h1C20.6 9 24 12.4 24 16.5c0 2-.8 3.9-2.1 5.2a.5.5 0 0 1-.8-.1l-.7-1.3a.5.5 0 0 0-.9 0l-.7 1.3a.5.5 0 0 1-.9 0l-.7-1.3a.5.5 0 0 0-.9 0l-.7 1.3a.5.5 0 0 1-.9 0l-.7-1.3a.5.5 0 0 0-.9 0l-.7 1.3a.5.5 0 0 1-.8.1A7.5 7.5 0 0 1 8 16.5zm5.5-1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm4 0a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/></svg>',
+      icon: walletImg('https://github.com/phantom-labs.png?size=64'),
       rdns: null,
       check: function () { return window.phantom && window.phantom.ethereum; },
       connect: function () {
@@ -175,7 +179,7 @@
     },
     {
       name: 'Trust Wallet',
-      icon: '<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#3375BB"/><path fill="#fff" d="M16 7l7 3.2v5c0 4.2-2.9 8.1-7 9.8-4.1-1.7-7-5.6-7-9.8v-5L16 7zm0 2.3l-5.2 2.3V15c0 3.1 2.1 5.9 5.2 7.2 3.1-1.3 5.2-4.1 5.2-7.2v-3.4L16 9.3z"/></svg>',
+      icon: walletImg('https://github.com/trustwallet.png?size=64'),
       rdns: null,
       check: function () { return window.trustwallet; },
       connect: function () {
@@ -187,7 +191,7 @@
     },
     {
       name: 'Rabby',
-      icon: '<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="8" fill="#7084FF"/><path fill="#fff" d="M16 8c-3.5 0-6.5 2.2-7.5 5.3H8c-.6 0-1 .4-1 1v2c0 .6.4 1 1 1h.7c.3.8.7 1.5 1.3 2.1v2.1c0 .5.4.9.9.9h1.7c.5 0 .9-.4.9-.9v-.8h5v.8c0 .5.4.9.9.9H21c.5 0 .9-.4.9-.9v-2.1c.6-.6 1-1.3 1.3-2.1H24c.6 0 1-.4 1-1v-2c0-.6-.4-1-1-1h-.5C22.5 10.2 19.5 8 16 8zm-2.5 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm5 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/></svg>',
+      icon: walletImg('https://github.com/RabbyHub.png?size=64'),
       rdns: 'io.rabby',
       url: 'https://rabby.io/',
     },
