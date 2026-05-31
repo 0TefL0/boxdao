@@ -129,11 +129,11 @@
   function animate(time) {
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Целевое смещение зелёного куба = позиция курсора относительно центра холста */
-    const MAX_SHIFT = 28;
+    /* Зелёный куб: только вертикальное движение по курсору */
+    const MAX_SHIFT = 32;
     if (mouse.inside) {
-      cursor.tx = ((mouse.x / SIZE) * 2 - 1) * MAX_SHIFT;
-      cursor.ty = ((mouse.y / SIZE) * 2 - 1) * MAX_SHIFT * 0.55;
+      cursor.tx = 0;  /* горизонталь не двигаем */
+      cursor.ty = ((mouse.y / SIZE) * 2 - 1) * MAX_SHIFT;
     } else {
       cursor.tx = 0;
       cursor.ty = 0;
