@@ -14,7 +14,7 @@
   /* --- Цвета из CSS-переменных --- */
   const css    = getComputedStyle(document.documentElement);
   const ACCENT = (css.getPropertyValue("--accent") || "#B8FF3C").trim();
-  const LINE   = "#8A8A93";
+  const LINE   = "#c8c8d4";
 
   /* --- Геометрия --- */
   const SIZE = 420;
@@ -73,9 +73,9 @@
       drawFace(left,  col, 0.95, col, 0.09, 2);
       drawFace(right, col, 0.95, col, 0.13, 2);
     } else {
-      drawFace(top,   col, 0.80, null, 0, 1.6);
-      drawFace(left,  col, 0.45, null, 0, 1.6);
-      drawFace(right, col, 0.60, null, 0, 1.6);
+      drawFace(top,   col, 0.95, null, 0, 2.0);
+      drawFace(left,  col, 0.70, null, 0, 2.0);
+      drawFace(right, col, 0.82, null, 0, 2.0);
     }
   }
 
