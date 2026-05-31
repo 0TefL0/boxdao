@@ -565,7 +565,13 @@
           e.preventDefault();
           var id = a.getAttribute('href').replace('#', '');
           var el = document.getElementById(id);
-          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          if (!el) return;
+          /* Первая секция — в самый верх страницы */
+          if (id === 'idea') {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          } else {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
         });
       });
 
