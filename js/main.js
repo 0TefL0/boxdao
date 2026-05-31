@@ -77,7 +77,7 @@ var T = {
     mech_s3t: 'Проект генерирует доход',
     mech_s3d: 'Бизнес работает. Система отслеживает доходность и автоматически считает долю каждого NFT-холдера по заданной автором модели.',
     mech_s4t: 'Получаешь GEM',
-    mech_s4d: 'Скрипт считает твою долю, конвертирует по курсу $/₽ и начисляет баланс. Выводи на свой кошелёк в GEM.',
+    mech_s4d: 'Скрипт считает твою долю, конвертирует в GEM и начисляет баланс.',
 
     stk_label: 'Стейкинг',
     stk_title: 'Как ты зарабатываешь <span class="acc">с NFT</span>',
@@ -162,7 +162,7 @@ var T = {
     mech_s3t: 'Project generates income',
     mech_s3d: 'The business runs. The system tracks revenue and automatically calculates each NFT holder\'s share according to the creator\'s model.',
     mech_s4t: 'Earn GEM',
-    mech_s4d: 'The script calculates your share, converts at the exchange rate and credits your balance. Withdraw to your wallet in GEM.',
+    mech_s4d: 'The script calculates your share, converts to GEM and credits your balance.',
 
     stk_label: 'Staking',
     stk_title: 'How you earn <span class="acc">with NFT</span>',
