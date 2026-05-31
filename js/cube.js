@@ -122,61 +122,40 @@
   }, { passive: false });
   canvas.addEventListener("touchend", () => { mouse.inside = false; });
 
+  /* --- Плавное следование курсора (spring к позиции мыши) --- */
+  const cursor = { tx: 0, ty: 0, dx: 0, dy: 0, vx: 0, vy: 0 };
+
   /* --- АНИМАЦИЯ --- */
   function animate(time) {
-    const t = (time || 0) / 1000;
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Плавное скольжение: медленно, с замедлением на краях */
-    const raw     = Math.sin(t * 0.55);                          // медленный период ~11 сек
-    const eased   = Math.sign(raw) * Math.pow(Math.abs(raw), 0.55); // замедление в центре → чёткие края
-    const floatDX = eased * 16;
-    const floatDY = 0;
-
-    /* Пружина акцентного куба (реакция на курсор) */
-    const ac = cubes[ACCENT_IDX];
-    const [acx, acy] = isoP(ac.gx + 0.5, ac.gy + 0.5, ac.gz + 0.5);
-    /* Позиция куба с учётом флоата и пружины */
-    const acScreenY = acy + floatDY + spring.dy;
-    const acScreenX = acx + floatDX + spring.dx;
-
-    const dx   = acScreenX - mouse.x;
-    const dy   = acScreenY - mouse.y;
-    const dist = Math.hypot(dx, dy);
-
-    if (mouse.inside && dist < 200) {
-      const force = (1 - dist / 200) * 5;
-      const len   = dist || 1;
-      const bx = -0.5, by = -0.5;
-      const blen = Math.hypot(dx / len + bx, dy / len + by) || 1;
-      spring.vx += ((dx / len + bx) / blen) * force;
-      spring.vy += ((dy / len + by) / blen) * force;
-    }
-    spring.vx += -spring.dx * 0.045;
-    spring.vy += -spring.dy * 0.045;
-    spring.vx *= 0.88; spring.vy *= 0.88;
-    spring.dx += spring.vx; spring.dy += spring.vy;
-
-    /* Вибрации остальных кубов */
-    for (let i = 0; i < cubes.length; i++) {
-      if (i === ACCENT_IDX) continue;
-      const c = cubes[i], v = vib[i];
-      const [cx2, cy2] = isoP(c.gx + 0.5, c.gy + 0.5, c.gz + 0.5);
-      const d      = Math.hypot(cx2 - mouse.x, cy2 - mouse.y);
-      const target = (mouse.inside && d < 210) ? (1 - d / 210) * 3.5 : 0;
-      v.amp += (target - v.amp) * 0.1;
-      v.dx   = Math.sin(t * v.freq  + v.phase)  * v.amp;
-      v.dy   = Math.cos(t * v.freqY + v.phaseY) * v.amp * 0.55;
+    /* Целевое смещение зелёного куба = позиция курсора относительно центра холста */
+    const MAX_SHIFT = 28;
+    if (mouse.inside) {
+      cursor.tx = ((mouse.x / SIZE) * 2 - 1) * MAX_SHIFT;
+      cursor.ty = ((mouse.y / SIZE) * 2 - 1) * MAX_SHIFT * 0.55;
+    } else {
+      cursor.tx = 0;
+      cursor.ty = 0;
     }
 
-    /* Отрисовка back-to-front */
+    /* Плавная пружина к целевой позиции */
+    cursor.vx += (cursor.tx - cursor.dx) * 0.07;
+    cursor.vy += (cursor.ty - cursor.dy) * 0.07;
+    cursor.vx *= 0.82;
+    cursor.vy *= 0.82;
+    cursor.dx += cursor.vx;
+    cursor.dy += cursor.vy;
+
+    /* Отрисовка back-to-front:
+       — белые кубы: статичны (без вибрации, без смещения)
+       — зелёный куб: следует за курсором */
     for (const idx of drawOrder) {
       const c = cubes[idx];
       if (c.isAccent) {
-        /* Зелёный куб: скольжение вбок + пружина */
-        drawCube(c.gx, c.gy, c.gz, floatDX + spring.dx, floatDY + spring.dy, true);
+        drawCube(c.gx, c.gy, c.gz, cursor.dx, cursor.dy, true);
       } else {
-        drawCube(c.gx, c.gy, c.gz, vib[idx].dx, vib[idx].dy, false);
+        drawCube(c.gx, c.gy, c.gz, 0, 0, false);
       }
     }
 
