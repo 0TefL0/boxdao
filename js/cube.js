@@ -104,8 +104,9 @@
     phaseY: Math.random() * Math.PI * 2,
   }));
 
-  /* --- Мышь / тач --- */
-  const mouse = { x: -9999, y: -9999, inside: false };
+  /* --- Мышь: глобальное отслеживание по всему окну --- */
+  const mouse   = { x: -9999, y: -9999, inside: false };
+  const gmouse  = { x: 0, y: 0, active: false }; /* глобальные координаты */
 
   function setMouse(clientX, clientY) {
     const r = canvas.getBoundingClientRect();
@@ -113,6 +114,14 @@
     mouse.y = (clientY - r.top)  * (SIZE / r.height);
     mouse.inside = true;
   }
+
+  /* Глобальный трекинг — для вертикального подъёма зелёного куба */
+  window.addEventListener("mousemove", e => {
+    gmouse.x = e.clientX;
+    gmouse.y = e.clientY;
+    gmouse.active = true;
+  });
+  window.addEventListener("mouseleave", () => { gmouse.active = false; });
 
   canvas.addEventListener("mousemove",  e => setMouse(e.clientX, e.clientY));
   canvas.addEventListener("mouseleave", () => { mouse.inside = false; });
@@ -129,14 +138,16 @@
   function animate(time) {
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Зелёный куб: всегда вверх, чем дальше курсор от центра — тем выше */
+    /* Зелёный куб: всегда вверх по вертикали
+       Чем дальше курсор от центра экрана — тем выше куб.
+       Используем глобальные координаты окна. */
     const MAX_SHIFT = 36;
-    if (mouse.inside) {
-      const nx   = (mouse.x / SIZE) * 2 - 1; /* -1..1 */
-      const ny   = (mouse.y / SIZE) * 2 - 1;
-      const dist = Math.min(Math.hypot(nx, ny), 1); /* 0..1 */
+    if (gmouse.active) {
+      const nx   = (gmouse.x / window.innerWidth)  * 2 - 1; /* -1..1 */
+      const ny   = (gmouse.y / window.innerHeight) * 2 - 1;
+      const dist = Math.min(Math.hypot(nx, ny), 1);          /* 0..1 */
       cursor.tx = 0;
-      cursor.ty = -dist * MAX_SHIFT; /* всегда вверх */
+      cursor.ty = -dist * MAX_SHIFT; /* отрицательный Y = вверх */
     } else {
       cursor.tx = 0;
       cursor.ty = 0;
