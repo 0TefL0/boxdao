@@ -44,6 +44,7 @@ var LANG = localStorage.getItem('dolefi_lang') || localStorage.getItem('boxdao_l
 
 var T = {
   ru: {
+    nav_sections:  'Разделы',
     navHome:       'Главная',
     navAbout:      'О проекте',
     navProjects:   'Проекты',
@@ -129,6 +130,7 @@ var T = {
     proj_soon_p: 'Первые проекты появятся здесь после запуска платформы. Следи за обновлениями.',
   },
   en: {
+    nav_sections:  'Sections',
     navHome:       'Home',
     navAbout:      'About',
     navProjects:   'Projects',
