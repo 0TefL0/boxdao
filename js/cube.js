@@ -141,13 +141,14 @@
     /* Зелёный куб: всегда вверх по вертикали
        Чем дальше курсор от центра экрана — тем выше куб.
        Используем глобальные координаты окна. */
+    /* Зелёный куб: движется по правой вертикали изометрии (вверх-вправо, 30°) */
     const MAX_SHIFT = 36;
     if (gmouse.active) {
-      const nx   = (gmouse.x / window.innerWidth)  * 2 - 1; /* -1..1 */
+      const nx   = (gmouse.x / window.innerWidth)  * 2 - 1;
       const ny   = (gmouse.y / window.innerHeight) * 2 - 1;
-      const dist = Math.min(Math.hypot(nx, ny), 1);          /* 0..1 */
-      cursor.tx = 0;
-      cursor.ty = -dist * MAX_SHIFT; /* отрицательный Y = вверх */
+      const dist = Math.min(Math.hypot(nx, ny), 1);
+      cursor.tx =  dist * MAX_SHIFT * 0.866; /* вправо (cos 30°) */
+      cursor.ty = -dist * MAX_SHIFT * 0.5;   /* вверх  (sin 30°) */
     } else {
       cursor.tx = 0;
       cursor.ty = 0;
