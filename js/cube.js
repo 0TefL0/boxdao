@@ -129,11 +129,14 @@
   function animate(time) {
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    /* Зелёный куб: только вертикальное движение по курсору */
-    const MAX_SHIFT = 32;
+    /* Зелёный куб: всегда вверх, чем дальше курсор от центра — тем выше */
+    const MAX_SHIFT = 36;
     if (mouse.inside) {
-      cursor.tx = 0;  /* горизонталь не двигаем */
-      cursor.ty = ((mouse.y / SIZE) * 2 - 1) * MAX_SHIFT;
+      const nx   = (mouse.x / SIZE) * 2 - 1; /* -1..1 */
+      const ny   = (mouse.y / SIZE) * 2 - 1;
+      const dist = Math.min(Math.hypot(nx, ny), 1); /* 0..1 */
+      cursor.tx = 0;
+      cursor.ty = -dist * MAX_SHIFT; /* всегда вверх */
     } else {
       cursor.tx = 0;
       cursor.ty = 0;
