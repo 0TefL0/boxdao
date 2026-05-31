@@ -26,17 +26,15 @@
 
     /* SIDEBAR */
     .sidebar {
-      width: var(--sidebar);
-      flex-shrink: 0;
+      width: 160px;
       position: fixed;
-      top: var(--header-h); left: 0; bottom: 0;
+      top: 50%;
+      right: 2rem;
+      transform: translateY(-50%);
       background: transparent;
-      border-right: none;
       z-index: 50;
       display: flex;
       flex-direction: column;
-      justify-content: center; /* вертикальное центрирование */
-      padding-bottom: var(--header-h);
     }
 
     .sb-label {
@@ -54,13 +52,12 @@
       padding: 8px 1.4rem;
       font-size: 13px; font-weight: 500;
       color: rgba(255,255,255,.45); text-decoration: none;
-      border-left: 2px solid transparent;
+      border-left: none;
       transition: all .18s ease;
     }
     .sb-nav a:hover { color: rgba(255,255,255,.85); }
     .sb-nav a.active {
       color: var(--accent);
-      border-left-color: var(--accent);
     }
     .sb-dot {
       width: 5px; height: 5px; border-radius: 50%;
@@ -71,10 +68,10 @@
 
     /* MAIN */
     .about-main {
-      margin-left: var(--sidebar);
       flex: 1;
       padding: 3.5rem 3.5rem 6rem;
       max-width: 860px;
+      margin-inline: auto;
     }
 
     /* SECTION */
