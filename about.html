@@ -555,9 +555,19 @@
       var lvSec = document.getElementById('levels');
       if (lvSec) barsObs.observe(lvSec);
 
-      /* ── 3. Scroll spy для сайдбара ── */
+      /* ── 3. Scroll spy + клик по центру ── */
       var sections = ['idea','mechanic','staking','creator','dao'];
       var sbLinks  = document.querySelectorAll('#sb-nav a');
+
+      /* Клик — прокручиваем секцию в центр экрана */
+      sbLinks.forEach(function (a) {
+        a.addEventListener('click', function (e) {
+          e.preventDefault();
+          var id = a.getAttribute('href').replace('#', '');
+          var el = document.getElementById(id);
+          if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
 
       var spyObs = new IntersectionObserver(function (entries) {
         entries.forEach(function (e) {
