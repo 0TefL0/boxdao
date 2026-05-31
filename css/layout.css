@@ -679,6 +679,47 @@
   color: var(--muted);
   margin: 0;
 }
+.wm-more-btn {
+  width: 100%;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 4px;
+  transition: background 0.15s, color 0.15s;
+}
+.wm-more-btn:hover {
+  background: rgba(255,255,255,0.06);
+  color: #fff;
+}
+.wm-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px 0 8px;
+  transition: color 0.15s;
+}
+.wm-back-btn:hover { color: #fff; }
+.wm-more-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  margin: 0 0 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-family: var(--font-mono);
+}
 .wm-no-wallet {
   text-align: center;
   font-size: 14px;
