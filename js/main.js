@@ -45,6 +45,9 @@ var LANG = localStorage.getItem('dolefi_lang') || localStorage.getItem('boxdao_l
 var T = {
   ru: {
     nav_sections:  'Разделы',
+    notifications: 'Уведомления',
+    noNotif:       'Уведомлений пока нет',
+    noNotifSub:    'Здесь будут появляться уведомления.',
     navHome:       'Главная',
     navAbout:      'О проекте',
     navProjects:   'Проекты',
@@ -131,6 +134,9 @@ var T = {
   },
   en: {
     nav_sections:  'Sections',
+    notifications: 'Notifications',
+    noNotif:       'No notifications yet',
+    noNotifSub:    'Notifications will appear here.',
     navHome:       'Home',
     navAbout:      'About',
     navProjects:   'Projects',
@@ -268,6 +274,12 @@ function renderHeader() {
     return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">' + t(i.key) + '</a>';
   }).join('');
 
+  var ICO_BELL = '<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M96 192a32 32 0 0 0 64 0"/><path d="M208 192H48a16 16 0 0 1-12.8-25.6C49.6 147.2 64 130.1 64 96a64 64 0 0 1 128 0c0 34.1 14.4 51.2 28.8 70.4A16 16 0 0 1 208 192z"/></svg>';
+
+  var bellHTML = WALLET.connected
+    ? '<button class="notif-bell" id="notif-bell" aria-label="' + t('notifications') + '">' + ICO_BELL + '</button>'
+    : '';
+
   var walletHTML = WALLET.connected
     ? '<button class="wallet-address" id="wallet-chip" title="' + WALLET.address + '">'
         + '<span class="wallet-chip-av">'
@@ -281,6 +293,7 @@ function renderHeader() {
     + '<a class="brand" href="./"><span class="brand-mark">' + PH.cube + '</span>Dole<b>Fi</b></a>'
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
+    +   bellHTML
     +   walletHTML
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'
@@ -303,6 +316,58 @@ function renderHeader() {
   if (chip) chip.addEventListener('click', function () {
     if (typeof openWalletMenu === 'function') openWalletMenu(chip);
   });
+
+  /* Колокольчик — дропдаун уведомлений */
+  var bell = document.getElementById('notif-bell');
+  if (bell) bell.addEventListener('click', function () { toggleNotifPanel(bell); });
+}
+
+/* Уведомления */
+var notifPanelEl = null;
+
+function toggleNotifPanel(anchor) {
+  if (notifPanelEl) { closeNotifPanel(); return; }
+
+  notifPanelEl = document.createElement('div');
+  notifPanelEl.className = 'notif-panel';
+  notifPanelEl.innerHTML =
+    '<div class="notif-head">' + t('notifications') + '</div>'
+    + '<div class="notif-empty">'
+    +   '<svg width="36" height="36" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg" style="opacity:.3"><path d="M96 192a32 32 0 0 0 64 0"/><path d="M208 192H48a16 16 0 0 1-12.8-25.6C49.6 147.2 64 130.1 64 96a64 64 0 0 1 128 0c0 34.1 14.4 51.2 28.8 70.4A16 16 0 0 1 208 192z"/></svg>'
+    +   '<p class="notif-empty-title">' + t('noNotif') + '</p>'
+    +   '<p class="notif-empty-sub">' + t('noNotifSub') + '</p>'
+    + '</div>';
+
+  document.body.appendChild(notifPanelEl);
+
+  var r   = anchor.getBoundingClientRect();
+  var pw  = notifPanelEl.offsetWidth;
+  var left = r.right - pw + window.scrollX;
+  if (left < 8) left = 8;
+  notifPanelEl.style.top  = (r.bottom + window.scrollY + 8) + 'px';
+  notifPanelEl.style.left = left + 'px';
+
+  requestAnimationFrame(function () { notifPanelEl && notifPanelEl.classList.add('open'); });
+
+  setTimeout(function () {
+    document.addEventListener('click', onNotifOutside);
+  }, 10);
+}
+
+function closeNotifPanel() {
+  document.removeEventListener('click', onNotifOutside);
+  if (!notifPanelEl) return;
+  notifPanelEl.classList.remove('open');
+  var el = notifPanelEl;
+  setTimeout(function () { if (el) el.remove(); }, 200);
+  notifPanelEl = null;
+}
+
+function onNotifOutside(e) {
+  if (notifPanelEl && !notifPanelEl.contains(e.target)
+      && e.target.id !== 'notif-bell') {
+    closeNotifPanel();
+  }
 }
 
 /* ══════════════════════════════════════════
