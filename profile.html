@@ -304,6 +304,205 @@
     .profile-gate h2 { font-size: 24px; color: #fff; }
     .profile-gate p { font-size: 15px; color: var(--muted); }
 
+    /* ── СЕТКА NFT-КАРТОЧЕК ── */
+    .nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+    .nft-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--t-fast), transform var(--t-fast);
+    }
+    .nft-card:hover {
+      border-color: rgba(184,255,60,0.3);
+      transform: translateY(-2px);
+    }
+
+    /* ── ПРЕВЬЮ NFT ── */
+    .nft-preview {
+      position: relative;
+      aspect-ratio: 1 / 0.95;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .nft-preview.free    { background: linear-gradient(145deg, #0e1a05 0%, #051002 100%); }
+    .nft-preview.fixed   { background: linear-gradient(145deg, #1a1305 0%, #0c0902 100%); }
+    .nft-preview.flex    { background: linear-gradient(145deg, #051a0a 0%, #020a04 100%); }
+
+    .nft-badge {
+      position: absolute;
+      top: 12px; left: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      z-index: 2;
+    }
+    .nft-badge--free { background: rgba(184,255,60,0.18); color: var(--accent); border: 1px solid rgba(184,255,60,0.4); }
+    .nft-badge--fixed { background: rgba(255,200,80,0.12); color: #ffc850; border: 1px solid rgba(255,200,80,0.3); }
+    .nft-badge--flex  { background: rgba(184,255,60,0.12); color: var(--accent); border: 1px solid rgba(184,255,60,0.3); }
+
+    /* Иконка-плейсхолдер внутри превью */
+    .nft-pic {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: var(--accent);
+    }
+    .nft-pic-icon {
+      font-size: 40px;
+      filter: drop-shadow(0 0 12px rgba(184,255,60,0.4));
+    }
+    .nft-pic-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.2em;
+      opacity: 0.85;
+    }
+    .nft-preview.fixed .nft-pic { color: #ffc850; }
+    .nft-preview.fixed .nft-pic-icon { filter: drop-shadow(0 0 12px rgba(255,200,80,0.35)); }
+
+    /* Сетка ячеек для «Свободна» */
+    .nft-cells-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 4px;
+      width: 60px;
+    }
+    .nft-cells-grid > div {
+      aspect-ratio: 1;
+      background: rgba(184,255,60,0.04);
+      border: 1px solid rgba(184,255,60,0.5);
+      border-radius: 3px;
+    }
+
+    /* ── ТЕЛО КАРТОЧКИ ── */
+    .nft-body {
+      padding: 14px 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .nft-name {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: -0.01em;
+    }
+    .nft-collection {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      margin-bottom: 12px;
+    }
+
+    /* Кнопки на FREE-карточке */
+    .nft-btns { display: flex; gap: 8px; margin-top: 4px; }
+    .nft-btn {
+      flex: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: rgba(184,255,60,0.08);
+      border: 1px solid rgba(184,255,60,0.3);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      padding: 8px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s, border-color 0.18s;
+      text-decoration: none;
+    }
+    .nft-btn:hover { background: rgba(184,255,60,0.16); border-color: rgba(184,255,60,0.5); }
+    .nft-btn--ghost {
+      background: transparent;
+      border-color: var(--border);
+      color: var(--text-dim);
+    }
+    .nft-btn--ghost:hover {
+      background: rgba(255,255,255,0.04);
+      border-color: var(--border-hi);
+      color: #fff;
+    }
+
+    /* Список статов внутри карточки (FIXED / FLEX) */
+    .nft-stats {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 4px;
+    }
+    .nft-stat-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+    .nft-stat-key { color: var(--text-dim); }
+    .nft-stat-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .nft-stat-val.dim { color: var(--text); }
+    .nft-stat-val.muted { color: var(--muted); }
+
+    /* Прогресс-бар */
+    .nft-progress {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      border-top: 1px solid var(--border);
+      padding-top: 12px;
+      margin-top: 8px;
+    }
+    .nft-progress-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+    .nft-progress-label { color: var(--text-dim); }
+    .nft-progress-pct {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent);
+    }
+    .nft-progress-bar {
+      height: 3px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .nft-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), #c8ff5a);
+      border-radius: 2px;
+      box-shadow: 0 0 6px rgba(184,255,60,0.5);
+    }
+
     @media (max-width: 720px) {
       .profile-top { grid-template-columns: 1fr; }
       .gem-balance-num { font-size: 24px; }
@@ -374,7 +573,7 @@
     <div class="profile-nft-head">
       <div class="profile-nft-title">
         <span data-i18n="my_nft">Мои</span>&nbsp;<b>NFT</b>
-        <span class="profile-nft-stats" id="nft-stats"></span>
+        <span class="profile-nft-stats" id="nft-stats" data-i18n="nft_stats">3 всего · 1 свободна · 2 в стейкинге</span>
       </div>
       <div class="profile-nft-controls">
         <div class="nft-filter-tabs">
@@ -389,15 +588,111 @@
       </div>
     </div>
 
-    <!-- Пустое состояние -->
-    <div class="nft-empty">
-      <div class="nft-empty-icon"><i class="ph ph-cube"></i></div>
-      <h3 data-i18n="nft_empty_h">NFT пока нет</h3>
-      <p data-i18n="nft_empty_p">Купи первую NFT-долю реального проекта на платформе или на OpenSea.</p>
-      <a href="projects" class="nft-empty-link">
-        <i class="ph ph-arrow-right"></i>
-        <span data-i18n="nft_empty_link">Смотреть проекты</span>
-      </a>
+    <!-- Демо-сетка NFT -->
+    <div class="nft-grid">
+
+      <!-- ── Карточка 1: СВОБОДНА ── -->
+      <div class="nft-card">
+        <div class="nft-preview free">
+          <span class="nft-badge nft-badge--free" data-i18n="nft_st_free">СВОБОДНА</span>
+          <div class="nft-pic">
+            <div class="nft-cells-grid">
+              <div></div><div></div><div></div><div></div>
+            </div>
+          </div>
+        </div>
+        <div class="nft-body">
+          <div class="nft-name">Lucky Box #07</div>
+          <div class="nft-collection">Lucky Box RU №1 · RE-2185</div>
+          <div class="nft-btns">
+            <button class="nft-btn">
+              <i class="ph ph-lock"></i>
+              <span data-i18n="nft_act_stake">Стейкинг</span>
+            </button>
+            <a class="nft-btn nft-btn--ghost" href="#" target="_blank" rel="noopener">
+              <i class="ph ph-storefront"></i>
+              OpenSea
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Карточка 2: FIXED ── -->
+      <div class="nft-card">
+        <div class="nft-preview fixed">
+          <span class="nft-badge nft-badge--fixed">FIXED</span>
+          <div class="nft-pic">
+            <i class="ph ph-lock-key nft-pic-icon"></i>
+            <span class="nft-pic-label">FIXED</span>
+          </div>
+        </div>
+        <div class="nft-body">
+          <div class="nft-name">Lucky Box #03</div>
+          <div class="nft-collection">Lucky Box RU №1 · RE-2185</div>
+
+          <div class="nft-stats">
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_rate">Ставка</span>
+              <span class="nft-stat-val">2.16%</span>
+            </div>
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_unlock">Разблокировка</span>
+              <span class="nft-stat-val dim">21.04.2027</span>
+            </div>
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_earned">Начислено</span>
+              <span class="nft-stat-val">+0.00 GEM</span>
+            </div>
+          </div>
+
+          <div class="nft-progress">
+            <div class="nft-progress-row">
+              <span class="nft-progress-label" data-i18n="nft_lock_progress">Прогресс блокировки</span>
+              <span class="nft-progress-pct">14%</span>
+            </div>
+            <div class="nft-progress-bar"><div class="nft-progress-fill" style="width:14%"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Карточка 3: FLEX · LV1 ── -->
+      <div class="nft-card">
+        <div class="nft-preview flex">
+          <span class="nft-badge nft-badge--flex">FLEX · LV1</span>
+          <div class="nft-pic">
+            <i class="ph ph-lock-simple nft-pic-icon"></i>
+            <span class="nft-pic-label">FLEXIBLE</span>
+          </div>
+        </div>
+        <div class="nft-body">
+          <div class="nft-name">Lucky Box #11</div>
+          <div class="nft-collection">Lucky Box RU №1 · RE-2185</div>
+
+          <div class="nft-stats">
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_level">Уровень</span>
+              <span class="nft-stat-val"><span data-i18n="nft_lvl_base">Базовый</span> (1)</span>
+            </div>
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_rate">Ставка</span>
+              <span class="nft-stat-val">0.46%</span>
+            </div>
+            <div class="nft-stat-row">
+              <span class="nft-stat-key" data-i18n="nft_earned">Начислено</span>
+              <span class="nft-stat-val">+0.00 GEM</span>
+            </div>
+          </div>
+
+          <div class="nft-progress">
+            <div class="nft-progress-row">
+              <span class="nft-progress-label"><span data-i18n="nft_to_next">До</span> <span data-i18n="nft_lvl_advanced">Продвинутого</span></span>
+              <span class="nft-progress-pct">18 / 31 <span data-i18n="nft_days">дн</span></span>
+            </div>
+            <div class="nft-progress-bar"><div class="nft-progress-fill" style="width:58%"></div></div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
   </div>
