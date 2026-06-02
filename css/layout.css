@@ -506,11 +506,11 @@
 .gem-chip {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
   background: rgba(255,255,255,0.04);
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
-  padding: 5px 12px 5px 8px;
+  padding: 4px 12px 4px 6px;
   color: #fff;
   font-family: var(--font-mono);
   font-size: 13px;
@@ -525,9 +525,11 @@
   border-color: rgba(184,255,60,0.3);
 }
 .gem-chip-icon {
+  width: 28px; height: 28px;
+  object-fit: contain;
+  display: block;
   flex-shrink: 0;
-  color: var(--accent);
-  filter: drop-shadow(0 0 4px rgba(184,255,60,0.45));
+  filter: drop-shadow(0 0 5px rgba(184,255,60,0.5));
 }
 .gem-chip-amount { color: #fff; letter-spacing: 0.02em; }
 .gem-chip:hover .gem-chip-amount { color: var(--accent); }
