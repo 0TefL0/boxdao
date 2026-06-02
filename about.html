@@ -55,11 +55,19 @@
       font-size: 13px; font-weight: 500;
       color: rgba(255,255,255,.45); text-decoration: none;
       border-left: none;
-      transition: all .18s ease;
+      transform-origin: left center;
+      transition:
+        color .25s ease,
+        font-size .25s cubic-bezier(0.34, 1.56, 0.64, 1),
+        font-weight .25s ease,
+        letter-spacing .25s ease;
     }
     .sb-nav a:hover { color: rgba(255,255,255,.85); }
     .sb-nav a.active {
       color: var(--accent);
+      font-size: 15.5px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
     }
     .sb-dot {
       width: 5px; height: 5px; border-radius: 50%;
