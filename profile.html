@@ -781,6 +781,38 @@
       color: #fff;
     }
 
+    /* История начислений */
+    .hist-icon-wrap {
+      width: 44px; height: 44px;
+      background: rgba(184,255,60,0.08);
+      border: 1px solid rgba(184,255,60,0.22);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .hist-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 3rem 1.5rem;
+      border: 1px dashed var(--border-hi);
+      border-radius: var(--radius-sm);
+      gap: 10px;
+    }
+    .hist-empty-icon {
+      width: 56px; height: 56px;
+      border-radius: 14px;
+      background: rgba(184,255,60,0.08);
+      border: 1px solid rgba(184,255,60,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      color: var(--accent);
+    }
+    .hist-empty h3 { font-size: 16px; color: #fff; margin: 0; }
+    .hist-empty p { font-size: 13px; color: var(--muted); margin: 0; max-width: 320px; line-height: 1.6; }
+
     @media (max-width: 720px) {
       .profile-top { grid-template-columns: 1fr; }
       .gem-balance-num { font-size: 24px; }
@@ -839,7 +871,7 @@
             <i class="ph ph-arrow-line-down"></i>
             <span data-i18n="gem_withdraw">Вывести</span>
           </button>
-          <button class="gem-history-link">
+          <button class="gem-history-link" id="open-history">
             <i class="ph ph-clock-clockwise"></i>
             <span data-i18n="gem_history">История начислений</span>
             <i class="ph ph-caret-right"></i>
@@ -1112,6 +1144,45 @@
     </div>
   </div>
 
+  <!-- ── МОДАЛКА «ИСТОРИЯ НАЧИСЛЕНИЙ» ── -->
+  <div class="nft-modal" id="hist-modal" aria-hidden="true">
+    <div class="nft-modal-box" style="width:min(560px,100%);">
+      <div class="nft-modal-head">
+        <div class="hist-icon-wrap">
+          <i class="ph ph-clock-clockwise" style="font-size:22px;color:var(--accent);"></i>
+        </div>
+        <div class="nft-modal-title">
+          <h2 data-i18n="gem_history">История начислений</h2>
+          <div class="sub" data-i18n="hist_sub">Все начисления GEM</div>
+        </div>
+        <button class="nft-modal-close" id="hist-close" aria-label="Close">&#x2715;</button>
+      </div>
+
+      <div class="nft-modal-body">
+
+        <!-- Сводка -->
+        <div class="nft-stat-grid">
+          <div class="nft-stat-cell acc">
+            <div class="nft-stat-cell-label" data-i18n="hist_total">Всего начислено</div>
+            <div class="nft-stat-cell-value">0.00 GEM</div>
+          </div>
+          <div class="nft-stat-cell">
+            <div class="nft-stat-cell-label" data-i18n="hist_month">За месяц</div>
+            <div class="nft-stat-cell-value">0.00 GEM</div>
+          </div>
+        </div>
+
+        <!-- Пустая история -->
+        <div class="hist-empty">
+          <div class="hist-empty-icon"><i class="ph ph-coins"></i></div>
+          <h3 data-i18n="hist_empty_h">Пока пусто</h3>
+          <p data-i18n="hist_empty_p">Начисления появятся здесь после первого дохода с твоих NFT.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
   <div id="footer"></div>
 
   <script src="js/cubes-bg.js"></script>
@@ -1250,6 +1321,30 @@
       });
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+      });
+
+      /* ── Модалка истории начислений ── */
+      var histModal = document.getElementById('hist-modal');
+      var openHist  = document.getElementById('open-history');
+
+      function openHistory() {
+        histModal.classList.add('open');
+        histModal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeHistory() {
+        histModal.classList.remove('open');
+        histModal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
+      }
+
+      if (openHist) openHist.addEventListener('click', openHistory);
+      document.getElementById('hist-close').addEventListener('click', closeHistory);
+      histModal.addEventListener('click', function (e) {
+        if (e.target === histModal) closeHistory();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && histModal.classList.contains('open')) closeHistory();
       });
     }
   </script>
