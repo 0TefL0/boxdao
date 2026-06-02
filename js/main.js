@@ -390,6 +390,13 @@ function renderHeader() {
     ? '<button class="notif-bell" id="notif-bell" aria-label="' + t('notifications') + '">' + ICO_BELL + '</button>'
     : '';
 
+  var balanceHTML = WALLET.connected
+    ? '<a class="gem-chip" href="profile" title="' + t('gem_balance') + '">'
+        + '<img class="gem-chip-icon" src="assets/GEM.png" alt="">'
+        + '<span class="gem-chip-amount">0.00 GEM</span>'
+      + '</a>'
+    : '';
+
   var walletHTML = WALLET.connected
     ? '<button class="wallet-address" id="wallet-chip" title="' + WALLET.address + '">'
         + '<span class="wallet-chip-av">'
@@ -404,6 +411,7 @@ function renderHeader() {
     + '<nav class="nav">' + navHTML + '</nav>'
     + '<div class="header-right">'
     +   bellHTML
+    +   balanceHTML
     +   walletHTML
     +   '<button class="burger" id="nav-burger" aria-label="Menu" aria-expanded="false">'
     +     '<span></span><span></span><span></span>'

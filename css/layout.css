@@ -502,6 +502,37 @@
   color: #ff5050;
 }
 
+/* ── ЧИП БАЛАНСА GEM ── */
+.gem-chip {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 5px 12px 5px 8px;
+  color: #fff;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  flex-shrink: 0;
+  white-space: nowrap;
+  transition: background var(--t-fast), border-color var(--t-fast);
+}
+.gem-chip:hover {
+  background: rgba(184,255,60,0.06);
+  border-color: rgba(184,255,60,0.3);
+}
+.gem-chip-icon {
+  width: 22px; height: 22px;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 0 4px rgba(184,255,60,0.35));
+}
+.gem-chip-amount { color: #fff; letter-spacing: 0.02em; }
+.gem-chip:hover .gem-chip-amount { color: var(--accent); }
+
 /* ── КОЛОКОЛЬЧИК УВЕДОМЛЕНИЙ ── */
 .notif-bell {
   display: flex;
