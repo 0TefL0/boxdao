@@ -118,14 +118,12 @@
       gap: 10px;
     }
     .gem-icon-wrap {
-      width: 36px; height: 36px;
-      border-radius: 10px;
-      background: rgba(184,255,60,0.12);
-      border: 1px solid rgba(184,255,60,0.25);
+      width: 44px; height: 44px;
       display: flex; align-items: center; justify-content: center;
-      overflow: hidden;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 10px rgba(184,255,60,0.5));
     }
-    .gem-icon-wrap img { width: 28px; height: 28px; object-fit: contain; filter: invert(1) hue-rotate(180deg); }
+    .gem-icon-wrap img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .gem-balance-num {
       font-family: var(--font-mono);
       font-size: 32px;
@@ -360,7 +358,6 @@
         </div>
         <div class="gem-balance-right">
           <button class="gem-withdraw-btn">
-            <span class="gem-beta-tag">BETA</span>
             <i class="ph ph-arrow-line-down"></i>
             <span data-i18n="gem_withdraw">Вывести</span>
           </button>
