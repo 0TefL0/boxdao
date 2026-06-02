@@ -142,7 +142,7 @@
        Чем дальше курсор от центра экрана — тем выше куб.
        Используем глобальные координаты окна. */
     /* Зелёный куб: движется по правой вертикали изометрии (вверх-вправо, 30°) */
-    const MAX_SHIFT = 36;
+    const MAX_SHIFT = 90;
     if (gmouse.active) {
       const nx   = (gmouse.x / window.innerWidth)  * 2 - 1;
       const ny   = (gmouse.y / window.innerHeight) * 2 - 1;
