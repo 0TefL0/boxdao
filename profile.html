@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoleFi — Профиль</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .profile-page {
+      padding-top: calc(var(--header-h) + 2.5rem);
+      padding-bottom: 6rem;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ── ВЕРХНЯЯ ПАНЕЛЬ ── */
+    .profile-top {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    /* Карточка пользователя */
+    .profile-user-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px 22px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .profile-avatar {
+      width: 56px; height: 56px;
+      border-radius: 50%;
+      overflow: hidden;
+      flex-shrink: 0;
+      box-shadow: 0 0 0 2px rgba(184,255,60,0.2);
+    }
+    .profile-avatar svg { display: block; }
+    .profile-user-info { flex: 1; min-width: 0; }
+    .profile-address {
+      font-family: var(--font-mono);
+      font-size: 16px;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.02em;
+      margin-bottom: 4px;
+    }
+    .profile-wallet-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      color: var(--accent);
+    }
+    .profile-wallet-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 6px rgba(184,255,60,0.8);
+    }
+    .profile-actions {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+    .profile-icon-btn {
+      width: 34px; height: 34px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text-dim);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer;
+      transition: color var(--t-fast), border-color var(--t-fast), background var(--t-fast);
+      font-size: 15px;
+    }
+    .profile-icon-btn:hover { color: #fff; border-color: var(--border-hi); background: rgba(255,255,255,0.08); }
+    .profile-icon-btn.danger:hover { color: #ff5050; border-color: rgba(255,80,80,0.4); background: rgba(255,80,80,0.06); }
+
+    /* Карточка GEM баланса */
+    .profile-gem-card {
+      background: linear-gradient(135deg, rgba(184,255,60,0.08) 0%, rgba(184,255,60,0.03) 100%);
+      border: 1px solid rgba(184,255,60,0.25);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .gem-balance-left {}
+    .gem-balance-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .gem-balance-amount {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .gem-icon-wrap {
+      width: 36px; height: 36px;
+      border-radius: 10px;
+      background: rgba(184,255,60,0.12);
+      border: 1px solid rgba(184,255,60,0.25);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .gem-icon-wrap img { width: 28px; height: 28px; object-fit: contain; filter: invert(1) hue-rotate(180deg); }
+    .gem-balance-num {
+      font-family: var(--font-mono);
+      font-size: 32px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .gem-balance-today {
+      font-size: 12px;
+      color: var(--accent);
+      margin-top: 5px;
+      font-family: var(--font-mono);
+    }
+    .gem-balance-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    .gem-withdraw-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(184,255,60,0.1);
+      border: 1px solid rgba(184,255,60,0.35);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
+    }
+    .gem-withdraw-btn:hover { background: rgba(184,255,60,0.18); border-color: rgba(184,255,60,0.55); }
+    .gem-beta-tag {
+      position: absolute;
+      top: -8px; right: -4px;
+      font-family: var(--font-mono);
+      font-size: 8px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--muted);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 1px 5px;
+    }
+    .gem-history-link {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color var(--t-fast);
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .gem-history-link:hover { color: #fff; }
+
+    /* ── МОИ NFT ── */
+    .profile-nft-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .profile-nft-title {
+      font-family: var(--font-display);
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .profile-nft-title b { color: var(--accent); }
+    .profile-nft-stats {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--muted);
+      font-weight: 400;
+    }
+    .profile-nft-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .nft-filter-tabs {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .nft-filter-tab {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 7px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nft-filter-tab.active { background: rgba(184,255,60,0.1); color: var(--accent); }
+    .nft-filter-tab:hover:not(.active) { color: var(--text-dim); }
+
+    .nft-view-btns {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .nft-view-btn {
+      background: transparent;
+      border: none;
+      color: var(--muted);
+      padding: 7px 10px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.15s, color 0.15s;
+    }
+    .nft-view-btn.active { background: rgba(255,255,255,0.07); color: #fff; }
+
+    /* Пустое состояние NFT */
+    .nft-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 5rem 2rem;
+      border: 1px dashed var(--border-hi);
+      border-radius: var(--radius);
+      background: var(--surface);
+      gap: 12px;
+    }
+    .nft-empty-icon {
+      width: 64px; height: 64px;
+      border-radius: 16px;
+      background: rgba(184,255,60,0.08);
+      border: 1px solid rgba(184,255,60,0.2);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .nft-empty h3 { font-size: 18px; color: #fff; margin: 0; }
+    .nft-empty p { font-size: 14px; color: var(--muted); max-width: 360px; margin: 0; line-height: 1.6; }
+    .nft-empty-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      color: var(--accent);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    .nft-empty-link:hover { opacity: 0.8; }
+
+    /* Редирект если не авторизован */
+    .profile-gate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 60vh;
+      gap: 16px;
+    }
+    .profile-gate h2 { font-size: 24px; color: #fff; }
+    .profile-gate p { font-size: 15px; color: var(--muted); }
+
+    @media (max-width: 720px) {
+      .profile-top { grid-template-columns: 1fr; }
+      .gem-balance-num { font-size: 24px; }
+      .profile-nft-head { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header"></div>
+
+  <div class="profile-page" id="profile-content" style="display:none;">
+
+    <!-- ── ВЕРХНЯЯ ПАНЕЛЬ ── -->
+    <div class="profile-top">
+
+      <!-- Пользователь -->
+      <div class="profile-user-card">
+        <div class="profile-avatar" id="prof-avatar"></div>
+        <div class="profile-user-info">
+          <div class="profile-address" id="prof-addr">—</div>
+          <div class="profile-wallet-tag">
+            <span class="profile-wallet-dot"></span>
+            <span id="prof-wallet-name">—</span>
+            <span style="color:var(--muted)">·</span>
+            <span data-i18n="prof_connected" style="color:var(--muted)">подключён</span>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="profile-icon-btn" id="prof-copy" title="Копировать адрес">
+            <i class="ph ph-copy"></i>
+          </button>
+          <button class="profile-icon-btn danger" id="prof-disconnect" title="Отключить">
+            <i class="ph ph-sign-out"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- GEM баланс -->
+      <div class="profile-gem-card">
+        <div class="gem-balance-left">
+          <div class="gem-balance-label" data-i18n="gem_balance">Баланс GEM</div>
+          <div class="gem-balance-amount">
+            <div class="gem-icon-wrap">
+              <img src="assets/GEM.png" alt="GEM">
+            </div>
+            <div>
+              <div class="gem-balance-num">0.00</div>
+              <div class="gem-balance-today" data-i18n="gem_today">Сегодня: +0.00 GEM</div>
+            </div>
+          </div>
+        </div>
+        <div class="gem-balance-right">
+          <button class="gem-withdraw-btn">
+            <span class="gem-beta-tag">BETA</span>
+            <i class="ph ph-arrow-line-down"></i>
+            <span data-i18n="gem_withdraw">Вывести</span>
+          </button>
+          <button class="gem-history-link">
+            <i class="ph ph-clock-clockwise"></i>
+            <span data-i18n="gem_history">История начислений</span>
+            <i class="ph ph-caret-right"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── МОИ NFT ── -->
+    <div class="profile-nft-head">
+      <div class="profile-nft-title">
+        <span data-i18n="my_nft">Мои</span>&nbsp;<b>NFT</b>
+        <span class="profile-nft-stats" id="nft-stats"></span>
+      </div>
+      <div class="profile-nft-controls">
+        <div class="nft-filter-tabs">
+          <button class="nft-filter-tab active" data-i18n="nft_all">Все</button>
+          <button class="nft-filter-tab" data-i18n="nft_free">Свободные</button>
+          <button class="nft-filter-tab" data-i18n="nft_staked">В стейкинге</button>
+        </div>
+        <div class="nft-view-btns">
+          <button class="nft-view-btn active"><i class="ph ph-squares-four"></i></button>
+          <button class="nft-view-btn"><i class="ph ph-list"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Пустое состояние -->
+    <div class="nft-empty">
+      <div class="nft-empty-icon"><i class="ph ph-cube"></i></div>
+      <h3 data-i18n="nft_empty_h">NFT пока нет</h3>
+      <p data-i18n="nft_empty_p">Купи первую NFT-долю реального проекта на платформе или на OpenSea.</p>
+      <a href="projects" class="nft-empty-link">
+        <i class="ph ph-arrow-right"></i>
+        <span data-i18n="nft_empty_link">Смотреть проекты</span>
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Заглушка если не авторизован -->
+  <div class="profile-page profile-gate" id="profile-gate" style="display:none;">
+    <div style="font-size:48px; color:var(--muted)"><i class="ph ph-lock"></i></div>
+    <h2 data-i18n="prof_gate_h">Подключи кошелёк</h2>
+    <p data-i18n="prof_gate_p">Для просмотра профиля необходимо подключить кошелёк.</p>
+    <button class="btn btn-primary" id="prof-connect-btn">
+      <i class="ph ph-wallet"></i>
+      <span data-i18n="connectWallet">Подключить кошелёк</span>
+    </button>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/cubes-bg.js"></script>
+  <script src="js/brand-cube.js"></script>
+  <script src="js/wallet.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      initProfilePage();
+    });
+
+    function initProfilePage() {
+      var w = window.WALLET;
+      var content = document.getElementById('profile-content');
+      var gate    = document.getElementById('profile-gate');
+
+      if (!w || !w.connected || !w.address) {
+        /* Не авторизован */
+        gate.style.display = 'flex';
+        var btn = document.getElementById('prof-connect-btn');
+        if (btn) btn.addEventListener('click', function () {
+          if (typeof openWalletSelect === 'function') openWalletSelect();
+        });
+        return;
+      }
+
+      /* Авторизован */
+      content.style.display = 'block';
+
+      /* Аватар */
+      var av = document.getElementById('prof-avatar');
+      if (av && typeof walletAddrAvatar === 'function') {
+        av.innerHTML = walletAddrAvatar(w.address, 56);
+      }
+
+      /* Адрес */
+      var addrEl = document.getElementById('prof-addr');
+      if (addrEl) addrEl.textContent = w.address.slice(0, 6) + '...' + w.address.slice(-4);
+
+      /* Имя кошелька */
+      var nameEl = document.getElementById('prof-wallet-name');
+      if (nameEl) nameEl.textContent = w.walletName || 'Wallet';
+
+      /* Копировать адрес */
+      var copyBtn = document.getElementById('prof-copy');
+      if (copyBtn) copyBtn.addEventListener('click', function () {
+        navigator.clipboard.writeText(w.address).then(function () {
+          copyBtn.innerHTML = '<i class="ph ph-check" style="color:var(--accent)"></i>';
+          setTimeout(function () { copyBtn.innerHTML = '<i class="ph ph-copy"></i>'; }, 1500);
+        });
+      });
+
+      /* Отключить */
+      var discBtn = document.getElementById('prof-disconnect');
+      if (discBtn) discBtn.addEventListener('click', function () {
+        if (typeof disconnectWallet === 'function') disconnectWallet();
+        window.location.href = './';
+      });
+
+      /* Табы NFT */
+      document.querySelectorAll('.nft-filter-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          document.querySelectorAll('.nft-filter-tab').forEach(function (t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+        });
+      });
+
+      /* Вид NFT */
+      document.querySelectorAll('.nft-view-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          document.querySelectorAll('.nft-view-btn').forEach(function (b) { b.classList.remove('active'); });
+          btn.classList.add('active');
+        });
+      });
+    }
+  </script>
+
+</body>
+</html>

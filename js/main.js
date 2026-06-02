@@ -48,6 +48,20 @@ var T = {
     notifications: 'Уведомления',
     noNotif:       'Уведомлений пока нет',
     noNotifSub:    'Здесь будут появляться уведомления.',
+    prof_connected: 'подключён',
+    gem_balance:    'Баланс GEM',
+    gem_today:      'Сегодня: +0.00 GEM',
+    gem_withdraw:   'Вывести',
+    gem_history:    'История начислений',
+    my_nft:         'Мои',
+    nft_all:        'Все',
+    nft_free:       'Свободные',
+    nft_staked:     'В стейкинге',
+    nft_empty_h:    'NFT пока нет',
+    nft_empty_p:    'Купи первую NFT-долю реального проекта на платформе или на OpenSea.',
+    nft_empty_link: 'Смотреть проекты',
+    prof_gate_h:    'Подключи кошелёк',
+    prof_gate_p:    'Для просмотра профиля необходимо подключить кошелёк.',
     navHome:       'Главная',
     navAbout:      'О проекте',
     navProjects:   'Проекты',
@@ -137,6 +151,20 @@ var T = {
     notifications: 'Notifications',
     noNotif:       'No notifications yet',
     noNotifSub:    'Notifications will appear here.',
+    prof_connected: 'connected',
+    gem_balance:    'GEM Balance',
+    gem_today:      'Today: +0.00 GEM',
+    gem_withdraw:   'Withdraw',
+    gem_history:    'Earnings history',
+    my_nft:         'My',
+    nft_all:        'All',
+    nft_free:       'Free',
+    nft_staked:     'Staked',
+    nft_empty_h:    'No NFTs yet',
+    nft_empty_p:    'Buy your first NFT share of a real project on the platform or OpenSea.',
+    nft_empty_link: 'Browse projects',
+    prof_gate_h:    'Connect wallet',
+    prof_gate_p:    'Connect your wallet to access the profile.',
     navHome:       'Home',
     navAbout:      'About',
     navProjects:   'Projects',
@@ -527,8 +555,8 @@ function applyTranslations() {
   // Update page title
   var pg = currentPage();
   var titles = {
-    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO' },
-    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO' }
+    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Профиль' },
+    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Profile' }
   };
   var langTitles = titles[LANG] || titles.ru;
   if (langTitles[pg]) document.title = langTitles[pg];
