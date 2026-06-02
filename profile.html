@@ -515,6 +515,48 @@
     /* Карточка кликабельна */
     .nft-card { cursor: pointer; }
 
+    /* ── Вид списком ── */
+    .nft-grid--list { grid-template-columns: 1fr !important; }
+    .nft-grid--list .nft-card { flex-direction: row; }
+    .nft-grid--list .nft-preview {
+      width: 180px;
+      aspect-ratio: 1 / 1;
+      flex-shrink: 0;
+    }
+    .nft-grid--list .nft-body {
+      flex: 1;
+      padding: 16px 20px;
+    }
+    @media (max-width: 600px) {
+      .nft-grid--list .nft-card { flex-direction: column; }
+      .nft-grid--list .nft-preview { width: 100%; aspect-ratio: 1 / 0.95; }
+    }
+
+    /* Заглушка при пустом результате фильтра */
+    .nft-filter-empty {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      border: 1px dashed var(--border-hi);
+      border-radius: var(--radius);
+      background: var(--surface);
+      gap: 10px;
+      grid-column: 1 / -1;
+    }
+    .nft-filter-empty .icon {
+      font-size: 32px;
+      color: var(--muted);
+      opacity: 0.6;
+    }
+    .nft-filter-empty p {
+      font-size: 13px;
+      color: var(--muted);
+      margin: 0;
+    }
+
     /* ── МОДАЛКА АНАЛИТИКИ ── */
     .nft-modal {
       position: fixed;
@@ -814,15 +856,21 @@
       </div>
       <div class="profile-nft-controls">
         <div class="nft-filter-tabs">
-          <button class="nft-filter-tab active" data-i18n="nft_all">Все</button>
-          <button class="nft-filter-tab" data-i18n="nft_free">Свободные</button>
-          <button class="nft-filter-tab" data-i18n="nft_staked">В стейкинге</button>
+          <button class="nft-filter-tab active" data-filter="all"    data-i18n="nft_all">Все</button>
+          <button class="nft-filter-tab"        data-filter="free"   data-i18n="nft_free">Свободные</button>
+          <button class="nft-filter-tab"        data-filter="staked" data-i18n="nft_staked">В стейкинге</button>
         </div>
         <div class="nft-view-btns">
-          <button class="nft-view-btn active"><i class="ph ph-squares-four"></i></button>
-          <button class="nft-view-btn"><i class="ph ph-list"></i></button>
+          <button class="nft-view-btn active" data-view="grid" title="Grid"><i class="ph ph-squares-four"></i></button>
+          <button class="nft-view-btn"        data-view="list" title="List"><i class="ph ph-list"></i></button>
         </div>
       </div>
+    </div>
+
+    <!-- Заглушка при пустом фильтре -->
+    <div class="nft-filter-empty" id="nft-filter-empty">
+      <i class="ph ph-funnel icon"></i>
+      <p data-i18n="nft_no_match">Нет NFT по этому фильтру</p>
     </div>
 
     <!-- Демо-сетка NFT -->
@@ -1135,19 +1183,43 @@
         window.location.href = './';
       });
 
-      /* Табы NFT */
+      /* ── Фильтр NFT ── */
+      var grid       = document.querySelector('.nft-grid');
+      var emptyHint  = document.getElementById('nft-filter-empty');
+      var cardsAll   = Array.prototype.slice.call(document.querySelectorAll('.nft-card'));
+
+      function applyFilter(filter) {
+        var shown = 0;
+        cardsAll.forEach(function (card) {
+          var st = card.getAttribute('data-status');
+          var ok = filter === 'all'
+                 || (filter === 'free'   && st === 'free')
+                 || (filter === 'staked' && (st === 'fixed' || st === 'flex'));
+          card.style.display = ok ? '' : 'none';
+          if (ok) shown++;
+        });
+        if (emptyHint) emptyHint.style.display = shown === 0 ? 'flex' : 'none';
+      }
+
       document.querySelectorAll('.nft-filter-tab').forEach(function (tab) {
         tab.addEventListener('click', function () {
           document.querySelectorAll('.nft-filter-tab').forEach(function (t) { t.classList.remove('active'); });
           tab.classList.add('active');
+          applyFilter(tab.getAttribute('data-filter') || 'all');
         });
       });
 
-      /* Вид NFT */
+      /* ── Вид NFT (grid / list) ── */
       document.querySelectorAll('.nft-view-btn').forEach(function (btn) {
         btn.addEventListener('click', function () {
           document.querySelectorAll('.nft-view-btn').forEach(function (b) { b.classList.remove('active'); });
           btn.classList.add('active');
+          var view = btn.getAttribute('data-view');
+          if (view === 'list') {
+            grid.classList.add('nft-grid--list');
+          } else {
+            grid.classList.remove('nft-grid--list');
+          }
         });
       });
 
