@@ -390,11 +390,9 @@ function renderHeader() {
     ? '<button class="notif-bell" id="notif-bell" aria-label="' + t('notifications') + '">' + ICO_BELL + '</button>'
     : '';
 
-  var ICO_GEM = '<svg class="gem-chip-icon" width="16" height="16" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"><path d="M6 3h12l4 6-10 12L2 9l4-6z"/><path d="M6 3l4 6h4l4-6"/><path d="M2 9h20"/><path d="M10 9l2 12 2-12"/></svg>';
-
   var balanceHTML = WALLET.connected
     ? '<a class="gem-chip" href="profile" title="' + t('gem_balance') + '">'
-        + ICO_GEM
+        + '<img class="gem-chip-icon" src="assets/GEM.png" alt="GEM">'
         + '<span class="gem-chip-amount">0.00 GEM</span>'
       + '</a>'
     : '';
