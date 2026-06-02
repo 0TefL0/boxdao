@@ -332,10 +332,31 @@
       align-items: center;
       justify-content: center;
       overflow: hidden;
+      background: #0a0a0c;
     }
-    .nft-preview.free    { background: linear-gradient(145deg, #0e1a05 0%, #051002 100%); }
-    .nft-preview.fixed   { background: linear-gradient(145deg, #1a1305 0%, #0c0902 100%); }
-    .nft-preview.flex    { background: linear-gradient(145deg, #051a0a 0%, #020a04 100%); }
+    .nft-preview-img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.35s ease;
+    }
+    .nft-card:hover .nft-preview-img { transform: scale(1.04); }
+
+    /* Затемнение поверх картинки для FIXED / FLEX (чтобы был виден замок) */
+    .nft-preview-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(0,0,0,0.0) 0%, rgba(0,0,0,0.45) 60%, rgba(0,0,0,0.75) 100%);
+      z-index: 1;
+    }
+    .nft-preview.fixed .nft-preview-overlay {
+      background: linear-gradient(180deg, rgba(20,15,5,0.55) 0%, rgba(0,0,0,0.85) 100%);
+    }
+    .nft-preview.flex .nft-preview-overlay {
+      background: linear-gradient(180deg, rgba(5,30,10,0.4) 0%, rgba(0,0,0,0.75) 100%);
+    }
 
     .nft-badge {
       position: absolute;
@@ -356,41 +377,29 @@
     .nft-badge--fixed { background: rgba(255,200,80,0.12); color: #ffc850; border: 1px solid rgba(255,200,80,0.3); }
     .nft-badge--flex  { background: rgba(184,255,60,0.12); color: var(--accent); border: 1px solid rgba(184,255,60,0.3); }
 
-    /* Иконка-плейсхолдер внутри превью */
+    /* Иконка-замок поверх изображения */
     .nft-pic {
+      position: relative;
+      z-index: 2;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 6px;
-      color: var(--accent);
+      gap: 4px;
+      color: #fff;
+      filter: drop-shadow(0 2px 8px rgba(0,0,0,0.5));
     }
     .nft-pic-icon {
-      font-size: 40px;
-      filter: drop-shadow(0 0 12px rgba(184,255,60,0.4));
+      font-size: 36px;
     }
     .nft-pic-label {
       font-family: var(--font-mono);
       font-size: 10px;
       font-weight: 700;
       letter-spacing: 0.2em;
-      opacity: 0.85;
+      opacity: 0.9;
     }
     .nft-preview.fixed .nft-pic { color: #ffc850; }
-    .nft-preview.fixed .nft-pic-icon { filter: drop-shadow(0 0 12px rgba(255,200,80,0.35)); }
-
-    /* Сетка ячеек для «Свободна» */
-    .nft-cells-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 4px;
-      width: 60px;
-    }
-    .nft-cells-grid > div {
-      aspect-ratio: 1;
-      background: rgba(184,255,60,0.04);
-      border: 1px solid rgba(184,255,60,0.5);
-      border-radius: 3px;
-    }
+    .nft-preview.flex  .nft-pic { color: var(--accent); }
 
     /* ── ТЕЛО КАРТОЧКИ ── */
     .nft-body {
@@ -594,12 +603,8 @@
       <!-- ── Карточка 1: СВОБОДНА ── -->
       <div class="nft-card">
         <div class="nft-preview free">
+          <img class="nft-preview-img" src="assets/luckybox.png" alt="Lucky Box">
           <span class="nft-badge nft-badge--free" data-i18n="nft_st_free">СВОБОДНА</span>
-          <div class="nft-pic">
-            <div class="nft-cells-grid">
-              <div></div><div></div><div></div><div></div>
-            </div>
-          </div>
         </div>
         <div class="nft-body">
           <div class="nft-name">Lucky Box #07</div>
@@ -620,6 +625,8 @@
       <!-- ── Карточка 2: FIXED ── -->
       <div class="nft-card">
         <div class="nft-preview fixed">
+          <img class="nft-preview-img" src="assets/luckybox.png" alt="Lucky Box">
+          <div class="nft-preview-overlay"></div>
           <span class="nft-badge nft-badge--fixed">FIXED</span>
           <div class="nft-pic">
             <i class="ph ph-lock-key nft-pic-icon"></i>
@@ -658,6 +665,8 @@
       <!-- ── Карточка 3: FLEX · LV1 ── -->
       <div class="nft-card">
         <div class="nft-preview flex">
+          <img class="nft-preview-img" src="assets/luckybox.png" alt="Lucky Box">
+          <div class="nft-preview-overlay"></div>
           <span class="nft-badge nft-badge--flex">FLEX · LV1</span>
           <div class="nft-pic">
             <i class="ph ph-lock-simple nft-pic-icon"></i>
