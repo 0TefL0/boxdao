@@ -525,10 +525,9 @@
   border-color: rgba(184,255,60,0.3);
 }
 .gem-chip-icon {
-  width: 22px; height: 22px;
-  object-fit: contain;
-  display: block;
-  filter: drop-shadow(0 0 4px rgba(184,255,60,0.35));
+  flex-shrink: 0;
+  color: var(--accent);
+  filter: drop-shadow(0 0 4px rgba(184,255,60,0.45));
 }
 .gem-chip-amount { color: #fff; letter-spacing: 0.02em; }
 .gem-chip:hover .gem-chip-amount { color: var(--accent); }
