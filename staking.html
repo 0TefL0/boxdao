@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoleFi — Стейкинг</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .staking-page {
+      padding-top: calc(var(--header-h) + 3rem);
+      padding-bottom: 6rem;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-inline: var(--gutter);
+    }
+
+    /* ── ШАПКА СТРАНИЦЫ ── */
+    .staking-head { margin-bottom: 2.5rem; }
+    .staking-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .2em; text-transform: uppercase;
+      color: var(--accent); margin-bottom: 10px;
+    }
+    .staking-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px, 4vw, 46px);
+      font-weight: 700; letter-spacing: -0.02em;
+      color: #fff; line-height: 1.1; margin-bottom: 12px;
+    }
+    .staking-title .acc { color: var(--accent); }
+    .staking-sub { font-size: 15px; color: var(--text-dim); line-height: 1.7; max-width: 620px; }
+
+    /* ── СВОДКА (3 карточки) ── */
+    .stk-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 14px;
+      margin-bottom: 2.5rem;
+    }
+    .stk-sum-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px 20px;
+      transition: border-color var(--t-fast);
+    }
+    .stk-sum-card:hover { border-color: var(--border-hi); }
+    .stk-sum-card.acc {
+      background: linear-gradient(135deg, rgba(184,255,60,0.08) 0%, rgba(184,255,60,0.02) 100%);
+      border-color: rgba(184,255,60,0.25);
+    }
+    .stk-sum-label {
+      font-family: var(--font-mono);
+      font-size: 9px; font-weight: 700;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 8px;
+    }
+    .stk-sum-row { display: flex; align-items: center; gap: 8px; }
+    .stk-sum-icon {
+      font-size: 18px;
+      color: var(--accent);
+      filter: drop-shadow(0 0 5px rgba(184,255,60,0.4));
+    }
+    .stk-sum-value {
+      font-family: var(--font-mono);
+      font-size: 24px; font-weight: 700;
+      color: #fff; line-height: 1;
+    }
+    .stk-sum-card.acc .stk-sum-value { color: var(--accent); }
+    .stk-sum-sub { font-size: 11px; color: var(--text-dim); margin-top: 6px; }
+
+    /* ── РЕЖИМЫ СТЕЙКИНГА ── */
+    .stk-modes-head {
+      font-family: var(--font-display);
+      font-size: 20px; font-weight: 700;
+      color: #fff; margin-bottom: 14px;
+    }
+    .stk-modes {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 2.5rem;
+    }
+    .stk-mode {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 22px 24px;
+      transition: border-color var(--t-fast), transform var(--t-fast);
+    }
+    .stk-mode:hover { border-color: rgba(184,255,60,0.3); transform: translateY(-2px); }
+    .stk-mode-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 14px;
+    }
+    .stk-mode-badge {
+      font-family: var(--font-mono);
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      padding: 4px 10px; border-radius: 6px;
+    }
+    .stk-mode-badge.fixed { background: rgba(255,200,80,0.12); color: #ffc850; border: 1px solid rgba(255,200,80,0.3); }
+    .stk-mode-badge.flex  { background: rgba(184,255,60,0.12); color: var(--accent); border: 1px solid rgba(184,255,60,0.3); }
+    .stk-mode-rate {
+      font-family: var(--font-mono);
+      font-size: 22px; font-weight: 700;
+      color: var(--accent);
+    }
+    .stk-mode-rate.dim { color: var(--text); }
+    .stk-mode h3 {
+      font-family: var(--font-display);
+      font-size: 18px; color: #fff;
+      margin-bottom: 6px;
+    }
+    .stk-mode-desc {
+      font-size: 13px; color: var(--text-dim);
+      line-height: 1.6; margin-bottom: 14px;
+    }
+    .stk-mode-list { list-style: none; display: flex; flex-direction: column; gap: 8px; padding: 0; }
+    .stk-mode-list li {
+      display: flex; align-items: flex-start; gap: 8px;
+      font-size: 12px; color: var(--text-dim);
+    }
+    .stk-mode-list li::before {
+      content: '✓';
+      color: var(--accent);
+      flex-shrink: 0;
+      font-weight: 700;
+    }
+
+    /* ── СПИСОК NFT ДЛЯ СТЕЙКИНГА ── */
+    .stk-nft-section { margin-top: 2rem; }
+    .stk-nft-head {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 16px;
+    }
+    .stk-nft-head h2 {
+      font-family: var(--font-display);
+      font-size: 20px; color: #fff;
+    }
+    .stk-nft-head h2 b { color: var(--accent); }
+    .stk-nft-tabs {
+      display: flex;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .stk-nft-tab {
+      background: transparent; border: none;
+      color: var(--muted);
+      padding: 7px 14px;
+      font-size: 12px; font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .stk-nft-tab.active { background: rgba(184,255,60,0.1); color: var(--accent); }
+
+    .stk-nft-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+    .stk-nft-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color var(--t-fast), transform var(--t-fast);
+    }
+    .stk-nft-card:hover { border-color: rgba(184,255,60,0.3); transform: translateY(-2px); }
+    .stk-nft-preview {
+      position: relative;
+      aspect-ratio: 1 / 0.85;
+      overflow: hidden;
+    }
+    .stk-nft-preview img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.35s ease;
+    }
+    .stk-nft-card:hover .stk-nft-preview img { transform: scale(1.04); }
+    .stk-nft-badge {
+      position: absolute;
+      top: 10px; left: 10px;
+      font-family: var(--font-mono);
+      font-size: 9px; font-weight: 700;
+      letter-spacing: .12em; text-transform: uppercase;
+      padding: 4px 8px;
+      border-radius: 5px;
+      background: rgba(184,255,60,0.18);
+      color: var(--accent);
+      border: 1px solid rgba(184,255,60,0.4);
+    }
+    .stk-nft-badge.fixed { background: rgba(255,200,80,0.15); color: #ffc850; border-color: rgba(255,200,80,0.4); }
+    .stk-nft-body {
+      padding: 14px 16px;
+      display: flex; flex-direction: column; gap: 4px;
+    }
+    .stk-nft-name {
+      font-family: var(--font-display);
+      font-size: 16px; font-weight: 700;
+      color: #fff;
+    }
+    .stk-nft-col {
+      font-family: var(--font-mono);
+      font-size: 10px; color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .stk-nft-btn {
+      width: 100%;
+      display: inline-flex;
+      align-items: center; justify-content: center;
+      gap: 6px;
+      background: rgba(184,255,60,0.1);
+      border: 1px solid rgba(184,255,60,0.35);
+      border-radius: var(--radius-sm);
+      color: var(--accent);
+      padding: 9px 12px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: background .18s, border-color .18s;
+    }
+    .stk-nft-btn:hover { background: rgba(184,255,60,0.2); border-color: rgba(184,255,60,0.55); }
+    .stk-nft-btn.danger {
+      background: transparent;
+      border-color: var(--border-hi);
+      color: var(--text-dim);
+    }
+    .stk-nft-btn.danger:hover { color: #ff6b6b; border-color: rgba(255,80,80,0.4); background: rgba(255,80,80,0.06); }
+
+    /* Заглушка пустого состояния */
+    .stk-empty {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      border: 1px dashed var(--border-hi);
+      border-radius: var(--radius);
+      background: var(--surface);
+      gap: 12px;
+    }
+    .stk-empty-icon {
+      width: 60px; height: 60px;
+      border-radius: 14px;
+      background: rgba(184,255,60,0.08);
+      border: 1px solid rgba(184,255,60,0.22);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      color: var(--accent);
+    }
+    .stk-empty h3 { font-size: 17px; color: #fff; margin: 0; }
+    .stk-empty p { font-size: 13px; color: var(--muted); max-width: 360px; margin: 0; line-height: 1.6; }
+
+    /* GATE — не авторизован */
+    .staking-gate {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; min-height: 60vh; gap: 14px;
+    }
+    .staking-gate h2 { font-size: 24px; color: #fff; }
+    .staking-gate p { font-size: 15px; color: var(--muted); }
+
+    @media (max-width: 720px) {
+      .stk-modes { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header"></div>
+
+  <!-- ── СТРАНИЦА (когда авторизован) ── -->
+  <div class="staking-page" id="stk-content" style="display:none;">
+
+    <div class="staking-head">
+      <div class="staking-eyebrow" data-i18n="stk_ey">Стейкинг</div>
+      <div class="staking-title" data-i18n-html="stk_h">Зарабатывай <span class="acc">с NFT</span></div>
+      <p class="staking-sub" data-i18n="stk_p">Размести свои NFT в стейкинге и получай ежедневные выплаты в GEM пропорционально доле в проекте.</p>
+    </div>
+
+    <!-- Сводка -->
+    <div class="stk-summary">
+      <div class="stk-sum-card acc">
+        <div class="stk-sum-label" data-i18n="stk_sum_staked">В стейкинге</div>
+        <div class="stk-sum-row">
+          <i class="ph ph-lock-key stk-sum-icon"></i>
+          <span class="stk-sum-value">0</span>
+        </div>
+        <div class="stk-sum-sub" data-i18n="stk_sum_nft">NFT</div>
+      </div>
+
+      <div class="stk-sum-card">
+        <div class="stk-sum-label" data-i18n="stk_sum_daily">Доход в день</div>
+        <div class="stk-sum-row">
+          <i class="ph ph-trend-up stk-sum-icon"></i>
+          <span class="stk-sum-value">+0.00</span>
+        </div>
+        <div class="stk-sum-sub">GEM / <span data-i18n="stk_sum_day">день</span></div>
+      </div>
+
+      <div class="stk-sum-card">
+        <div class="stk-sum-label" data-i18n="stk_sum_total">Всего начислено</div>
+        <div class="stk-sum-row">
+          <i class="ph ph-coins stk-sum-icon"></i>
+          <span class="stk-sum-value">0.00</span>
+        </div>
+        <div class="stk-sum-sub">GEM</div>
+      </div>
+    </div>
+
+    <!-- Режимы -->
+    <div class="stk-modes-head" data-i18n="stk_modes_h">Режимы стейкинга</div>
+    <div class="stk-modes">
+
+      <div class="stk-mode">
+        <div class="stk-mode-head">
+          <span class="stk-mode-badge fixed">FIXED</span>
+          <span class="stk-mode-rate">2.16%</span>
+        </div>
+        <h3 data-i18n="stk_fixed_h">Фиксированный</h3>
+        <p class="stk-mode-desc" data-i18n="stk_fixed_p">Высокая ставка с блокировкой NFT на заданный срок. Доход начисляется автоматически по фиксированной ставке.</p>
+        <ul class="stk-mode-list">
+          <li data-i18n="stk_fixed_1">Гарантированная ставка</li>
+          <li data-i18n="stk_fixed_2">Срок блокировки от 6 мес</li>
+          <li data-i18n="stk_fixed_3">Ежедневное начисление в GEM</li>
+        </ul>
+      </div>
+
+      <div class="stk-mode">
+        <div class="stk-mode-head">
+          <span class="stk-mode-badge flex">FLEXIBLE</span>
+          <span class="stk-mode-rate dim">0.46%+</span>
+        </div>
+        <h3 data-i18n="stk_flex_h">Гибкий</h3>
+        <p class="stk-mode-desc" data-i18n="stk_flex_p">Уровневая ставка без жёсткой блокировки. Ставка растёт со временем, чем дольше в стейкинге.</p>
+        <ul class="stk-mode-list">
+          <li data-i18n="stk_flex_1">Без блокировки</li>
+          <li data-i18n="stk_flex_2">Растущая ставка по уровням</li>
+          <li data-i18n="stk_flex_3">Можно вывести в любой момент</li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Список NFT -->
+    <div class="stk-nft-section">
+      <div class="stk-nft-head">
+        <h2><span data-i18n="stk_my_nft">Мои</span>&nbsp;<b>NFT</b></h2>
+        <div class="stk-nft-tabs">
+          <button class="stk-nft-tab active" data-tab="free"   data-i18n="stk_tab_free">Свободные</button>
+          <button class="stk-nft-tab"        data-tab="staked" data-i18n="stk_tab_staked">В стейкинге</button>
+        </div>
+      </div>
+
+      <!-- Свободные -->
+      <div class="stk-nft-grid" id="stk-grid-free">
+        <div class="stk-nft-card">
+          <div class="stk-nft-preview">
+            <img src="assets/luckybox.png" alt="Lucky Box">
+            <span class="stk-nft-badge" data-i18n="nft_st_free">СВОБОДНА</span>
+          </div>
+          <div class="stk-nft-body">
+            <div class="stk-nft-name">Lucky Box #07</div>
+            <div class="stk-nft-col">Lucky Box RU №1 · RE-2185</div>
+            <button class="stk-nft-btn">
+              <i class="ph ph-lock-key"></i>
+              <span data-i18n="stk_btn_stake">Положить в стейкинг</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- В стейкинге -->
+      <div class="stk-nft-grid" id="stk-grid-staked" style="display:none;">
+        <div class="stk-nft-card">
+          <div class="stk-nft-preview">
+            <img src="assets/luckybox.png" alt="Lucky Box">
+            <span class="stk-nft-badge fixed">FIXED</span>
+          </div>
+          <div class="stk-nft-body">
+            <div class="stk-nft-name">Lucky Box #03</div>
+            <div class="stk-nft-col">Lucky Box RU №1 · RE-2185</div>
+            <button class="stk-nft-btn danger">
+              <i class="ph ph-lock-open"></i>
+              <span data-i18n="stk_btn_unstake">Вывести</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="stk-nft-card">
+          <div class="stk-nft-preview">
+            <img src="assets/luckybox.png" alt="Lucky Box">
+            <span class="stk-nft-badge">FLEX · LV1</span>
+          </div>
+          <div class="stk-nft-body">
+            <div class="stk-nft-name">Lucky Box #11</div>
+            <div class="stk-nft-col">Lucky Box RU №1 · RE-2185</div>
+            <button class="stk-nft-btn danger">
+              <i class="ph ph-lock-open"></i>
+              <span data-i18n="stk_btn_unstake">Вывести</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- ── ЗАГЛУШКА (не авторизован) ── -->
+  <div class="staking-page staking-gate" id="stk-gate" style="display:none;">
+    <div style="font-size:48px; color:var(--muted)"><i class="ph ph-lock"></i></div>
+    <h2 data-i18n="stk_gate_h">Подключи кошелёк</h2>
+    <p data-i18n="stk_gate_p">Стейкинг доступен только подключённым пользователям.</p>
+    <button class="btn btn-primary" id="stk-connect-btn">
+      <i class="ph ph-wallet"></i>
+      <span data-i18n="connectWallet">Подключить кошелёк</span>
+    </button>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/cubes-bg.js"></script>
+  <script src="js/brand-cube.js"></script>
+  <script src="js/wallet.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var w = window.WALLET;
+      var content = document.getElementById('stk-content');
+      var gate    = document.getElementById('stk-gate');
+
+      if (!w || !w.connected) {
+        gate.style.display = 'flex';
+        var btn = document.getElementById('stk-connect-btn');
+        if (btn) btn.addEventListener('click', function () {
+          if (typeof openWalletSelect === 'function') openWalletSelect();
+        });
+        return;
+      }
+
+      content.style.display = 'block';
+
+      /* Переключение табов Свободные/В стейкинге */
+      var gridFree   = document.getElementById('stk-grid-free');
+      var gridStaked = document.getElementById('stk-grid-staked');
+      document.querySelectorAll('.stk-nft-tab').forEach(function (tab) {
+        tab.addEventListener('click', function () {
+          document.querySelectorAll('.stk-nft-tab').forEach(function (t) { t.classList.remove('active'); });
+          tab.classList.add('active');
+          var which = tab.getAttribute('data-tab');
+          gridFree.style.display   = which === 'free'   ? 'grid' : 'none';
+          gridStaked.style.display = which === 'staked' ? 'grid' : 'none';
+        });
+      });
+    });
+  </script>
+
+</body>
+</html>

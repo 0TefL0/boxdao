@@ -101,6 +101,32 @@ var T = {
     hist_month:        'За месяц',
     hist_empty_h:      'Пока пусто',
     hist_empty_p:      'Начисления появятся здесь после первого дохода с твоих NFT.',
+    stk_ey:           'Стейкинг',
+    stk_h:            'Зарабатывай <span class="acc">с NFT</span>',
+    stk_p:            'Размести свои NFT в стейкинге и получай ежедневные выплаты в GEM пропорционально доле в проекте.',
+    stk_sum_staked:   'В стейкинге',
+    stk_sum_nft:      'NFT',
+    stk_sum_daily:    'Доход в день',
+    stk_sum_day:      'день',
+    stk_sum_total:    'Всего начислено',
+    stk_modes_h:      'Режимы стейкинга',
+    stk_fixed_h:      'Фиксированный',
+    stk_fixed_p:      'Высокая ставка с блокировкой NFT на заданный срок. Доход начисляется автоматически по фиксированной ставке.',
+    stk_fixed_1:      'Гарантированная ставка',
+    stk_fixed_2:      'Срок блокировки от 6 мес',
+    stk_fixed_3:      'Ежедневное начисление в GEM',
+    stk_flex_h:       'Гибкий',
+    stk_flex_p:       'Уровневая ставка без жёсткой блокировки. Ставка растёт со временем, чем дольше в стейкинге.',
+    stk_flex_1:       'Без блокировки',
+    stk_flex_2:       'Растущая ставка по уровням',
+    stk_flex_3:       'Можно вывести в любой момент',
+    stk_my_nft:       'Мои',
+    stk_tab_free:     'Свободные',
+    stk_tab_staked:   'В стейкинге',
+    stk_btn_stake:    'Положить в стейкинг',
+    stk_btn_unstake:  'Вывести',
+    stk_gate_h:       'Подключи кошелёк',
+    stk_gate_p:       'Стейкинг доступен только подключённым пользователям.',
     prof_gate_h:    'Подключи кошелёк',
     prof_gate_p:    'Для просмотра профиля необходимо подключить кошелёк.',
     navHome:       'Главная',
@@ -245,6 +271,32 @@ var T = {
     hist_month:        'This month',
     hist_empty_h:      'Nothing here yet',
     hist_empty_p:      'Earnings will appear here once your NFTs start generating income.',
+    stk_ey:           'Staking',
+    stk_h:            'Earn <span class="acc">with NFT</span>',
+    stk_p:            'Stake your NFTs and receive daily GEM payouts proportional to your project share.',
+    stk_sum_staked:   'Staked',
+    stk_sum_nft:      'NFTs',
+    stk_sum_daily:    'Daily yield',
+    stk_sum_day:      'day',
+    stk_sum_total:    'Total earned',
+    stk_modes_h:      'Staking modes',
+    stk_fixed_h:      'Fixed',
+    stk_fixed_p:      'Higher rate with locked NFT for a fixed term. Income accrues automatically at the fixed rate.',
+    stk_fixed_1:      'Guaranteed rate',
+    stk_fixed_2:      'Lock-up from 6 months',
+    stk_fixed_3:      'Daily GEM payouts',
+    stk_flex_h:       'Flexible',
+    stk_flex_p:       'Tiered rate with no hard lock. Rate grows over time the longer you stake.',
+    stk_flex_1:       'No lock-up',
+    stk_flex_2:       'Growing rate by levels',
+    stk_flex_3:       'Withdraw anytime',
+    stk_my_nft:       'My',
+    stk_tab_free:     'Free',
+    stk_tab_staked:   'Staked',
+    stk_btn_stake:    'Stake NFT',
+    stk_btn_unstake:  'Withdraw',
+    stk_gate_h:       'Connect wallet',
+    stk_gate_p:       'Staking is only available for connected users.',
     prof_gate_h:    'Connect wallet',
     prof_gate_p:    'Connect your wallet to access the profile.',
     navHome:       'Home',
@@ -344,6 +396,7 @@ var NAV_KEYS = [
   { href: './',        key: 'navHome'     },
   { href: 'about',     key: 'navAbout'   },
   { href: 'projects',  key: 'navProjects' },
+  { href: 'staking',   key: 'navStaking', auth: true }, /* только когда подключён кошелёк */
   { href: 'dao',       key: 'navDao'     },
 ];
 
@@ -380,9 +433,11 @@ function renderHeader() {
   if (!mount) return;
 
   var active  = currentPage();
-  var navHTML = NAV_KEYS.map(function (i) {
-    return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">' + t(i.key) + '</a>';
-  }).join('');
+  var navHTML = NAV_KEYS
+    .filter(function (i) { return !i.auth || WALLET.connected; })
+    .map(function (i) {
+      return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">' + t(i.key) + '</a>';
+    }).join('');
 
   var ICO_BELL = '<svg width="18" height="18" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" xmlns="http://www.w3.org/2000/svg"><path d="M96 192a32 32 0 0 0 64 0"/><path d="M208 192H48a16 16 0 0 1-12.8-25.6C49.6 147.2 64 130.1 64 96a64 64 0 0 1 128 0c0 34.1 14.4 51.2 28.8 70.4A16 16 0 0 1 208 192z"/></svg>';
 
@@ -496,10 +551,12 @@ function renderMobileNav() {
   if (old) old.remove();
 
   var active  = currentPage();
-  var navHTML = NAV_KEYS.map(function (i) {
-    return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">'
-      + '<span class="mobile-nav-dot"></span>' + t(i.key) + '</a>';
-  }).join('');
+  var navHTML = NAV_KEYS
+    .filter(function (i) { return !i.auth || WALLET.connected; })
+    .map(function (i) {
+      return '<a href="' + i.href + '" class="' + (i.href === active ? 'active' : '') + '">'
+        + '<span class="mobile-nav-dot"></span>' + t(i.key) + '</a>';
+    }).join('');
 
   var div = document.createElement('div');
   div.className = 'mobile-nav';
@@ -645,8 +702,8 @@ function applyTranslations() {
   // Update page title
   var pg = currentPage();
   var titles = {
-    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Профиль' },
-    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Profile' }
+    ru: { './': 'DoleFi', 'about': 'DoleFi — О проекте', 'projects': 'DoleFi — Проекты', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Профиль', 'staking': 'DoleFi — Стейкинг' },
+    en: { './': 'DoleFi', 'about': 'DoleFi — About',      'projects': 'DoleFi — Projects', 'dao': 'DoleFi — DAO', 'profile': 'DoleFi — Profile', 'staking': 'DoleFi — Staking' }
   };
   var langTitles = titles[LANG] || titles.ru;
   if (langTitles[pg]) document.title = langTitles[pg];
