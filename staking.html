@@ -72,6 +72,12 @@
       color: var(--accent);
       filter: drop-shadow(0 0 5px rgba(184,255,60,0.4));
     }
+    .stk-sum-img {
+      width: 26px; height: 26px;
+      object-fit: contain;
+      display: block;
+      filter: drop-shadow(0 0 5px rgba(184,255,60,0.5));
+    }
     .stk-sum-value {
       font-family: var(--font-mono);
       font-size: 24px; font-weight: 700;
@@ -316,7 +322,7 @@
       <div class="stk-sum-card">
         <div class="stk-sum-label" data-i18n="stk_sum_total">Всего начислено</div>
         <div class="stk-sum-row">
-          <i class="ph ph-coins stk-sum-icon"></i>
+          <img src="assets/GEM.png" alt="GEM" class="stk-sum-img">
           <span class="stk-sum-value">0.00</span>
         </div>
         <div class="stk-sum-sub">GEM</div>
