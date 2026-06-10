@@ -44,10 +44,13 @@
     try { addr = localStorage.getItem('dolefi_wallet_addr') || ''; } catch (e) {}
     try { name = localStorage.getItem('dolefi_wallet_name') || ''; } catch (e) {}
     if (!addr) return;
+    var nick = '';
+    try { nick = localStorage.getItem('dolefi_nick_' + addr.toLowerCase()) || ''; } catch (e) {}
     global.WALLET = global.WALLET || {};
     global.WALLET.connected  = true;
     global.WALLET.address    = addr;
     global.WALLET.walletName = name;
+    global.WALLET.nickname   = nick;
     global.WALLET.provider   = null; /* провайдер придёт после верификации */
   })();
 
@@ -340,6 +343,152 @@
     });
   }
 
+  /* ── МОДАЛ НИКНЕЙМА ── */
+  var nickModalEl = null;
+  var nickAnimId  = null;
+
+  function openNicknameModal() {
+    if (nickModalEl) return;
+    var addr = global.WALLET && global.WALLET.address ? global.WALLET.address.toLowerCase() : '';
+    try { if (localStorage.getItem('dolefi_nick_' + addr)) return; } catch (e) {}
+
+    var isEn = typeof LANG !== 'undefined' && LANG === 'en';
+
+    nickModalEl = document.createElement('div');
+    nickModalEl.className = 'wm-overlay';
+    nickModalEl.innerHTML =
+      '<div class="wm-box nm-box" role="dialog" aria-modal="true">' +
+        '<button class="wm-close nm-close-btn" id="nm-close" aria-label="Close">&#x2715;</button>' +
+        '<div class="nm-cube-wrap"><canvas id="nm-cube-canvas" style="display:block;"></canvas></div>' +
+        '<h3 class="nm-title">' + (isEn ? 'Choose a username' : 'Придумай никнейм') + '</h3>' +
+        '<div class="nm-input-wrap">' +
+          '<input type="text" class="nm-input" id="nm-input" placeholder="username" maxlength="24" autocomplete="off" spellcheck="false">' +
+          '<span class="nm-avail" id="nm-avail"></span>' +
+        '</div>' +
+        '<label class="nm-terms-row">' +
+          '<input type="checkbox" class="nm-check" id="nm-check">' +
+          '<span>' + (isEn
+            ? 'I agree to the <a href="#" onclick="return false;">Terms of Service</a>'
+            : 'Принимаю <a href="#" onclick="return false;">условия использования</a>') +
+          '</span>' +
+        '</label>' +
+        '<button class="btn btn-primary nm-continue" id="nm-continue" disabled>' + (isEn ? 'Continue' : 'Продолжить') + '</button>' +
+        '<button class="nm-skip" id="nm-skip">' + (isEn ? 'Skip for now' : 'Пропустить') + '</button>' +
+      '</div>';
+
+    document.body.appendChild(nickModalEl);
+    requestAnimationFrame(function () { nickModalEl.classList.add('open'); });
+
+    startNickCube();
+
+    var input = document.getElementById('nm-input');
+    var avail = document.getElementById('nm-avail');
+    var check = document.getElementById('nm-check');
+    var cont  = document.getElementById('nm-continue');
+
+    function validate() {
+      var val = input.value.replace(/[^a-zA-Z0-9_\-.]/g, '');
+      input.value = val;
+      if (val.length >= 3) {
+        avail.textContent = isEn ? '✓ Username available' : '✓ Имя доступно';
+        avail.className = 'nm-avail nm-avail--ok';
+      } else if (val.length > 0) {
+        avail.textContent = isEn ? 'Min 3 characters' : 'Минимум 3 символа';
+        avail.className = 'nm-avail nm-avail--err';
+      } else {
+        avail.textContent = '';
+        avail.className = 'nm-avail';
+      }
+      cont.disabled = !(val.length >= 3 && check.checked);
+    }
+
+    input.addEventListener('input', validate);
+    check.addEventListener('change', validate);
+
+    document.getElementById('nm-close').addEventListener('click', closeNicknameModal);
+    document.getElementById('nm-skip').addEventListener('click', closeNicknameModal);
+    nickModalEl.addEventListener('click', function (e) { if (e.target === nickModalEl) closeNicknameModal(); });
+
+    cont.addEventListener('click', function () {
+      var val = input.value.trim();
+      if (val.length < 3) return;
+      try { localStorage.setItem('dolefi_nick_' + addr, val); } catch (e) {}
+      global.WALLET.nickname = val;
+      closeNicknameModal();
+    });
+  }
+
+  function closeNicknameModal() {
+    if (nickAnimId) { cancelAnimationFrame(nickAnimId); nickAnimId = null; }
+    if (!nickModalEl) return;
+    nickModalEl.classList.remove('open');
+    var el = nickModalEl; nickModalEl = null;
+    setTimeout(function () { if (el) el.remove(); }, 280);
+  }
+
+  function startNickCube() {
+    var canvas = document.getElementById('nm-cube-canvas');
+    if (!canvas) return;
+    var DPR = Math.min(window.devicePixelRatio || 1, 2);
+    var DISP = 56;
+    canvas.width  = DISP * DPR;
+    canvas.height = DISP * DPR;
+    canvas.style.width  = DISP + 'px';
+    canvas.style.height = DISP + 'px';
+
+    var ctx = canvas.getContext('2d');
+    ctx.scale(DPR, DPR);
+
+    var css    = getComputedStyle(document.documentElement);
+    var ACCENT = (css.getPropertyValue('--accent') || '#B8FF3C').trim();
+    var LINE   = '#8A8A93';
+    var U = 12, A = Math.PI / 6, CA = Math.cos(A), SA = Math.sin(A);
+    var CX = DISP / 2, CY = DISP / 2 + 2;
+
+    function isoP(gx, gy, gz, ox, oy) {
+      return [CX + (gx - gy) * U * CA + (ox || 0), CY + (gx + gy) * U * SA - gz * U + (oy || 0)];
+    }
+    function face(pts, stroke, sa, fill, fa, lw) {
+      ctx.beginPath();
+      ctx.moveTo(pts[0][0], pts[0][1]);
+      for (var i = 1; i < pts.length; i++) ctx.lineTo(pts[i][0], pts[i][1]);
+      ctx.closePath();
+      if (fill && fa > 0) { ctx.fillStyle = fill; ctx.globalAlpha = fa; ctx.fill(); }
+      ctx.strokeStyle = stroke; ctx.lineWidth = lw || 1.4; ctx.lineJoin = 'round';
+      ctx.globalAlpha = sa; ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    function cube(gx, gy, gz, oy, accent) {
+      var col = accent ? ACCENT : LINE;
+      var top   = [isoP(gx,gy,gz+1,0,oy),isoP(gx+1,gy,gz+1,0,oy),isoP(gx+1,gy+1,gz+1,0,oy),isoP(gx,gy+1,gz+1,0,oy)];
+      var left  = [isoP(gx,gy+1,gz+1,0,oy),isoP(gx,gy+1,gz,0,oy),isoP(gx+1,gy+1,gz,0,oy),isoP(gx+1,gy+1,gz+1,0,oy)];
+      var right = [isoP(gx+1,gy,gz+1,0,oy),isoP(gx+1,gy,gz,0,oy),isoP(gx+1,gy+1,gz,0,oy),isoP(gx+1,gy+1,gz+1,0,oy)];
+      if (accent) { face(top,col,0.95,col,0.16,1.4); face(left,col,0.95,col,0.09,1.4); face(right,col,0.95,col,0.13,1.4); }
+      else        { face(top,col,0.75,null,0,1.2);   face(left,col,0.42,null,0,1.2);   face(right,col,0.55,null,0,1.2);  }
+    }
+
+    var cubes = [];
+    for (var gz = 0; gz <= 1; gz++)
+      for (var gy = 0; gy <= 1; gy++)
+        for (var gx = 0; gx <= 1; gx++)
+          cubes.push({ gx: gx, gy: gy, gz: gz, accent: false });
+    cubes[5].accent = true;
+
+    var order = cubes.map(function (c, i) { return { i: i, d: c.gx + c.gy - c.gz }; })
+      .sort(function (a, b) { return a.d - b.d; }).map(function (o) { return o.i; });
+
+    function draw(t) {
+      if (!document.getElementById('nm-cube-canvas')) return;
+      ctx.clearRect(0, 0, DISP, DISP);
+      var fy = Math.sin(t * 0.0018) * 2;
+      for (var k = 0; k < order.length; k++) {
+        var c = cubes[order[k]];
+        cube(c.gx, c.gy, c.gz, c.accent ? fy : 0, c.accent);
+      }
+      nickAnimId = requestAnimationFrame(draw);
+    }
+    nickAnimId = requestAnimationFrame(draw);
+  }
+
   /* ── ПОСЛЕ ПОДКЛЮЧЕНИЯ ── */
   function onConnected(address, provider, walletName) {
     global.WALLET = global.WALLET || {};
@@ -347,6 +496,11 @@
     global.WALLET.address    = address;
     global.WALLET.provider   = provider;
     global.WALLET.walletName = walletName;
+
+    try {
+      var savedNick = localStorage.getItem('dolefi_nick_' + address.toLowerCase());
+      if (savedNick) global.WALLET.nickname = savedNick;
+    } catch (e) {}
 
     try { localStorage.setItem('dolefi_wallet_addr', address); } catch (e) {}
     try { localStorage.setItem('dolefi_wallet_name', walletName); } catch (e) {}
@@ -356,6 +510,9 @@
     if (typeof renderHeader === 'function') renderHeader();
     if (typeof updateHeaderScroll === 'function') updateHeaderScroll();
     if (typeof setupLangToggle === 'function') setupLangToggle();
+
+    /* Показываем модал никнейма если ещё не задан */
+    setTimeout(openNicknameModal, 350);
 
     /* Слушатели изменений */
     if (provider.on) {
