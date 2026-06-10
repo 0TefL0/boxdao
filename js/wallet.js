@@ -403,7 +403,7 @@
     input.addEventListener('input', validate);
     check.addEventListener('change', validate);
 
-    document.getElementById('nm-close').addEventListener('click', closeNicknameModal);
+    document.getElementById('nm-close') && document.getElementById('nm-close').addEventListener('click', closeNicknameModal);
     /* клик по оверлею не закрывает — ник обязателен */
 
     cont.addEventListener('click', function () {
