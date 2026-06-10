@@ -358,7 +358,6 @@
     nickModalEl.className = 'wm-overlay';
     nickModalEl.innerHTML =
       '<div class="wm-box nm-box" role="dialog" aria-modal="true">' +
-        '<button class="wm-close nm-close-btn" id="nm-close" aria-label="Close">&#x2715;</button>' +
         '<div class="nm-cube-wrap"><canvas id="nm-cube-canvas" style="display:block;"></canvas></div>' +
         '<h3 class="nm-title">' + (isEn ? 'Enter the login' : 'Укажите ваше имя') + '</h3>' +
         '<div class="nm-input-wrap">' +
@@ -405,7 +404,7 @@
     check.addEventListener('change', validate);
 
     document.getElementById('nm-close').addEventListener('click', closeNicknameModal);
-    nickModalEl.addEventListener('click', function (e) { if (e.target === nickModalEl) closeNicknameModal(); });
+    /* клик по оверлею не закрывает — ник обязателен */
 
     cont.addEventListener('click', function () {
       var val = input.value.trim();
@@ -554,9 +553,7 @@
     global.WALLET.walletName = null;
     try { localStorage.removeItem('dolefi_wallet_addr'); } catch (e) {}
     try { localStorage.removeItem('dolefi_wallet_name'); } catch (e) {}
-    if (typeof renderHeader === 'function') renderHeader();
-    if (typeof updateHeaderScroll === 'function') updateHeaderScroll();
-    if (typeof setupLangToggle === 'function') setupLangToggle();
+    window.location.reload();
   };
 
   /* ── АВТО-ПЕРЕПОДКЛЮЧЕНИЕ ── */
