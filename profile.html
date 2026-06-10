@@ -834,6 +834,7 @@
       <div class="profile-user-card">
         <div class="profile-avatar" id="prof-avatar"></div>
         <div class="profile-user-info">
+          <div class="profile-nickname" id="prof-nickname" style="display:none;font-family:var(--font-display);font-size:20px;font-weight:700;color:#fff;letter-spacing:-0.01em;margin-bottom:2px;"></div>
           <div class="profile-address" id="prof-addr">—</div>
           <div class="profile-wallet-tag">
             <span class="profile-wallet-dot"></span>
@@ -1218,6 +1219,12 @@
       if (av && typeof walletAddrAvatar === 'function') {
         av.innerHTML = walletAddrAvatar(w.address, 56);
       }
+
+      /* Никнейм */
+      var nickEl = document.getElementById('prof-nickname');
+      var nick = w.nickname || '';
+      try { nick = nick || localStorage.getItem('dolefi_nick_' + w.address.toLowerCase()) || ''; } catch (e) {}
+      if (nickEl && nick) { nickEl.textContent = nick; nickEl.style.display = ''; }
 
       /* Адрес */
       var addrEl = document.getElementById('prof-addr');
