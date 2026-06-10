@@ -360,7 +360,7 @@
       '<div class="wm-box nm-box" role="dialog" aria-modal="true">' +
         '<button class="wm-close nm-close-btn" id="nm-close" aria-label="Close">&#x2715;</button>' +
         '<div class="nm-cube-wrap"><canvas id="nm-cube-canvas" style="display:block;"></canvas></div>' +
-        '<h3 class="nm-title">' + (isEn ? 'Choose a username' : 'Придумай никнейм') + '</h3>' +
+        '<h3 class="nm-title">' + (isEn ? 'Enter the login' : 'Укажите ваше имя') + '</h3>' +
         '<div class="nm-input-wrap">' +
           '<input type="text" class="nm-input" id="nm-input" placeholder="username" maxlength="24" autocomplete="off" spellcheck="false">' +
           '<span class="nm-avail" id="nm-avail"></span>' +
@@ -373,7 +373,6 @@
           '</span>' +
         '</label>' +
         '<button class="btn btn-primary nm-continue" id="nm-continue" disabled>' + (isEn ? 'Continue' : 'Продолжить') + '</button>' +
-        '<button class="nm-skip" id="nm-skip">' + (isEn ? 'Skip for now' : 'Пропустить') + '</button>' +
       '</div>';
 
     document.body.appendChild(nickModalEl);
@@ -406,7 +405,6 @@
     check.addEventListener('change', validate);
 
     document.getElementById('nm-close').addEventListener('click', closeNicknameModal);
-    document.getElementById('nm-skip').addEventListener('click', closeNicknameModal);
     nickModalEl.addEventListener('click', function (e) { if (e.target === nickModalEl) closeNicknameModal(); });
 
     cont.addEventListener('click', function () {
