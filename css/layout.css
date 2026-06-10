@@ -923,7 +923,6 @@
 .nm-continue:disabled {
   opacity: 0.4;
   cursor: not-allowed;
-  pointer-events: none;
 }
 .nm-skip {
   background: transparent;
