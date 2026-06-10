@@ -919,10 +919,22 @@
   width: 100%;
   justify-content: center;
   margin-bottom: 10px;
+  background: #9be024;
   color: #0a0a0a;
   font-weight: 700;
+  animation: none;
+  box-shadow: 0 0 18px rgba(155, 224, 36, 0.25);
+  transition: background 0.18s, box-shadow 0.18s, transform 0.18s;
 }
-.nm-continue:hover { color: #0a0a0a; }
+.nm-continue:hover {
+  background: #a9ec38;
+  color: #0a0a0a;
+  box-shadow: 0 0 22px rgba(155, 224, 36, 0.35);
+  transform: translateY(-1px);
+}
+.nm-continue:active {
+  transform: translateY(0) scale(0.98);
+}
 .nm-continue:disabled {
   opacity: 0.4;
   cursor: not-allowed;
