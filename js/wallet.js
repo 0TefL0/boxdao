@@ -12,6 +12,19 @@
 (function (global) {
   'use strict';
 
+  /* ── ОДНОРАЗОВЫЙ СБРОС НИКНЕЙМОВ ── */
+  try {
+    if (!localStorage.getItem('dolefi_nick_reset_v1')) {
+      var keysToRemove = [];
+      for (var i = 0; i < localStorage.length; i++) {
+        var k = localStorage.key(i);
+        if (k && k.indexOf('dolefi_nick_') === 0) keysToRemove.push(k);
+      }
+      keysToRemove.forEach(function (k) { localStorage.removeItem(k); });
+      localStorage.setItem('dolefi_nick_reset_v1', '1');
+    }
+  } catch (e) {}
+
   /* ── АВАТАРКА ПО АДРЕСУ (детерминированный SVG-градиент) ── */
   function addrAvatar(addr, size) {
     size = size || 36;
