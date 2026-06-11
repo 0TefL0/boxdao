@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DoleFi — NFT</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Finlandica:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.1/src/regular/style.css">
+
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+
+  <style>
+    .nft-page {
+      padding-top: calc(var(--header-h) + 2.5rem);
+      padding-bottom: 6rem;
+      max-width: 1080px;
+      margin: 0 auto;
+      padding-inline: var(--gutter);
+    }
+    .nft-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-dim);
+      font-size: 14px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: color var(--t-fast);
+    }
+    .nft-back:hover { color: var(--accent); }
+    .nft-page-head {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 22px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-bottom: 22px;
+    }
+    .nft-page-img {
+      width: 72px; height: 72px;
+      border-radius: 12px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid rgba(184,255,60,0.25);
+    }
+    .nft-page-title { flex: 1; min-width: 0; }
+    .nft-page-title h1 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      color: #fff;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
+    .nft-page-title h1 b { color: var(--accent); }
+    .nft-page-title .sub {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    .nft-page-body {
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .nft-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 10px;
+    }
+    .nft-stat-cell {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+    }
+    .nft-stat-cell.acc {
+      background: rgba(184,255,60,0.06);
+      border-color: rgba(184,255,60,0.22);
+    }
+    .nft-stat-cell-label {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    .nft-stat-cell-value {
+      font-family: var(--font-mono);
+      font-size: 22px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .nft-stat-cell.acc .nft-stat-cell-value { color: var(--accent); }
+    .nft-stat-cell-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 4px;
+    }
+    .nft-stat-cell-sub .up { color: var(--accent); }
+    .nft-stat-cell-sub .down { color: #ff6b6b; }
+    .nft-page-sec {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 16px 18px;
+    }
+    .nft-page-sec-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .nft-page-sec-title {
+      font-family: var(--font-display);
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+    }
+    .nft-page-sec-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .nft-chart { height: 100px; width: 100%; display: block; }
+    .nft-chart-meta {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--muted);
+    }
+    .nft-tx-list { display: flex; flex-direction: column; gap: 6px; }
+    .nft-tx-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 13px;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+    }
+    .nft-tx-row:last-child { border-bottom: none; }
+    .nft-tx-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+    }
+    .nft-tx-icon {
+      width: 28px; height: 28px;
+      border-radius: 8px;
+      background: rgba(184,255,60,0.08);
+      color: var(--accent);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 13px;
+      flex-shrink: 0;
+    }
+    .nft-tx-meta { display: flex; flex-direction: column; gap: 1px; }
+    .nft-tx-type { font-size: 12px; color: var(--text); }
+    .nft-tx-date { font-family: var(--font-mono); font-size: 10px; color: var(--muted); }
+    .nft-tx-val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--accent);
+      font-size: 13px;
+    }
+    .nft-info-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px 24px;
+    }
+    .nft-info-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(255,255,255,0.05);
+      font-size: 12px;
+    }
+    .nft-info-row .k { color: var(--text-dim); }
+    .nft-info-row .v {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: #fff;
+    }
+
+    @media (max-width: 720px) {
+      .nft-info-list { grid-template-columns: 1fr; }
+      .nft-page-head { flex-wrap: wrap; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="header"></div>
+
+  <div class="nft-page">
+    <a class="nft-back" href="profile"><i class="ph ph-arrow-left"></i> <span data-i18n="nft_back">Назад в профиль</span></a>
+
+    <div class="nft-page-head">
+      <img class="nft-page-img" src="assets/luckybox.png" alt="Lucky Box" id="nft-img">
+      <div class="nft-page-title">
+        <h1 id="nft-title">Lucky Box <b>#07</b></h1>
+        <div class="sub" id="nft-sub">Lucky Box RU №1 · RE-2185</div>
+      </div>
+    </div>
+
+    <div class="nft-page-body">
+
+      <div class="nft-stat-grid">
+        <div class="nft-stat-cell acc">
+          <div class="nft-stat-cell-label" data-i18n="ana_revenue_total">Всего выручка</div>
+          <div class="nft-stat-cell-value">14 820 GEM</div>
+          <div class="nft-stat-cell-sub"><span class="up">↑ 8.2%</span> <span data-i18n="ana_per_month">за месяц</span></div>
+        </div>
+        <div class="nft-stat-cell">
+          <div class="nft-stat-cell-label" data-i18n="ana_today">Сегодня</div>
+          <div class="nft-stat-cell-value">+480 GEM</div>
+          <div class="nft-stat-cell-sub"><span class="up">↑ 12%</span> <span data-i18n="ana_vs_yesterday">vs вчера</span></div>
+        </div>
+        <div class="nft-stat-cell">
+          <div class="nft-stat-cell-label" data-i18n="ana_sold">Продано</div>
+          <div class="nft-stat-cell-value">328</div>
+          <div class="nft-stat-cell-sub"><span data-i18n="ana_boxes">боксов</span></div>
+        </div>
+        <div class="nft-stat-cell">
+          <div class="nft-stat-cell-label" data-i18n="ana_uptime">Аптайм</div>
+          <div class="nft-stat-cell-value">99.4%</div>
+          <div class="nft-stat-cell-sub" data-i18n="ana_last30">за 30 дней</div>
+        </div>
+      </div>
+
+      <div class="nft-page-sec">
+        <div class="nft-page-sec-head">
+          <span class="nft-page-sec-title" data-i18n="ana_revenue_dyn">Динамика выручки</span>
+          <span class="nft-page-sec-tag" data-i18n="ana_last30d">последние 30 дней</span>
+        </div>
+        <svg class="nft-chart" viewBox="0 0 600 100" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="chartGrad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#B8FF3C" stop-opacity="0.35"/>
+              <stop offset="100%" stop-color="#B8FF3C" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <path d="M0,75 L20,68 L40,72 L60,55 L80,60 L100,45 L120,52 L140,38 L160,48 L180,35 L200,42 L220,28 L240,34 L260,40 L280,30 L300,38 L320,26 L340,32 L360,22 L380,28 L400,18 L420,24 L440,14 L460,20 L480,30 L500,22 L520,28 L540,18 L560,24 L580,14 L600,20 L600,100 L0,100 Z" fill="url(#chartGrad)"/>
+          <path d="M0,75 L20,68 L40,72 L60,55 L80,60 L100,45 L120,52 L140,38 L160,48 L180,35 L200,42 L220,28 L240,34 L260,40 L280,30 L300,38 L320,26 L340,32 L360,22 L380,28 L400,18 L420,24 L440,14 L460,20 L480,30 L500,22 L520,28 L540,18 L560,24 L580,14 L600,20" stroke="#B8FF3C" stroke-width="1.5" fill="none"/>
+        </svg>
+        <div class="nft-chart-meta">
+          <span>01.05</span><span>15.05</span><span>30.05</span>
+        </div>
+      </div>
+
+      <div class="nft-page-sec">
+        <div class="nft-page-sec-head">
+          <span class="nft-page-sec-title" data-i18n="ana_recent_tx">Последние операции</span>
+          <span class="nft-page-sec-tag" id="nft-serial-tag">RE-2185</span>
+        </div>
+        <div class="nft-tx-list">
+          <div class="nft-tx-row">
+            <div class="nft-tx-left">
+              <div class="nft-tx-icon"><i class="ph ph-arrow-down-right"></i></div>
+              <div class="nft-tx-meta">
+                <span class="nft-tx-type" data-i18n="ana_tx_sale">Продажа Lucky Box</span>
+                <span class="nft-tx-date">02.06.2026 · 14:32</span>
+              </div>
+            </div>
+            <span class="nft-tx-val">+45 GEM</span>
+          </div>
+          <div class="nft-tx-row">
+            <div class="nft-tx-left">
+              <div class="nft-tx-icon"><i class="ph ph-arrow-down-right"></i></div>
+              <div class="nft-tx-meta">
+                <span class="nft-tx-type" data-i18n="ana_tx_sale">Продажа Lucky Box</span>
+                <span class="nft-tx-date">02.06.2026 · 12:08</span>
+              </div>
+            </div>
+            <span class="nft-tx-val">+45 GEM</span>
+          </div>
+          <div class="nft-tx-row">
+            <div class="nft-tx-left">
+              <div class="nft-tx-icon"><i class="ph ph-arrow-down-right"></i></div>
+              <div class="nft-tx-meta">
+                <span class="nft-tx-type" data-i18n="ana_tx_sale">Продажа Lucky Box</span>
+                <span class="nft-tx-date">01.06.2026 · 19:45</span>
+              </div>
+            </div>
+            <span class="nft-tx-val">+45 GEM</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="nft-page-sec">
+        <div class="nft-page-sec-head">
+          <span class="nft-page-sec-title" data-i18n="ana_machine_info">Информация об автомате</span>
+        </div>
+        <div class="nft-info-list">
+          <div class="nft-info-row"><span class="k" data-i18n="ana_serial">Серийный №</span><span class="v" id="nft-serial">RE-2185</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_collection">Коллекция</span><span class="v">Lucky Box RU №1</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_city">Город</span><span class="v">Москва</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_address">Адрес</span><span class="v">ТЦ «Авиапарк»</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_installed">Установлен</span><span class="v">15.03.2025</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_status">Статус</span><span class="v" style="color:var(--accent)">● <span data-i18n="ana_online">Онлайн</span></span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_holders">Холдеров NFT</span><span class="v">14</span></div>
+          <div class="nft-info-row"><span class="k" data-i18n="ana_capacity">Заполненность</span><span class="v">82%</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="footer"></div>
+
+  <script src="js/cubes-bg.js"></script>
+  <script src="js/brand-cube.js"></script>
+  <script src="js/wallet.js"></script>
+  <script src="js/main.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      var params = new URLSearchParams(window.location.search);
+      var id     = params.get('id')     || '07';
+      var serial = params.get('serial') || 'RE-2185';
+      var name   = params.get('name')   || ('Lucky Box #' + id);
+
+      var titleEl = document.getElementById('nft-title');
+      var parts   = name.split('#');
+      if (titleEl) titleEl.innerHTML = (parts[0] || '') + (parts[1] ? '<b>#' + parts[1] + '</b>' : '');
+
+      var subEl = document.getElementById('nft-sub');
+      if (subEl) subEl.textContent = 'Lucky Box RU №1 · ' + serial;
+
+      var serEl = document.getElementById('nft-serial');
+      if (serEl) serEl.textContent = serial;
+      var serTagEl = document.getElementById('nft-serial-tag');
+      if (serTagEl) serTagEl.textContent = serial;
+    });
+  </script>
+</body>
+</html>

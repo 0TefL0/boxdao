@@ -1026,7 +1026,7 @@
   </div>
 
   <!-- ── МОДАЛКА АНАЛИТИКИ ── -->
-  <div class="nft-modal" id="nft-modal" aria-hidden="true">
+  <div class="nft-modal" id="nft-modal-removed" aria-hidden="true" style="display:none;">
     <div class="nft-modal-box" role="dialog" aria-modal="true">
       <div class="nft-modal-head">
         <img class="nft-modal-img" src="assets/luckybox.png" alt="Lucky Box" id="modal-img">
@@ -1290,46 +1290,23 @@
         });
       });
 
-      /* Клик по NFT-карточке — открыть модалку аналитики */
-      var modal = document.getElementById('nft-modal');
+      /* Клик по NFT-карточке — переход на страницу NFT */
       document.querySelectorAll('.nft-card').forEach(function (card) {
         card.addEventListener('click', function (e) {
-          /* Не открываем модалку если кликнули по кнопке внутри карточки */
           if (e.target.closest('.nft-btn')) return;
 
+          var id   = card.getAttribute('data-nft')    || '';
           var name = card.getAttribute('data-name')   || 'Lucky Box';
           var ser  = card.getAttribute('data-serial') || '';
 
-          /* Заполняем шапку */
-          var titleEl = document.getElementById('modal-title');
-          var subEl   = document.getElementById('modal-sub');
-          if (titleEl) {
-            /* Например "Lucky Box #07" → "Lucky Box <b>#07</b>" */
-            var parts = name.split('#');
-            titleEl.innerHTML = (parts[0] || '') + (parts[1] ? '<b>#' + parts[1] + '</b>' : '');
-          }
-          if (subEl) subEl.textContent = 'Lucky Box RU №1 · ' + ser;
-
-          modal.classList.add('open');
-          modal.setAttribute('aria-hidden', 'false');
-          document.body.style.overflow = 'hidden';
+          var url = 'nft?id=' + encodeURIComponent(id)
+                  + '&name=' + encodeURIComponent(name)
+                  + '&serial=' + encodeURIComponent(ser);
+          window.location.href = url;
         });
       });
 
       /* Закрытие модалки */
-      function closeModal() {
-        modal.classList.remove('open');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      }
-      document.getElementById('modal-close').addEventListener('click', closeModal);
-      modal.addEventListener('click', function (e) {
-        if (e.target === modal) closeModal();
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
-      });
-
       /* ── Модалка истории начислений ── */
       var histModal = document.getElementById('hist-modal');
       var openHist  = document.getElementById('open-history');
