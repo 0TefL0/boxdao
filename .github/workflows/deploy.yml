@@ -26,7 +26,7 @@ jobs:
 
           # Save site files to temp dir
           mkdir -p /tmp/site
-          cp index.html about.html dao.html projects.html profile.html staking.html .nojekyll /tmp/site/
+          cp index.html about.html dao.html projects.html profile.html staking.html nft.html .nojekyll /tmp/site/
           cp -r css js assets /tmp/site/
 
           # Fetch gh-pages into a local tracking branch
